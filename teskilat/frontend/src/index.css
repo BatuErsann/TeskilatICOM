@@ -1,0 +1,61 @@
+/* Gilroy Font Face */
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/assets/fonts/Fonts/Gilroy-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/assets/fonts/Fonts/Gilroy-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/assets/fonts/Fonts/Gilroy-MediumItalic.ttf') format('truetype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/assets/fonts/Fonts/Gilroy-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Use SemiBold as fallback for Bold */
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/assets/fonts/Fonts/Gilroy-SemiBold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-primary text-gray-100 font-sans;
+}
+
+.glass-panel {
+  @apply bg-secondary/50 backdrop-blur-md border border-white/10;
+}
+
+.neon-text {
+  text-shadow: 0 0 10px rgba(255, 205, 0, 0.5), 0 0 20px rgba(255, 205, 0, 0.3);
+}
+
+.neon-border {
+  box-shadow: 0 0 10px rgba(255, 205, 0, 0.2), inset 0 0 10px rgba(255, 205, 0, 0.1);
+}
