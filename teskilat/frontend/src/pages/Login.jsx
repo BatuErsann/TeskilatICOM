@@ -45,6 +45,9 @@ const Login = () => {
 
   return (
     <div className="max-w-md mx-auto mt-10 bg-white p-8 rounded-lg shadow-md">
+      <div className="flex justify-center mb-6">
+        <img src="/logo.svg" alt="Teşkilat ICOM" className="h-20 w-auto" />
+      </div>
       <h2 className="text-2xl font-bold mb-6 text-center text-primary">Login</h2>
       {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">

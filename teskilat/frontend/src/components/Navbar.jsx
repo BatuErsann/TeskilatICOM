@@ -17,12 +17,12 @@ const Navbar = () => {
 
   return (
     <nav className="bg-primary/90 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+      <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         
         {/* Left Side: Logo + Navigation Links */}
         <div className="flex items-center gap-x-8">
-          <Link to="/" className="text-3xl font-display font-bold tracking-widest text-white">
-            TESKILAT<span className="text-accent">.</span>
+          <Link to="/" className="flex items-center">
+            <img src="/logo.svg" alt="Teşkilat ICOM" className="w-60 h-auto" />
           </Link>
           
           <div className="hidden md:flex items-center space-x-6">

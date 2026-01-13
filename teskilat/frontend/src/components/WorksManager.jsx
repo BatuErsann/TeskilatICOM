@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { FaPlus, FaTrash, FaEdit, FaSave, FaGripVertical, FaImage, FaVideo, FaLink, FaTimes, FaExpand, FaCompress, FaEye, FaStar } from 'react-icons/fa';
 import api from '../api';
+import ImageUploader from './ImageUploader';
 
 const WorksManager = () => {
   const [works, setWorks] = useState([]);
@@ -839,32 +840,41 @@ const WorkFormModal = ({ formData, setFormData, onSubmit, onClose, isEditing, ge
           {/* Media URL */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              {formData.media_type === 'video' ? 'YouTube URL *' : 'Image URL *'}
+              {formData.media_type === 'video' ? 'YouTube URL *' : 'Görsel *'}
             </label>
-            <input
-              type="url"
-              name="media_url"
-              value={formData.media_url}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder={formData.media_type === 'video' ? 'https://youtube.com/watch?v=...' : 'https://... or Google Drive link'}
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              {formData.media_type === 'image' ? 'Google Drive links are supported' : 'Enter YouTube video link'}
-            </p>
+            {formData.media_type === 'video' ? (
+              <>
+                <input
+                  type="url"
+                  name="media_url"
+                  value={formData.media_url}
+                  onChange={handleChange}
+                  required
+                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="https://youtube.com/watch?v=..."
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  YouTube video linkini girin
+                </p>
+              </>
+            ) : (
+              <ImageUploader
+                value={formData.media_url}
+                onChange={(url) => setFormData(prev => ({ ...prev, media_url: url }))}
+                placeholder="Görsel yüklemek için sürükle-bırak veya tıkla"
+                previewClassName="w-full h-48"
+              />
+            )}
           </div>
 
           {/* Thumbnail URL (optional) */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Preview Image (Optional)</label>
-            <input
-              type="url"
-              name="thumbnail_url"
+            <label className="block text-sm font-medium text-gray-700 mb-1">Önizleme Görseli (Opsiyonel)</label>
+            <ImageUploader
               value={formData.thumbnail_url}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Custom thumbnail URL"
+              onChange={(url) => setFormData(prev => ({ ...prev, thumbnail_url: url }))}
+              placeholder="Özel önizleme görseli yükle"
+              previewClassName="w-full h-32"
             />
           </div>
 

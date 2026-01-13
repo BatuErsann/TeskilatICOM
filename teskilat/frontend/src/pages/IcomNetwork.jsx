@@ -12,8 +12,8 @@ const IcomNetwork = () => {
     },
     {
       icon: FaLightbulb,
-      title: 'We share knowledge,',
-      description: 'resources, and experience to empower us and our clients, grow.'
+      title: 'We share knowledge, resources, and experience',
+      description: 'to empower us and our clients, grow.'
     },
     {
       icon: FaGlobe,

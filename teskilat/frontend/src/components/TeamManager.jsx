@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaPlus, FaTrash, FaEdit, FaTimes, FaLinkedin, FaUser, FaGripVertical } from 'react-icons/fa';
 import api from '../api';
+import ImageUploader from './ImageUploader';
 
 const TeamManager = () => {
   const [members, setMembers] = useState([]);
@@ -219,17 +220,6 @@ const TeamManager = () => {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Image Preview */}
-                {formData.image_url && (
-                  <div className="flex justify-center">
-                    <img
-                      src={getImageUrl(formData.image_url)}
-                      alt="Preview"
-                      className="w-32 h-32 object-cover rounded-full border-4 border-gray-200"
-                      referrerPolicy="no-referrer"
-                    />
-                  </div>
-                )}
 
                 {/* Name */}
                 <div>
@@ -269,15 +259,13 @@ const TeamManager = () => {
 
                 {/* Image URL */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                  <input
-                    type="url"
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Profil Fotoğrafı</label>
+                  <ImageUploader
                     value={formData.image_url}
-                    onChange={(e) => setFormData({...formData, image_url: e.target.value})}
-                    placeholder="https://... or Google Drive link"
-                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    onChange={(url) => setFormData({...formData, image_url: url})}
+                    placeholder="Fotoğraf yüklemek için sürükle-bırak veya tıkla"
+                    previewClassName="w-32 h-32 mx-auto rounded-full"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Supports direct URLs and Google Drive links</p>
                 </div>
 
                 {/* LinkedIn URL */}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaPlus, FaTrash, FaEdit, FaTimes, FaImage } from 'react-icons/fa';
 import api from '../api';
+import ImageUploader from './ImageUploader';
 
 const BrandsManager = () => {
   const [brands, setBrands] = useState([]);
@@ -176,14 +177,15 @@ const BrandsManager = () => {
               </div>
 
               <div>
-                <label className="block text-gray-400 text-sm mb-1">Logo URL</label>
-                <input 
-                  type="text" 
-                  value={formData.logo_url}
-                  onChange={(e) => setFormData({...formData, logo_url: e.target.value})}
-                  className="w-full bg-primary border border-white/10 rounded-lg p-3 text-white focus:border-accent outline-none"
-                  placeholder="https://..."
-                />
+                <label className="block text-gray-400 text-sm mb-1">Logo</label>
+                <div className="bg-primary/50 rounded-lg p-3 border border-white/10">
+                  <ImageUploader
+                    value={formData.logo_url}
+                    onChange={(url) => setFormData({...formData, logo_url: url})}
+                    placeholder="Logo yüklemek için sürükle-bırak veya tıkla"
+                    previewClassName="w-24 h-24 mx-auto"
+                  />
+                </div>
               </div>
 
               <div>

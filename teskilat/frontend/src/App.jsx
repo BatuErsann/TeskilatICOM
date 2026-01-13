@@ -58,9 +58,7 @@ function App() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Logo & Copyright */}
               <div>
-                <h3 className="text-2xl font-display font-bold text-white mb-4">
-                  TESKILAT<span className="text-accent">.</span>
-                </h3>
+                <img src="/logo.svg" alt="Teşkilat ICOM" className="h-16 w-auto mb-4" />
                 <p className="text-gray-400 text-sm">
                   &copy; 2025 Teskilat Platform.<br/>All rights reserved.
                 </p>

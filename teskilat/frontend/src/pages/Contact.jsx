@@ -123,7 +123,7 @@ const Contact = () => {
             {/* Google Maps */}
             <div className="mt-8 rounded-lg overflow-hidden">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3011.6504900398994!2d29.0693!3d40.9667!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cac790b17ba89f%3A0x7f7c2c2b7c7c7c7c!2sKozya%C4%9F%C4%B1%2C%20Kaya%20Sultan%20Sk.%20No%3A83%2C%2034742%20Kad%C4%B1k%C3%B6y%2F%C4%B0stanbul!5e0!3m2!1str!2str!4v1702300000000!5m2!1str!2str"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3011.0788646774!2d29.0982467!3d40.9682094!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cac78b2f1d639b%3A0x68a6e4bb0a44bc04!2sTe%C5%9Fkilat%20ICOM%20Reklam%20Ajans%C4%B1!5e0!3m2!1sen!2str!4v1705240000000!5m2!1sen!2str"
                 width="100%"
                 height="250"
                 style={{ border: 0 }}

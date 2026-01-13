@@ -55,12 +55,15 @@ const About = () => {
           <div>
             <h2 className="text-3xl font-display font-bold mb-6 text-accent">WHO WE ARE?</h2>
             <p className="text-lg text-gray-300 mb-6 leading-relaxed">
-              Teskilat is a next-generation creative agency founded in 2025, merging technology with art. 
-              We are a team that challenges the ordinary, speaks with data, and designs the future today.
+              In 2007 we started as an independent full-service advertising agency in Istanbul. In 2015 we 
+              joined ICOM, an exclusive global marketing network of over 70 like-minded independent 
+              agencies with a shared commitment to growth and collaboration. In 2023 we started 
+              MKNDRS, an agency specializing in AI-powered visual and video production. This is where AI 
+              meets creativity; faster production, hyper-real visuals, limitless possibilities.
             </p>
             <p className="text-lg text-gray-300 mb-8 leading-relaxed">
-              We serve as strategic partners in the digital transformation of major brands, 
-              not just creating ads, but designing experiences.
+              We believe in the power of connected ideas that go beyond the brief, connect with 
+              consumers, and drive measurable brand success. We go the extra mile!
             </p>
             
             <div className="grid grid-cols-2 gap-8">
