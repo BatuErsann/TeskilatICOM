@@ -31,6 +31,13 @@ const authLimiter = rateLimit({
   message: 'Too many login attempts, please try again later'
 });
 
+// Upload Limiter - More generous for file uploads
+const uploadLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 50, // 50 uploads per 15 minutes
+  message: 'Too many upload requests, please try again later'
+});
+
 // Middleware
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" } // Uploads için gerekli
@@ -49,7 +56,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/brands', brandRoutes);
 app.use('/api/contact', contactRoutes);
-app.use('/api/upload', uploadRoutes);
+app.use('/api/upload', uploadLimiter, uploadRoutes); // Apply upload limiter
 
 // Health Check
 app.get('/', (req, res) => {

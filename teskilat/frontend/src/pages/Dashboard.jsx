@@ -36,6 +36,7 @@ const Dashboard = () => {
     is_active: true,
     display_order: 0
   });
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -149,6 +150,12 @@ const Dashboard = () => {
   // Announcement Handlers
   const handleAnnouncementSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!announcementForm.image_url) {
+      alert('Lütfen bir resim yükleyin!');
+      return;
+    }
+    
     try {
       if (editingAnnouncement) {
         await api.put(`/content/announcements/${editingAnnouncement.id}`, announcementForm);
@@ -212,6 +219,76 @@ const Dashboard = () => {
       is_active: true,
       display_order: 0
     });
+    setIsDragging(false);
+  };
+
+  // Drag and Drop Handlers for Announcements
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      if (file.type.startsWith('image/')) {
+        // Upload to server
+        const formData = new FormData();
+        formData.append('image', file);
+        
+        try {
+          const response = await api.post('/upload/image', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+          
+          if (response.data.success) {
+            setAnnouncementForm({...announcementForm, image_url: response.data.url});
+            alert('Resim başarıyla yüklendi!');
+          }
+        } catch (error) {
+          alert('Resim yüklenirken hata oluştu: ' + (error.response?.data?.message || error.message));
+        }
+      } else {
+        alert('Lütfen bir resim dosyası seçin');
+      }
+    }
+  };
+
+  const handleFileSelect = async (e) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      try {
+        const response = await api.post('/upload/image', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        
+        if (response.data.success) {
+          setAnnouncementForm({...announcementForm, image_url: response.data.url});
+          alert('Resim başarıyla yüklendi!');
+        }
+      } catch (error) {
+        alert('Resim yüklenirken hata oluştu: ' + (error.response?.data?.message || error.message));
+      }
+    }
   };
 
   // Helper to convert Google Drive link to direct image link
@@ -529,26 +606,57 @@ const Dashboard = () => {
               </div>
               
               <form onSubmit={handleAnnouncementSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Title *</label>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Title *</label>
+                  <input
+                    type="text"
+                    value={announcementForm.title}
+                    onChange={(e) => setAnnouncementForm({...announcementForm, title: e.target.value})}
+                    className="w-full p-2 border rounded"
+                    required
+                  />
+                </div>
+
+                {/* Drag and Drop Zone */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">Announcement Image *</label>
+                  <div
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={() => document.getElementById('announcementImageInput').click()}
+                    className={`border-2 border-dashed rounded-lg p-8 text-center transition-all cursor-pointer ${
+                      isDragging 
+                        ? 'border-blue-500 bg-blue-50' 
+                        : 'border-gray-300 bg-gray-50 hover:border-gray-400 hover:bg-gray-100'
+                    }`}
+                  >
                     <input
-                      type="text"
-                      value={announcementForm.title}
-                      onChange={(e) => setAnnouncementForm({...announcementForm, title: e.target.value})}
-                      className="w-full p-2 border rounded"
-                      required
+                      id="announcementImageInput"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect}
+                      className="hidden"
                     />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Image URL</label>
-                    <input
-                      type="text"
-                      value={announcementForm.image_url}
-                      onChange={(e) => setAnnouncementForm({...announcementForm, image_url: e.target.value})}
-                      className="w-full p-2 border rounded"
-                      placeholder="https://... or Google Drive link"
-                    />
+                    {announcementForm.image_url ? (
+                      <div className="space-y-2">
+                        <img
+                          src={announcementForm.image_url}
+                          alt="Preview"
+                          className="max-h-40 mx-auto rounded"
+                        />
+                        <p className="text-sm text-green-600 font-medium">✓ Resim yüklendi</p>
+                        <p className="text-xs text-gray-500">Değiştirmek için yeni resim yükleyin</p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center gap-2">
+                        <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        <p className="text-gray-600 font-medium">Resmi sürükle-bırak veya tıkla</p>
+                        <p className="text-sm text-gray-500">PNG, JPG, GIF desteklenir (max 10MB)</p>
+                      </div>
+                    )}
                   </div>
                 </div>
 
