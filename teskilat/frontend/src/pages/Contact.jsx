@@ -3,7 +3,7 @@ import { FaEnvelope, FaUsers } from 'react-icons/fa';
 import api from '../api';
 
 const Contact = () => {
-  const [activeTab, setActiveTab] = useState('contact'); // 'contact' or 'join'
+  const [activeTab, setActiveTab] = useState('contact');
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState({ type: '', message: '' });
 
@@ -15,13 +15,12 @@ const Contact = () => {
     message: ''
   });
 
-  // Join Form State
-  const [joinForm, setJoinForm] = useState({
+  // Work With Us Form State
+  const [workForm, setWorkForm] = useState({
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
-    position: '',
     portfolio: '',
     about: ''
   });
@@ -30,8 +29,8 @@ const Contact = () => {
     setContactForm({ ...contactForm, [e.target.name]: e.target.value });
   };
 
-  const handleJoinChange = (e) => {
-    setJoinForm({ ...joinForm, [e.target.name]: e.target.value });
+  const handleWorkChange = (e) => {
+    setWorkForm({ ...workForm, [e.target.name]: e.target.value });
   };
 
   const handleContactSubmit = async (e) => {
@@ -53,23 +52,23 @@ const Contact = () => {
     }
   };
 
-  const handleJoinSubmit = async (e) => {
+  const handleWorkSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setStatus({ type: '', message: '' });
 
     try {
       const payload = {
-        name: `${joinForm.firstName} ${joinForm.lastName}`,
-        email: joinForm.email,
-        subject: `Job Application: ${joinForm.position}`,
-        message: `Phone: ${joinForm.phone}\nPortfolio: ${joinForm.portfolio}\n\nAbout:\n${joinForm.about}`,
-        type: 'join'
+        name: `${workForm.firstName} ${workForm.lastName}`,
+        email: workForm.email,
+        subject: 'Job Application',
+        message: `Phone: ${workForm.phone}\nPortfolio: ${workForm.portfolio}\n\nAbout:\n${workForm.about}`,
+        type: 'work'
       };
 
       await api.post('/contact', payload);
-      setStatus({ type: 'success', message: 'Application sent successfully! Good luck.' });
-      setJoinForm({ firstName: '', lastName: '', email: '', phone: '', position: '', portfolio: '', about: '' });
+      setStatus({ type: 'success', message: 'Application sent successfully! We will get back to you soon.' });
+      setWorkForm({ firstName: '', lastName: '', email: '', phone: '', portfolio: '', about: '' });
     } catch (error) {
       setStatus({ type: 'error', message: error.response?.data?.message || 'Failed to send application. Please try again.' });
     } finally {
@@ -150,15 +149,15 @@ const Contact = () => {
                 Contact Us
               </button>
               <button
-                onClick={() => { setActiveTab('join'); setStatus({ type: '', message: '' }); }}
+                onClick={() => { setActiveTab('work'); setStatus({ type: '', message: '' }); }}
                 className={`flex-1 flex items-center justify-center gap-2 py-4 px-6 font-bold uppercase tracking-wider transition ${
-                  activeTab === 'join' 
+                  activeTab === 'work' 
                     ? 'bg-accent text-primary' 
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
                 }`}
               >
                 <FaUsers />
-                Join The Team
+                Work With Us
               </button>
             </div>
 
@@ -235,21 +234,21 @@ const Contact = () => {
               </div>
             )}
 
-            {/* Join The Team Form */}
-            {activeTab === 'join' && (
+            {/* Work With Us Form */}
+            {activeTab === 'work' && (
               <div className="p-8">
                 <h2 className="text-2xl font-bold text-white mb-2">Join our creative team</h2>
                 <p className="text-gray-400 mb-6">We're always looking for talented individuals.</p>
                 
-                <form onSubmit={handleJoinSubmit} className="space-y-6">
+                <form onSubmit={handleWorkSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">First Name</label>
                       <input 
                         type="text" 
                         name="firstName"
-                        value={joinForm.firstName}
-                        onChange={handleJoinChange}
+                        value={workForm.firstName}
+                        onChange={handleWorkChange}
                         required
                         className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition" 
                         placeholder="John" 
@@ -260,8 +259,8 @@ const Contact = () => {
                       <input 
                         type="text" 
                         name="lastName"
-                        value={joinForm.lastName}
-                        onChange={handleJoinChange}
+                        value={workForm.lastName}
+                        onChange={handleWorkChange}
                         required
                         className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition" 
                         placeholder="Doe" 
@@ -273,8 +272,8 @@ const Contact = () => {
                     <input 
                       type="email" 
                       name="email"
-                      value={joinForm.email}
-                      onChange={handleJoinChange}
+                      value={workForm.email}
+                      onChange={handleWorkChange}
                       required
                       className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition" 
                       placeholder="example@email.com" 
@@ -285,38 +284,20 @@ const Contact = () => {
                     <input 
                       type="tel" 
                       name="phone"
-                      value={joinForm.phone}
-                      onChange={handleJoinChange}
+                      value={workForm.phone}
+                      onChange={handleWorkChange}
                       required
                       className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition" 
                       placeholder="+90 5XX XXX XX XX" 
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Position Interested In</label>
-                    <select 
-                      name="position"
-                      value={joinForm.position}
-                      onChange={handleJoinChange}
-                      required
-                      className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
-                    >
-                      <option value="" className="bg-primary">Select a position...</option>
-                      <option value="Graphic Designer" className="bg-primary">Graphic Designer</option>
-                      <option value="Video Editor" className="bg-primary">Video Editor</option>
-                      <option value="Web Developer" className="bg-primary">Web Developer</option>
-                      <option value="Digital Marketing Specialist" className="bg-primary">Digital Marketing Specialist</option>
-                      <option value="Social Media Manager" className="bg-primary">Social Media Manager</option>
-                      <option value="Other" className="bg-primary">Other</option>
-                    </select>
-                  </div>
-                  <div>
                     <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Portfolio / LinkedIn URL</label>
                     <input 
                       type="url" 
                       name="portfolio"
-                      value={joinForm.portfolio}
-                      onChange={handleJoinChange}
+                      value={workForm.portfolio}
+                      onChange={handleWorkChange}
                       className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition" 
                       placeholder="https://..." 
                     />
@@ -326,8 +307,8 @@ const Contact = () => {
                     <textarea 
                       rows="4" 
                       name="about"
-                      value={joinForm.about}
-                      onChange={handleJoinChange}
+                      value={workForm.about}
+                      onChange={handleWorkChange}
                       required
                       className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition" 
                       placeholder="Your experience, skills, and why you want to join..."

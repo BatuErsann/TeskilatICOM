@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { FaPlus, FaTrash, FaEdit, FaSave, FaGripVertical, FaImage, FaVideo, FaLink, FaTimes, FaExpand, FaCompress, FaEye, FaStar } from 'react-icons/fa';
+import { FaPlus, FaTrash, FaEdit, FaSave, FaGripVertical, FaImage, FaVideo, FaLink, FaTimes, FaExpand, FaCompress, FaEye, FaStar, FaInstagram, FaTiktok } from 'react-icons/fa';
 import api from '../api';
 import ImageUploader from './ImageUploader';
 
@@ -21,6 +21,7 @@ const WorksManager = () => {
     description: '',
     media_type: 'image',
     media_url: '',
+    video_platform: 'youtube',
     thumbnail_url: '',
     link_url: '',
     instagram_url: '',
@@ -70,6 +71,7 @@ const WorksManager = () => {
       description: '',
       media_type: 'image',
       media_url: '',
+      video_platform: 'youtube',
       thumbnail_url: '',
       link_url: '',
       instagram_url: '',
@@ -106,6 +108,7 @@ const WorksManager = () => {
       description: work.description || '',
       media_type: work.media_type || 'image',
       media_url: work.media_url || '',
+      video_platform: work.video_platform || 'youtube',
       thumbnail_url: work.thumbnail_url || '',
       link_url: work.link_url || '',
       instagram_url: work.instagram_url || '',
@@ -181,11 +184,89 @@ const WorksManager = () => {
     return match ? match[1] : null;
   };
 
+  const getVimeoId = (url) => {
+    if (!url) return null;
+    const match = url.match(/(?:vimeo\.com\/)(\d+)/);
+    return match ? match[1] : null;
+  };
+
+  const getInstagramId = (url) => {
+    if (!url) return null;
+    const match = url.match(/(?:instagram\.com\/(?:p|reel|tv)\/)([\w-]+)/);
+    return match ? match[1] : null;
+  };
+
+  const getTikTokId = (url) => {
+    if (!url) return null;
+    const match = url.match(/(?:tiktok\.com\/@[\w.-]+\/video\/|vm\.tiktok\.com\/|vt\.tiktok\.com\/)([\w-]+)/);
+    return match ? match[1] : null;
+  };
+
+  const detectVideoPlatform = (url) => {
+    if (!url) return 'youtube';
+    if (url.includes('youtube.com') || url.includes('youtu.be')) return 'youtube';
+    if (url.includes('vimeo.com')) return 'vimeo';
+    if (url.includes('instagram.com')) return 'instagram';
+    if (url.includes('tiktok.com')) return 'tiktok';
+    return 'other';
+  };
+
+  // SVG placeholder oluştur
+  const createPlatformPlaceholder = (platform, text, colors) => {
+    const svg = `
+      <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="${platform}-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:${colors[0]};stop-opacity:1" />
+            <stop offset="100%" style="stop-color:${colors[1]};stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <rect width="400" height="300" fill="url(#${platform}-grad)"/>
+        <text x="200" y="160" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white" text-anchor="middle">${text}</text>
+      </svg>
+    `;
+    return `data:image/svg+xml;base64,${btoa(svg)}`;
+  };
+
+  // TikTok thumbnail için oembed API kullan
+  const getTikTokThumbnail = async (url) => {
+    try {
+      const response = await fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`);
+      const data = await response.json();
+      return data.thumbnail_url || null;
+    } catch (error) {
+      console.error('TikTok thumbnail error:', error);
+      return null;
+    }
+  };
+
   const getThumbnail = (work) => {
+    // 1. Öncelik: Manuel yüklenmiş thumbnail
     if (work.thumbnail_url) return getImageUrl(work.thumbnail_url);
+    
     if (work.media_type === 'video') {
-      const ytId = getYouTubeId(work.media_url);
-      if (ytId) return `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`;
+      const platform = work.video_platform || detectVideoPlatform(work.media_url);
+      
+      switch(platform) {
+        case 'youtube': {
+          const ytId = getYouTubeId(work.media_url);
+          if (ytId) return `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`;
+          break;
+        }
+        case 'vimeo': {
+          const vimeoId = getVimeoId(work.media_url);
+          if (vimeoId) return `https://vumbnail.com/${vimeoId}.jpg`;
+          break;
+        }
+        case 'instagram':
+          // Backend'den gelen thumbnail yoksa placeholder göster
+          return createPlatformPlaceholder('instagram', 'Instagram', ['#f09433', '#e6683c', '#dc2743', '#cc2366', '#bc1888']);
+        case 'tiktok':
+          // Backend'den gelen thumbnail yoksa placeholder göster
+          return createPlatformPlaceholder('tiktok', 'TikTok', ['#000000', '#69C9D0', '#EE1D52']);
+        default:
+          return createPlatformPlaceholder('video', 'Video', ['#6B7280', '#4B5563']);
+      }
     }
     return getImageUrl(work.media_url);
   };
@@ -722,7 +803,7 @@ const LinkEditModal = ({ item, work, onSave, onClose }) => {
               value={linkUrl}
               onChange={(e) => setLinkUrl(e.target.value)}
               placeholder="https://example.com"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
             />
           </div>
           
@@ -780,7 +861,7 @@ const WorkFormModal = ({ formData, setFormData, onSubmit, onClose, isEditing, ge
               value={formData.title}
               onChange={handleChange}
               required
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
               placeholder="Project title"
             />
           </div>
@@ -793,7 +874,7 @@ const WorkFormModal = ({ formData, setFormData, onSubmit, onClose, isEditing, ge
               value={formData.description}
               onChange={handleChange}
               rows={3}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
               placeholder="Short description about the project"
             />
           </div>
@@ -840,21 +921,47 @@ const WorkFormModal = ({ formData, setFormData, onSubmit, onClose, isEditing, ge
           {/* Media URL */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              {formData.media_type === 'video' ? 'YouTube URL *' : 'Görsel *'}
+              {formData.media_type === 'video' ? 'Video URL *' : 'Görsel *'}
             </label>
             {formData.media_type === 'video' ? (
               <>
+                {/* Video Platform Seçimi */}
+                <div className="mb-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Video Platformu</label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    {['youtube', 'instagram', 'vimeo', 'tiktok'].map(platform => (
+                      <label key={platform} className={`flex items-center justify-center gap-2 p-3 border-2 rounded-lg cursor-pointer transition ${
+                        formData.video_platform === platform 
+                          ? 'border-blue-500 bg-blue-50 text-blue-900 font-medium' 
+                          : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                      }`}>
+                        <input
+                          type="radio"
+                          name="video_platform"
+                          value={platform}
+                          checked={formData.video_platform === platform}
+                          onChange={handleChange}
+                          className="hidden"
+                        />
+                        <span className="capitalize">{platform}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
                 <input
                   type="url"
                   name="media_url"
                   value={formData.media_url}
                   onChange={handleChange}
                   required
-                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="https://youtube.com/watch?v=..."
+                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                  placeholder={`https://${formData.video_platform}.com/...`}
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  YouTube video linkini girin
+                  {formData.video_platform === 'youtube' && 'YouTube video linkini girin (watch, shorts, embed formatları desteklenir)'}
+                  {formData.video_platform === 'instagram' && 'Instagram video linkini girin (post, reel, tv formatları desteklenir)'}
+                  {formData.video_platform === 'vimeo' && 'Vimeo video linkini girin'}
+                  {formData.video_platform === 'tiktok' && 'TikTok video linkini girin'}
                 </p>
               </>
             ) : (
@@ -886,7 +993,7 @@ const WorkFormModal = ({ formData, setFormData, onSubmit, onClose, isEditing, ge
               name="link_url"
               value={formData.link_url}
               onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
               placeholder="https://project-website.com"
             />
             <p className="text-xs text-gray-500 mt-1">
@@ -903,7 +1010,7 @@ const WorkFormModal = ({ formData, setFormData, onSubmit, onClose, isEditing, ge
                 name="instagram_url"
                 value={formData.instagram_url}
                 onChange={handleChange}
-                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                 placeholder="https://instagram.com/..."
               />
             </div>
@@ -914,7 +1021,7 @@ const WorkFormModal = ({ formData, setFormData, onSubmit, onClose, isEditing, ge
                 name="linkedin_url"
                 value={formData.linkedin_url}
                 onChange={handleChange}
-                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                 placeholder="https://linkedin.com/in/..."
               />
             </div>
@@ -925,7 +1032,7 @@ const WorkFormModal = ({ formData, setFormData, onSubmit, onClose, isEditing, ge
                 name="youtube_url"
                 value={formData.youtube_url}
                 onChange={handleChange}
-                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                 placeholder="https://youtube.com/..."
               />
             </div>
@@ -939,7 +1046,7 @@ const WorkFormModal = ({ formData, setFormData, onSubmit, onClose, isEditing, ge
               name="category"
               value={formData.category}
               onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
               placeholder="Video Production, Design, vb."
             />
           </div>

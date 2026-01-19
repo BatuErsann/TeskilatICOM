@@ -39,15 +39,15 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-x-6">
           {/* Social Media Icons */}
           <div className="flex items-center space-x-4 text-gray-400">
-            <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaInstagram size={20} /></a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaLinkedin size={20} /></a>
-            <a href="https://youtube.com" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaYoutube size={20} /></a>
-            <a href="https://vimeo.com" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaVimeoV size={20} /></a>
+            <a href="https://www.instagram.com/teskilaticom/" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaInstagram size={20} /></a>
+            <a href="https://www.linkedin.com/company/teskilaticom/posts/?feedView=all" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaLinkedin size={20} /></a>
+            <a href="https://www.youtube.com/@teskilaticom3784" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaYoutube size={20} /></a>
+            <a href="https://vimeo.com/teskilaticom" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaVimeoV size={20} /></a>
           </div>
 
           {/* Auth Buttons */}
           {!token ? (
-            <div className="flex items-center space-x-4 pl-6 border-l border-white/10">
+            <div className="flex items-center space-x-4 pl-6 border-l border-white/10 hidden">
               <Link to="/login" className="text-gray-300 hover:text-white transition text-sm uppercase font-bold">Login</Link>
               <Link to="/register" className="bg-accent hover:bg-accent-purple text-primary px-5 py-2 rounded-none skew-x-[-10deg] transition duration-300 font-bold text-sm uppercase">
                 <span className="skew-x-[10deg] inline-block">Sign Up</span>

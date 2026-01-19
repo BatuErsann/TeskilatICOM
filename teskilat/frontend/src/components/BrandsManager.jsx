@@ -12,7 +12,7 @@ const BrandsManager = () => {
   const [formData, setFormData] = useState({
     name: '',
     logo_url: '',
-    display_order: 0
+    display_order: 1
   });
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const BrandsManager = () => {
     setFormData({
       name: '',
       logo_url: '',
-      display_order: 0
+      display_order: 1
     });
   };
 

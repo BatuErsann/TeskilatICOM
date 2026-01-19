@@ -12,7 +12,7 @@ const ServicesManager = () => {
     title: '',
     description: '',
     icon: 'FaBullhorn',
-    display_order: 0
+    display_order: 1
   });
 
   const iconOptions = [
@@ -44,7 +44,7 @@ const ServicesManager = () => {
       title: '',
       description: '',
       icon: 'FaBullhorn',
-      display_order: 0
+      display_order: 1
     });
   };
 

@@ -26,7 +26,8 @@ CREATE TABLE IF NOT EXISTS site_settings (
 CREATE TABLE IF NOT EXISTS videos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255),
-    youtube_url VARCHAR(500) NOT NULL,
+    video_url VARCHAR(500) NOT NULL,
+    platform ENUM('youtube', 'instagram', 'vimeo', 'tiktok', 'other') DEFAULT 'youtube',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -37,6 +38,7 @@ CREATE TABLE IF NOT EXISTS works (
     description TEXT,
     media_type ENUM('image', 'video') DEFAULT 'image',
     media_url VARCHAR(500),
+    video_platform ENUM('youtube', 'instagram', 'vimeo', 'tiktok', 'other') DEFAULT 'youtube',
     thumbnail_url VARCHAR(500),
     link_url VARCHAR(500),
     instagram_url VARCHAR(500),

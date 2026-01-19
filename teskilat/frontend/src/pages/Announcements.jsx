@@ -81,18 +81,18 @@ const Announcements = () => {
                 <div className="md:flex">
                   {/* Image */}
                   {announcement.image_url && (
-                    <div className="md:w-1/3 lg:w-1/4">
+                    <div className="md:w-1/6">
                       <img
                         src={getImageUrl(announcement.image_url)}
                         alt={announcement.title}
-                        className="w-full h-64 md:h-full object-cover"
+                        className="w-full h-32 md:h-full object-cover"
                         referrerPolicy="no-referrer"
                       />
                     </div>
                   )}
                   
                   {/* Content */}
-                  <div className={`p-8 ${announcement.image_url ? 'md:w-2/3 lg:w-3/4' : 'w-full'}`}>
+                  <div className={`p-8 ${announcement.image_url ? 'md:w-5/6' : 'w-full'}`}>
                     {/* Badge & Date */}
                     <div className="flex flex-wrap items-center gap-4 mb-4">
                       <div className="inline-flex items-center gap-2 bg-accent/20 text-accent px-3 py-1 rounded-full text-sm font-semibold">

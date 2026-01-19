@@ -55,6 +55,74 @@ const Works = () => {
     return match ? match[1] : null;
   };
 
+  const getVimeoId = (url) => {
+    if (!url) return null;
+    const match = url.match(/(?:vimeo\.com\/)(\d+)/);
+    return match ? match[1] : null;
+  };
+
+  const getInstagramId = (url) => {
+    if (!url) return null;
+    const match = url.match(/(?:instagram\.com\/(?:p|reel|tv)\/)([\w-]+)/);
+    return match ? match[1] : null;
+  };
+
+  const detectVideoPlatform = (work) => {
+    if (work.video_platform) return work.video_platform;
+    const url = work.media_url;
+    if (!url) return null;
+    if (url.includes('youtube.com') || url.includes('youtu.be')) return 'youtube';
+    if (url.includes('vimeo.com')) return 'vimeo';
+    if (url.includes('instagram.com')) return 'instagram';
+    if (url.includes('tiktok.com')) return 'tiktok';
+    return 'other';
+  };
+
+  const getVideoThumbnail = (work) => {
+    // 1. Öncelik: Manuel yüklenmiş thumbnail (backend'den gelen)
+    if (work.thumbnail_url) return getImageUrl(work.thumbnail_url);
+    
+    const platform = detectVideoPlatform(work);
+    
+    // SVG placeholder oluştur
+    const createPlatformPlaceholder = (platform, text, colors) => {
+      const svg = `
+        <svg width="1920" height="1080" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="${platform}-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              ${colors.map((color, i) => `<stop offset="${(i / (colors.length - 1)) * 100}%" style="stop-color:${color};stop-opacity:1" />`).join('')}
+            </linearGradient>
+          </defs>
+          <rect width="1920" height="1080" fill="url(#${platform}-grad)"/>
+          <text x="960" y="540" font-family="Arial, sans-serif" font-size="120" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">${text}</text>
+        </svg>
+      `;
+      return `data:image/svg+xml;base64,${btoa(svg)}`;
+    };
+    
+    // 2. Platform'a göre otomatik thumbnail
+    switch(platform) {
+      case 'youtube': {
+        const ytId = getYouTubeId(work.media_url);
+        if (ytId) return `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+        break;
+      }
+      case 'vimeo': {
+        const vimeoId = getVimeoId(work.media_url);
+        if (vimeoId) return `https://vumbnail.com/${vimeoId}.jpg`;
+        break;
+      }
+      case 'instagram':
+        // Backend'den gelmişse kullan, yoksa placeholder
+        return createPlatformPlaceholder('instagram', 'Instagram', ['#f09433', '#e6683c', '#dc2743', '#cc2366', '#bc1888']);
+      case 'tiktok':
+        // Backend'den gelmişse kullan, yoksa placeholder
+        return createPlatformPlaceholder('tiktok', 'TikTok', ['#000000', '#69C9D0', '#EE1D52']);
+      default:
+        return createPlatformPlaceholder('video', 'Video', ['#6B7280', '#4B5563']);
+    }
+  };
+
   const getImageUrl = (url) => {
     if (!url) return '';
     if (url.includes('drive.google.com')) {
@@ -149,16 +217,16 @@ const Works = () => {
                 <div key={announcement.id} className="bg-secondary rounded-xl overflow-hidden shadow-2xl border border-accent/20">
                   <div className="md:flex">
                     {announcement.image_url && (
-                      <div className="md:w-1/3">
+                      <div className="md:w-1/6">
                         <img
                           src={getImageUrl(announcement.image_url)}
                           alt={announcement.title}
-                          className="w-full h-64 md:h-full object-cover"
+                          className="w-full h-32 md:h-full object-cover"
                           referrerPolicy="no-referrer"
                         />
                       </div>
                     )}
-                    <div className={`p-8 ${announcement.image_url ? 'md:w-2/3' : 'w-full'} relative`}>
+                    <div className={`p-8 ${announcement.image_url ? 'md:w-5/6' : 'w-full'} relative`}>
                       <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-4">
                         {announcement.link_url ? (
                           <a 
@@ -209,12 +277,22 @@ const Works = () => {
 const MasonryCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
   const [loaded, setLoaded] = useState(false);
   const isVideo = work.media_type === 'video';
-  const youtubeId = isVideo ? getYouTubeId(work.media_url) : null;
+  const platform = work.video_platform || (work.media_url?.includes('youtube.com') || work.media_url?.includes('youtu.be') ? 'youtube' : null);
+  const youtubeId = (platform === 'youtube' && isVideo) ? getYouTubeId(work.media_url) : null;
+  const vimeoId = (platform === 'vimeo' && isVideo) ? work.media_url?.match(/vimeo\.com\/(\d+)/)?.[1] : null;
   const isShort = work.media_url?.includes('shorts') || work.layoutConfig?.aspectRatio === 'portrait';
   
-  const thumbnail = work.thumbnail_url 
-    ? getImageUrl(work.thumbnail_url) 
-    : (youtubeId ? `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg` : getImageUrl(work.media_url));
+  // Thumbnail önceliği: work.thumbnail_url > platform thumbnail > media_url
+  const getThumbnailUrl = () => {
+    if (work.thumbnail_url) return getImageUrl(work.thumbnail_url);
+    if (isVideo) {
+      if (platform === 'youtube' && youtubeId) return `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`;
+      if (platform === 'vimeo' && vimeoId) return `https://vumbnail.com/${vimeoId}.jpg`;
+    }
+    return getImageUrl(work.media_url);
+  };
+  
+  const thumbnail = getThumbnailUrl();
 
   // Aspect ratio'yu layoutConfig'den al
   const getAspectRatio = () => {
@@ -292,7 +370,9 @@ const MasonryCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
 // Work Modal
 const WorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
   const isVideo = work.media_type === 'video';
-  const youtubeId = isVideo ? getYouTubeId(work.media_url) : null;
+  const platform = work.video_platform || (work.media_url?.includes('youtube.com') || work.media_url?.includes('youtu.be') ? 'youtube' : 'other');
+  const youtubeId = (platform === 'youtube' && isVideo) ? getYouTubeId(work.media_url) : null;
+  const vimeoId = (platform === 'vimeo' && isVideo) ? work.media_url?.match(/vimeo\.com\/(\d+)/)?.[1] : null;
   const isShort = work.media_url?.includes('shorts') || work.layoutConfig?.aspectRatio === 'portrait';
 
   useEffect(() => {
@@ -328,15 +408,74 @@ const WorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
 
         {/* Media */}
         <div className={`bg-black flex-shrink-0 ${isShort ? 'aspect-[9/16]' : 'aspect-video'}`}>
-          {isVideo && youtubeId ? (
-            <iframe
-              src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1`}
-              title={work.title}
-              className="w-full h-full"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+          {isVideo ? (
+            <>
+              {platform === 'youtube' && youtubeId && (
+                <iframe
+                  src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1`}
+                  title={work.title}
+                  className="w-full h-full"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              )}
+              {platform === 'vimeo' && vimeoId && (
+                <iframe
+                  src={`https://player.vimeo.com/video/${vimeoId}?autoplay=1`}
+                  title={work.title}
+                  className="w-full h-full"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                />
+              )}
+              {platform === 'instagram' && (
+                <div className="w-full h-full flex items-center justify-center text-white">
+                  <div className="text-center">
+                    <p className="mb-4">Instagram videoları harici bağlantı olarak açılır</p>
+                    <a 
+                      href={work.media_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full hover:scale-105 transition inline-block"
+                    >
+                      Instagram'da Aç
+                    </a>
+                  </div>
+                </div>
+              )}
+              {platform === 'tiktok' && (
+                <div className="w-full h-full flex items-center justify-center text-white">
+                  <div className="text-center">
+                    <p className="mb-4">TikTok videoları harici bağlantı olarak açılır</p>
+                    <a 
+                      href={work.media_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="px-6 py-3 bg-black rounded-full hover:scale-105 transition inline-block"
+                    >
+                      TikTok'ta Aç
+                    </a>
+                  </div>
+                </div>
+              )}
+              {(!youtubeId && !vimeoId && platform === 'other') && (
+                <div className="w-full h-full flex items-center justify-center text-white">
+                  <div className="text-center">
+                    <p className="mb-4">Video harici bağlantı olarak açılır</p>
+                    <a 
+                      href={work.media_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="px-6 py-3 bg-blue-600 rounded-full hover:scale-105 transition inline-block"
+                    >
+                      Videoyu Aç
+                    </a>
+                  </div>
+                </div>
+              )}
+            </>
           ) : (
             <img
               src={getImageUrl(work.media_url)}

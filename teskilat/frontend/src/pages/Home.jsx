@@ -79,6 +79,38 @@ const Home = () => {
     return match ? match[1] : null;
   };
 
+  const getVimeoId = (url) => {
+    if (!url) return null;
+    const match = url.match(/(?:vimeo\.com\/)(\d+)/);
+    return match ? match[1] : null;
+  };
+
+  const detectVideoPlatform = (work) => {
+    if (work.video_platform) return work.video_platform;
+    const url = work.media_url;
+    if (!url) return null;
+    if (url.includes('youtube.com') || url.includes('youtu.be')) return 'youtube';
+    if (url.includes('vimeo.com')) return 'vimeo';
+    if (url.includes('instagram.com')) return 'instagram';
+    if (url.includes('tiktok.com')) return 'tiktok';
+    return 'other';
+  };
+
+  const createPlatformPlaceholder = (platform, text, colors) => {
+    const svg = `
+      <svg width="1920" height="1080" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="${platform}-grad-${Date.now()}" x1="0%" y1="0%" x2="100%" y2="100%">
+            ${colors.map((color, i) => `<stop offset="${(i / (colors.length - 1)) * 100}%" style="stop-color:${color};stop-opacity:1" />`).join('')}
+          </linearGradient>
+        </defs>
+        <rect width="1920" height="1080" fill="url(#${platform}-grad-${Date.now()})"/>
+        <text x="960" y="540" font-family="Arial, sans-serif" font-size="120" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">${text}</text>
+      </svg>
+    `;
+    return `data:image/svg+xml;base64,${btoa(svg)}`;
+  };
+
   // Helper to convert Google Drive link to direct image link
   const getImageUrl = (url) => {
     if (!url) return '';
@@ -235,7 +267,7 @@ const Home = () => {
                 <h2 className="text-3xl font-display font-bold text-white">Latest</h2>
               </div>
               <Link 
-                to="/announcements" 
+                to="/works#announcements" 
                 className="flex items-center gap-2 text-accent hover:text-accent/80 transition font-semibold"
               >
                 View All <FaArrowRight />
@@ -245,16 +277,16 @@ const Home = () => {
             <div className="bg-primary rounded-xl overflow-hidden shadow-2xl border border-accent/20">
               <div className="md:flex">
                 {announcements[0].image_url && (
-                  <div className="md:w-1/3">
+                  <div className="md:w-1/6">
                     <img
                       src={getImageUrl(announcements[0].image_url)}
                       alt={announcements[0].title}
-                      className="w-full h-64 md:h-full object-cover"
+                      className="w-full h-32 md:h-full object-cover"
                       referrerPolicy="no-referrer"
                     />
                   </div>
                 )}
-                <div className={`p-8 ${announcements[0].image_url ? 'md:w-2/3' : 'w-full'} relative`}>
+                <div className={`p-8 ${announcements[0].image_url ? 'md:w-5/6' : 'w-full'} relative`}>
                   <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-4">
                     {announcements[0].link_url ? (
                       <a 
@@ -317,12 +349,49 @@ const Home = () => {
 const HeroWorkCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
   const [loaded, setLoaded] = useState(false);
   const isVideo = work.media_type === 'video';
-  const youtubeId = isVideo ? getYouTubeId(work.media_url) : null;
+  const platform = work.video_platform || (work.media_url?.includes('youtube.com') || work.media_url?.includes('youtu.be') ? 'youtube' : null);
+  const youtubeId = (platform === 'youtube' && isVideo) ? getYouTubeId(work.media_url) : null;
+  const vimeoId = (platform === 'vimeo' && isVideo) ? work.media_url?.match(/vimeo\.com\/(\d+)/)?.[1] : null;
   const isShort = work.media_url?.includes('shorts') || work.layoutConfig?.aspectRatio === 'portrait';
   
-  const thumbnail = work.thumbnail_url 
-    ? getImageUrl(work.thumbnail_url) 
-    : (youtubeId ? `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg` : getImageUrl(work.media_url));
+  const createPlatformPlaceholder = (platform, text, colors) => {
+    const svg = `
+      <svg width="1920" height="1080" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="${platform}-grad-card" x1="0%" y1="0%" x2="100%" y2="100%">
+            ${colors.map((color, i) => `<stop offset="${(i / (colors.length - 1)) * 100}%" style="stop-color:${color};stop-opacity:1" />`).join('')}
+          </linearGradient>
+        </defs>
+        <rect width="1920" height="1080" fill="url(#${platform}-grad-card)"/>
+        <text x="960" y="540" font-family="Arial, sans-serif" font-size="120" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">${text}</text>
+      </svg>
+    `;
+    return `data:image/svg+xml;base64,${btoa(svg)}`;
+  };
+  
+  const getThumbnailUrl = () => {
+    // 1. Öncelik: Manuel yüklenmiş thumbnail (backend'den gelen)
+    if (work.thumbnail_url) return getImageUrl(work.thumbnail_url);
+    
+    if (isVideo) {
+      // 2. Platform'a göre otomatik thumbnail
+      if (platform === 'youtube' && youtubeId) {
+        return `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`;
+      }
+      if (platform === 'vimeo' && vimeoId) {
+        return `https://vumbnail.com/${vimeoId}.jpg`;
+      }
+      if (platform === 'instagram') {
+        return createPlatformPlaceholder('instagram', 'Instagram', ['#f09433', '#e6683c', '#dc2743', '#cc2366', '#bc1888']);
+      }
+      if (platform === 'tiktok') {
+        return createPlatformPlaceholder('tiktok', 'TikTok', ['#000000', '#69C9D0', '#EE1D52']);
+      }
+    }
+    return getImageUrl(work.media_url);
+  };
+  
+  const thumbnail = getThumbnailUrl();
 
   const getAspectRatio = () => {
     const config = work.layoutConfig;

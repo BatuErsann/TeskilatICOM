@@ -65,17 +65,6 @@ const About = () => {
               We believe in the power of connected ideas that go beyond the brief, connect with 
               consumers, and drive measurable brand success. We go the extra mile!
             </p>
-            
-            <div className="grid grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-4xl font-display font-bold text-white mb-2">50+</h3>
-                <p className="text-accent-purple uppercase tracking-wider text-sm">Global Brands</p>
-              </div>
-              <div>
-                <h3 className="text-4xl font-display font-bold text-white mb-2">120+</h3>
-                <p className="text-accent-purple uppercase tracking-wider text-sm">Completed Projects</p>
-              </div>
-            </div>
           </div>
         </div>
 

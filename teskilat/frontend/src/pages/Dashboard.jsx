@@ -34,7 +34,7 @@ const Dashboard = () => {
     link_url: '',
     link_text: '',
     is_active: true,
-    display_order: 0
+    display_order: 1
   });
   const [isDragging, setIsDragging] = useState(false);
 
@@ -612,7 +612,7 @@ const Dashboard = () => {
                     type="text"
                     value={announcementForm.title}
                     onChange={(e) => setAnnouncementForm({...announcementForm, title: e.target.value})}
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border rounded text-gray-900"
                     required
                   />
                 </div>
@@ -666,7 +666,7 @@ const Dashboard = () => {
                     type="text"
                     value={announcementForm.short_description}
                     onChange={(e) => setAnnouncementForm({...announcementForm, short_description: e.target.value})}
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border rounded text-gray-900"
                     placeholder="Short description shown below title in modal"
                   />
                 </div>
@@ -676,7 +676,7 @@ const Dashboard = () => {
                   <textarea
                     value={announcementForm.full_content}
                     onChange={(e) => setAnnouncementForm({...announcementForm, full_content: e.target.value})}
-                    className="w-full p-2 border rounded h-32"
+                    className="w-full p-2 border rounded h-32 text-gray-900"
                     placeholder="Full description text shown in modal"
                   />
                 </div>
@@ -688,7 +688,7 @@ const Dashboard = () => {
                       type="text"
                       value={announcementForm.link_url}
                       onChange={(e) => setAnnouncementForm({...announcementForm, link_url: e.target.value})}
-                      className="w-full p-2 border rounded"
+                      className="w-full p-2 border rounded text-gray-900"
                       placeholder="https://..."
                     />
                   </div>
@@ -698,7 +698,7 @@ const Dashboard = () => {
                       type="text"
                       value={announcementForm.link_text}
                       onChange={(e) => setAnnouncementForm({...announcementForm, link_text: e.target.value})}
-                      className="w-full p-2 border rounded"
+                      className="w-full p-2 border rounded text-gray-900"
                       placeholder="Read More"
                     />
                   </div>
@@ -708,7 +708,7 @@ const Dashboard = () => {
                       type="number"
                       value={announcementForm.display_order}
                       onChange={(e) => setAnnouncementForm({...announcementForm, display_order: parseInt(e.target.value) || 0})}
-                      className="w-full p-2 border rounded"
+                      className="w-full p-2 border rounded text-gray-900"
                     />
                   </div>
                 </div>

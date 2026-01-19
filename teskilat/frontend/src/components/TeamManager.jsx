@@ -15,7 +15,7 @@ const TeamManager = () => {
     title: '',
     image_url: '',
     linkedin_url: '',
-    display_order: 0
+    display_order: 1
   });
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const TeamManager = () => {
       title: '',
       image_url: '',
       linkedin_url: '',
-      display_order: 0
+      display_order: 1
     });
   };
 
@@ -220,6 +220,17 @@ const TeamManager = () => {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Image Preview */}
+                {formData.image_url && (
+                  <div className="flex justify-center">
+                    <img
+                      src={getImageUrl(formData.image_url)}
+                      alt="Preview"
+                      className="w-32 h-32 object-cover rounded-full border-4 border-gray-200"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                )}
 
                 {/* Name */}
                 <div>
@@ -228,7 +239,7 @@ const TeamManager = () => {
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                     required
                   />
                 </div>
@@ -240,7 +251,7 @@ const TeamManager = () => {
                     type="text"
                     value={formData.surname}
                     onChange={(e) => setFormData({...formData, surname: e.target.value})}
-                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                     required
                   />
                 </div>
@@ -253,19 +264,20 @@ const TeamManager = () => {
                     value={formData.title}
                     onChange={(e) => setFormData({...formData, title: e.target.value})}
                     placeholder="e.g. Creative Director"
-                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                   />
                 </div>
 
                 {/* Image URL */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Profil Fotoğrafı</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Profile Photo</label>
                   <ImageUploader
                     value={formData.image_url}
                     onChange={(url) => setFormData({...formData, image_url: url})}
                     placeholder="Fotoğraf yüklemek için sürükle-bırak veya tıkla"
-                    previewClassName="w-32 h-32 mx-auto rounded-full"
+                    previewClassName="w-32 h-32 rounded-full mx-auto"
                   />
+                  <p className="text-xs text-gray-500 mt-1">Supports direct URLs and Google Drive links</p>
                 </div>
 
                 {/* LinkedIn URL */}
@@ -276,7 +288,7 @@ const TeamManager = () => {
                     value={formData.linkedin_url}
                     onChange={(e) => setFormData({...formData, linkedin_url: e.target.value})}
                     placeholder="https://linkedin.com/in/username"
-                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                   />
                 </div>
 
@@ -286,9 +298,9 @@ const TeamManager = () => {
                   <input
                     type="number"
                     value={formData.display_order}
-                    onChange={(e) => setFormData({...formData, display_order: parseInt(e.target.value) || 0})}
-                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    min="0"
+                    onChange={(e) => setFormData({...formData, display_order: parseInt(e.target.value) || 1})}
+                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                    min="1"
                   />
                   <p className="text-xs text-gray-500 mt-1">Lower numbers appear first</p>
                 </div>

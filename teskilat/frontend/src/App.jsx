@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -11,6 +11,7 @@ import Team from './pages/Team';
 import Works from './pages/Works';
 import IcomNetwork from './pages/IcomNetwork';
 import ProtectedRoute from './components/ProtectedRoute';
+import icomMemberLogo from '../assets/TeskilatLogo/member-of-icom-network.svg';
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -55,32 +56,35 @@ function App() {
         {/* Footer */}
         <footer className="bg-secondary border-t border-white/10">
           <div className="container mx-auto px-4 py-12">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Logo & Copyright */}
-              <div>
+            <div className="flex flex-col md:flex-row justify-between items-start gap-8">
+              {/* Left: Teşkilat Logo & Copyright */}
+              <div className="flex flex-col">
                 <img src="/logo.svg" alt="Teşkilat ICOM" className="h-16 w-auto mb-4" />
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-400 text-sm pl-12">
                   &copy; 2025 Teskilat Platform.<br/>All rights reserved.
                 </p>
               </div>
-              
-              {/* Address */}
-              <div>
-                <h4 className="text-accent font-bold uppercase tracking-wider text-sm mb-4">Address</h4>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  Kozyatağı Mah. Kaya Sultan Sok.<br/>
-                  Nanda Plaza No: 83 Kat: 1<br/>
-                  34742 Kadıköy, Istanbul
-                </p>
-              </div>
-              
-              {/* Contact */}
-              <div>
-                <h4 className="text-accent font-bold uppercase tracking-wider text-sm mb-4">Contact</h4>
-                <p className="text-gray-400 text-sm">
-                  <span className="block mb-2">Phone: (0216) 356 59 99</span>
-                  <span className="block">Email: info@teskilat.com.tr</span>
-                </p>
+
+              {/* Right: ICOM Logo & Contact */}
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12">
+                {/* Member of ICOM */}
+                <div className="flex items-center">
+                  <img src={icomMemberLogo} alt="Member of ICOM" className="h-16 w-auto opacity-80 hover:opacity-100 transition-opacity" />
+                </div>
+
+                {/* Contact */}
+                <div className="text-center md:text-right">
+                  <h4 className="text-accent font-bold uppercase tracking-wider text-sm mb-4">Contact</h4>
+                  <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                    Kozyatağı Mah. Kaya Sultan Sok.<br/>
+                    Nanda Plaza No: 83 Kat: 1<br/>
+                    34742 Kadıköy, Istanbul
+                  </p>
+                  <div className="text-gray-400 text-sm">
+                    <span className="block mb-2">Phone: (0216) 356 59 99</span>
+                    <span className="block">Email: info@teskilat.com.tr</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

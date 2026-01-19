@@ -1,5 +1,73 @@
 const db = require('../config/db');
 
+// Helper function to fetch video thumbnail from various platforms
+async function getVideoThumbnail(media_url, platform) {
+  if (!media_url || !platform) return null;
+
+  try {
+    // Node.js 18+ için global fetch, eski sürümler için fallback
+    const fetchFunc = typeof fetch !== 'undefined' ? fetch : require('node-fetch');
+    
+    switch (platform) {
+      case 'youtube': {
+        const match = media_url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]+)/);
+        const videoId = match ? match[1] : null;
+        return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : null;
+      }
+      
+      case 'vimeo': {
+        const match = media_url.match(/vimeo\.com\/(\d+)/);
+        const videoId = match ? match[1] : null;
+        if (videoId) {
+          try {
+            const response = await fetchFunc(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${videoId}`);
+            const data = await response.json();
+            return data.thumbnail_url || `https://vumbnail.com/${videoId}.jpg`;
+          } catch {
+            return `https://vumbnail.com/${videoId}.jpg`;
+          }
+        }
+        return null;
+      }
+      
+      case 'tiktok': {
+        try {
+          const response = await fetchFunc(`https://www.tiktok.com/oembed?url=${encodeURIComponent(media_url)}`);
+          const data = await response.json();
+          return data.thumbnail_url || null;
+        } catch {
+          return null;
+        }
+      }
+      
+      case 'instagram': {
+        try {
+          // Instagram oembed API (public postlar için)
+          const response = await fetchFunc(`https://api.instagram.com/oembed/?url=${encodeURIComponent(media_url)}`);
+          const data = await response.json();
+          return data.thumbnail_url || null;
+        } catch (err1) {
+          try {
+            // Alternatif: Facebook Graph API
+            const response = await fetchFunc(`https://graph.facebook.com/v18.0/instagram_oembed?url=${encodeURIComponent(media_url)}&access_token=`);
+            const data = await response.json();
+            return data.thumbnail_url || null;
+          } catch (err2) {
+            console.log('Instagram thumbnail fetch failed, using placeholder');
+            return null;
+          }
+        }
+      }
+      
+      default:
+        return null;
+    }
+  } catch (error) {
+    console.error(`Error fetching thumbnail for ${platform}:`, error.message);
+    return null;
+  }
+}
+
 // Get Hero Image
 exports.getHeroImage = async (req, res) => {
   try {
@@ -43,9 +111,9 @@ exports.getVideos = async (req, res) => {
 
 // Add Video (Admin only)
 exports.addVideo = async (req, res) => {
-  const { youtube_url, title } = req.body;
+  const { video_url, platform, title } = req.body;
   try {
-    await db.execute('INSERT INTO videos (youtube_url, title) VALUES (?, ?)', [youtube_url, title]);
+    await db.execute('INSERT INTO videos (video_url, platform, title) VALUES (?, ?, ?)', [video_url, platform || 'youtube', title]);
     res.status(201).json({ message: 'Video added successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error', error: err.message });
@@ -92,11 +160,18 @@ exports.getWorkById = async (req, res) => {
 
 // Add Work (Admin only)
 exports.addWork = async (req, res) => {
-  const { title, description, media_type, media_url, thumbnail_url, link_url, instagram_url, linkedin_url, youtube_url, category } = req.body;
+  const { title, description, media_type, media_url, video_platform, thumbnail_url, link_url, instagram_url, linkedin_url, youtube_url, category } = req.body;
   try {
+    let finalThumbnail = thumbnail_url;
+    
+    // Eğer video ve thumbnail yoksa otomatik al
+    if (media_type === 'video' && !thumbnail_url && video_platform) {
+      finalThumbnail = await getVideoThumbnail(media_url, video_platform);
+    }
+    
     const [result] = await db.execute(
-      'INSERT INTO works (title, description, media_type, media_url, thumbnail_url, link_url, instagram_url, linkedin_url, youtube_url, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [title, description, media_type, media_url, thumbnail_url || null, link_url || null, instagram_url || null, linkedin_url || null, youtube_url || null, category || null]
+      'INSERT INTO works (title, description, media_type, media_url, video_platform, thumbnail_url, link_url, instagram_url, linkedin_url, youtube_url, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [title, description, media_type, media_url, video_platform || 'youtube', finalThumbnail || null, link_url || null, instagram_url || null, linkedin_url || null, youtube_url || null, category || null]
     );
     res.status(201).json({ message: 'Work added successfully', id: result.insertId });
   } catch (err) {
@@ -107,11 +182,18 @@ exports.addWork = async (req, res) => {
 // Update Work (Admin only)
 exports.updateWork = async (req, res) => {
   const { id } = req.params;
-  const { title, description, media_type, media_url, thumbnail_url, link_url, instagram_url, linkedin_url, youtube_url, category } = req.body;
+  const { title, description, media_type, media_url, video_platform, thumbnail_url, link_url, instagram_url, linkedin_url, youtube_url, category } = req.body;
   try {
+    let finalThumbnail = thumbnail_url;
+    
+    // Eğer video ve thumbnail yoksa otomatik al
+    if (media_type === 'video' && !thumbnail_url && video_platform) {
+      finalThumbnail = await getVideoThumbnail(media_url, video_platform);
+    }
+    
     await db.execute(
-      'UPDATE works SET title = ?, description = ?, media_type = ?, media_url = ?, thumbnail_url = ?, link_url = ?, instagram_url = ?, linkedin_url = ?, youtube_url = ?, category = ? WHERE id = ?',
-      [title, description, media_type, media_url, thumbnail_url || null, link_url || null, instagram_url || null, linkedin_url || null, youtube_url || null, category || null, id]
+      'UPDATE works SET title = ?, description = ?, media_type = ?, media_url = ?, video_platform = ?, thumbnail_url = ?, link_url = ?, instagram_url = ?, linkedin_url = ?, youtube_url = ?, category = ? WHERE id = ?',
+      [title, description, media_type, media_url, video_platform || 'youtube', finalThumbnail || null, link_url || null, instagram_url || null, linkedin_url || null, youtube_url || null, category || null, id]
     );
     res.json({ message: 'Work updated successfully' });
   } catch (err) {
