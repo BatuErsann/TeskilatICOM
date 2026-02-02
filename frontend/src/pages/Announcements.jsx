@@ -28,7 +28,8 @@ const Announcements = () => {
       const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
       const fileId = idMatch ? idMatch[1] : null;
       if (fileId) {
-        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w800-h600`;
+        // Use larger size to preserve original image dimensions
+        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`;
       }
     }
     return url;
@@ -78,21 +79,9 @@ const Announcements = () => {
                   selectedAnnouncement === announcement.id ? 'ring-2 ring-accent' : ''
                 }`}
               >
-                <div className="md:flex">
-                  {/* Image */}
-                  {announcement.image_url && (
-                    <div className="md:w-1/6">
-                      <img
-                        src={getImageUrl(announcement.image_url)}
-                        alt={announcement.title}
-                        className="w-full h-32 md:h-full object-cover"
-                        referrerPolicy="no-referrer"
-                      />
-                    </div>
-                  )}
-                  
+                <div className="flex flex-col">
                   {/* Content */}
-                  <div className={`p-8 ${announcement.image_url ? 'md:w-5/6' : 'w-full'}`}>
+                  <div className="p-8">
                     {/* Badge & Date */}
                     <div className="flex flex-wrap items-center gap-4 mb-4">
                       <div className="inline-flex items-center gap-2 bg-accent/20 text-accent px-3 py-1 rounded-full text-sm font-semibold">
@@ -139,6 +128,19 @@ const Announcements = () => {
                         <span>{announcement.link_text || 'Learn More'}</span>
                         <FaExternalLinkAlt />
                       </a>
+                    )}
+
+                    {/* Image - Displayed horizontally at original aspect ratio */}
+                    {announcement.image_url && (
+                      <div className="mt-6">
+                        <img
+                          src={getImageUrl(announcement.image_url)}
+                          alt={announcement.title}
+                          className="max-w-full h-auto rounded-lg object-contain"
+                          style={{ maxHeight: '600px' }}
+                          referrerPolicy="no-referrer"
+                        />
+                      </div>
                     )}
                   </div>
                 </div>

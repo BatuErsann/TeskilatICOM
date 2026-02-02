@@ -320,12 +320,14 @@ const Dashboard = () => {
         >
           User Management
         </button>
+        {/*
         <button 
           onClick={() => setActiveTab('content')}
           className={`px-4 py-2 rounded ${activeTab === 'content' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
         >
           Content Management
         </button>
+        */}
         <button 
           onClick={() => setActiveTab('works')}
           className={`px-4 py-2 rounded ${activeTab === 'works' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}

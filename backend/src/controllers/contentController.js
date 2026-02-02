@@ -99,6 +99,66 @@ exports.updateHeroImage = async (req, res) => {
   }
 };
 
+// Get About Background Image
+exports.getAboutBackground = async (req, res) => {
+  try {
+    const [rows] = await db.execute('SELECT setting_value FROM site_settings WHERE setting_key = ?', ['about_bg_image']);
+    if (rows.length > 0) {
+      res.json({ url: rows[0].setting_value });
+    } else {
+      res.json({ url: '' });
+    }
+  } catch (err) {
+    res.status(500).json({ message: 'Database error', error: err.message });
+  }
+};
+
+// Update About Background Image (Admin only)
+exports.updateAboutBackground = async (req, res) => {
+  const { url } = req.body;
+  try {
+    const [check] = await db.execute('SELECT * FROM site_settings WHERE setting_key = ?', ['about_bg_image']);
+    if (check.length > 0) {
+      await db.execute('UPDATE site_settings SET setting_value = ? WHERE setting_key = ?', [url, 'about_bg_image']);
+    } else {
+      await db.execute('INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?)', ['about_bg_image', url]);
+    }
+    res.json({ message: 'About background updated successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Database error', error: err.message });
+  }
+};
+
+// Get About Overlay Opacity
+exports.getAboutOverlayOpacity = async (req, res) => {
+  try {
+    const [rows] = await db.execute('SELECT setting_value FROM site_settings WHERE setting_key = ?', ['about_overlay_opacity']);
+    if (rows.length > 0) {
+      res.json({ opacity: rows[0].setting_value });
+    } else {
+      res.json({ opacity: '0.8' });
+    }
+  } catch (err) {
+    res.status(500).json({ message: 'Database error', error: err.message });
+  }
+};
+
+// Update About Overlay Opacity (Admin only)
+exports.updateAboutOverlayOpacity = async (req, res) => {
+  const { opacity } = req.body;
+  try {
+    const [check] = await db.execute('SELECT * FROM site_settings WHERE setting_key = ?', ['about_overlay_opacity']);
+    if (check.length > 0) {
+      await db.execute('UPDATE site_settings SET setting_value = ? WHERE setting_key = ?', [opacity, 'about_overlay_opacity']);
+    } else {
+      await db.execute('INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?)', ['about_overlay_opacity', opacity]);
+    }
+    res.json({ message: 'About overlay opacity updated successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Database error', error: err.message });
+  }
+};
+
 // Get All Videos
 exports.getVideos = async (req, res) => {
   try {

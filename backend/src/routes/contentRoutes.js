@@ -5,6 +5,8 @@ const { verifyAdmin } = require('../middlewares/authMiddleware');
 
 // Public Routes
 router.get('/hero', contentController.getHeroImage);
+router.get('/about/background', contentController.getAboutBackground);
+router.get('/about/overlay-opacity', contentController.getAboutOverlayOpacity);
 router.get('/videos', contentController.getVideos);
 
 // Works Public Routes - Specific routes first!
@@ -24,6 +26,8 @@ router.get('/team/:id', contentController.getTeamMemberById);
 
 // Admin Routes (Protected)
 router.put('/hero', verifyAdmin, contentController.updateHeroImage);
+router.put('/about/background', verifyAdmin, contentController.updateAboutBackground);
+router.put('/about/overlay-opacity', verifyAdmin, contentController.updateAboutOverlayOpacity);
 router.post('/videos', verifyAdmin, contentController.addVideo);
 router.delete('/videos/:id', verifyAdmin, contentController.deleteVideo);
 

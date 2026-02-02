@@ -6,7 +6,6 @@ import api from '../api';
 const Works = () => {
   const [works, setWorks] = useState([]);
   const [layout, setLayout] = useState([]);
-  const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedWork, setSelectedWork] = useState(null);
   const [filter, setFilter] = useState('all');
@@ -16,24 +15,13 @@ const Works = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (!loading && location.hash === '#announcements') {
-      const element = document.getElementById('announcements');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  }, [loading, location.hash]);
-
   const fetchData = async () => {
     try {
-      const [worksRes, layoutRes, announcementsRes] = await Promise.all([
+      const [worksRes, layoutRes] = await Promise.all([
         api.get('/content/works'),
-        api.get('/content/works/layout'),
-        api.get('/content/announcements/active')
+        api.get('/content/works/layout')
       ]);
       setWorks(worksRes.data);
-      setAnnouncements(announcementsRes.data);
       
       let layoutData = [];
       if (layoutRes.data && layoutRes.data.layout_data) {
@@ -204,60 +192,7 @@ const Works = () => {
           </div>
         )}
 
-        {/* Announcements Section */}
-        {announcements.length > 0 && (
-          <div className="mt-24" id="announcements">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">Latest News</h2>
-              <div className="w-24 h-1 bg-accent mx-auto"></div>
-            </div>
 
-            <div className="grid grid-cols-1 gap-8">
-              {announcements.map((announcement) => (
-                <div key={announcement.id} className="bg-secondary rounded-xl overflow-hidden shadow-2xl border border-accent/20">
-                  <div className="md:flex">
-                    {announcement.image_url && (
-                      <div className="md:w-1/6">
-                        <img
-                          src={getImageUrl(announcement.image_url)}
-                          alt={announcement.title}
-                          className="w-full h-32 md:h-full object-cover"
-                          referrerPolicy="no-referrer"
-                        />
-                      </div>
-                    )}
-                    <div className={`p-8 ${announcement.image_url ? 'md:w-5/6' : 'w-full'} relative`}>
-                      <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-4">
-                        {announcement.link_url ? (
-                          <a 
-                            href={announcement.link_url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="hover:text-accent transition"
-                          >
-                            {announcement.title}
-                          </a>
-                        ) : (
-                          announcement.title
-                        )}
-                      </h3>
-                      {announcement.short_description && (
-                        <p className="text-gray-400 text-lg mb-4">
-                          {announcement.short_description}
-                        </p>
-                      )}
-                      {announcement.full_content && (
-                        <p className="text-gray-300 mb-6">
-                          {announcement.full_content}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Modal */}

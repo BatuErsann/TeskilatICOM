@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import FadeIn from '../components/FadeIn';
+import ServiceAccordion from '../components/ServiceAccordion';
 import api from '../api';
 import { FaTrophy, FaTimes, FaExternalLinkAlt, FaPlay, FaImage, FaArrowRight, FaBullhorn, FaPalette, FaFilm, FaMobileAlt, FaChartLine, FaUsers, FaInstagram, FaLinkedin, FaYoutube, FaFacebook, FaTwitter, FaLink, FaPlus, FaMinus } from 'react-icons/fa';
 
 const Home = () => {
+  const [scrollY, setScrollY] = useState(0);
   const [videos, setVideos] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
@@ -13,6 +16,12 @@ const Home = () => {
   const [selectedWork, setSelectedWork] = useState(null);
   const [services, setServices] = useState([]);
   const [content, setContent] = useState({});
+
+  useEffect(() => {
+    const handleScroll = () => requestAnimationFrame(() => setScrollY(window.scrollY));
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -164,19 +173,62 @@ const Home = () => {
 
   return (
     <div>
+      {/* Manifesto Section */}
+      <div className="relative w-full min-h-screen flex items-center justify-center bg-primary overflow-hidden">
+        {/* Background Image */}
+        {content.manifesto_bg_image && (
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat will-change-transform"
+            style={{ 
+              backgroundImage: `url(${content.manifesto_bg_image})`,
+              transform: `translateY(${scrollY * 0.5}px)`
+            }}
+          />
+        )}
+        
+        {/* Overlay - Controlled by Admin */}
+        <div 
+          className="absolute inset-0 bg-primary"
+          style={{ 
+            opacity: content.manifesto_overlay_opacity !== undefined 
+              ? content.manifesto_overlay_opacity 
+              : 0.8 // Default opacity if not set
+          }}
+        ></div>
+
+        <div className="relative z-10 container mx-auto px-4 py-20 text-center">
+          <FadeIn direction="up">
+            <div style={{ transform: `translateY(${scrollY * 0.2}px)` }} className="will-change-transform">
+              <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-8 tracking-tight">
+                We go the extra mile!
+              </h1>
+            </div>
+          </FadeIn>
+          <FadeIn delay={200} direction="up">
+            <div style={{ transform: `translateY(${scrollY * 0.1}px)` }} className="will-change-transform">
+              <p className="text-xl md:text-3xl text-gray-300 max-w-5xl mx-auto leading-normal font-light">
+                At its core, Teşkilat believes in the power of connected ideas that go beyond the brief and connect with consumers, driving measurable brand success.
+              </p>
+            </div>
+          </FadeIn>
+        </div>
+      </div>
+
       {/* Hero Section - Works Gallery */}
-      <div className="min-h-screen w-full relative bg-primary pt-8 pb-16">
+      <div className="w-full relative bg-primary pt-8 pb-16">
         <div className="container mx-auto px-4">
+          
           {/* Works Masonry Grid */}
           <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4">
-            {displayWorks.map((work) => (
-              <HeroWorkCard
-                key={work.id}
-                work={work}
-                getImageUrl={getImageUrl}
-                getYouTubeId={getYouTubeId}
-                onClick={() => setSelectedWork(work)}
-              />
+            {displayWorks.map((work, index) => (
+              <FadeIn key={work.id} delay={index * 50} className="break-inside-avoid mb-4">
+                <HeroWorkCard
+                  work={work}
+                  getImageUrl={getImageUrl}
+                  getYouTubeId={getYouTubeId}
+                  onClick={() => setSelectedWork(work)}
+                />
+              </FadeIn>
             ))}
           </div>
 
@@ -198,8 +250,10 @@ const Home = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.length > 0 ? (
-                services.map(service => (
-                    <ServiceAccordion key={service.id} service={service} />
+                services.map((service, index) => (
+                    <FadeIn key={service.id} delay={index * 100} direction="up">
+                        <ServiceAccordion service={service} />
+                    </FadeIn>
                 ))
             ) : (
                 // Fallback to static if no services in DB (or while loading)
@@ -264,10 +318,10 @@ const Home = () => {
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
                 <FaBullhorn className="text-accent text-2xl" />
-                <h2 className="text-3xl font-display font-bold text-white">Latest</h2>
+                <h2 className="text-3xl font-display font-bold text-white">News</h2>
               </div>
               <Link 
-                to="/works#announcements" 
+                to="/news" 
                 className="flex items-center gap-2 text-accent hover:text-accent/80 transition font-semibold"
               >
                 View All <FaArrowRight />
@@ -580,46 +634,6 @@ const HomeWorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
             )}
           </div>
         </div>
-      </div>
-    </div>
-  );
-};
-
-const ServiceAccordion = ({ service }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  
-  const getIcon = (iconName) => {
-      switch(iconName) {
-          case 'FaBullhorn': return <FaBullhorn className="text-accent text-2xl" />;
-          case 'FaPalette': return <FaPalette className="text-accent text-2xl" />;
-          case 'FaFilm': return <FaFilm className="text-accent text-2xl" />;
-          case 'FaMobileAlt': return <FaMobileAlt className="text-accent text-2xl" />;
-          case 'FaChartLine': return <FaChartLine className="text-accent text-2xl" />;
-          case 'FaUsers': return <FaUsers className="text-accent text-2xl" />;
-          default: return <FaBullhorn className="text-accent text-2xl" />;
-      }
-  };
-
-  return (
-    <div 
-        className={`glass-panel p-6 md:p-8 rounded-xl hover:border-accent transition group cursor-pointer relative ${isOpen ? 'border-accent' : ''}`}
-        onClick={() => setIsOpen(!isOpen)}
-    >
-      <div className="absolute top-6 right-6 text-accent text-xl">
-          {isOpen ? <FaMinus /> : <FaPlus />} 
-      </div>
-
-      <div className="flex flex-col items-center text-center mt-2">
-          <div className="w-14 h-14 bg-accent/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-accent/30 transition">
-            {getIcon(service.icon)}
-          </div>
-          <h3 className="text-xl font-bold text-white mb-3">{service.title}</h3>
-      </div>
-      
-      <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-[1000px] opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
-        <p className="text-gray-400 whitespace-pre-wrap text-center text-sm md:text-base">
-            {service.description}
-        </p>
       </div>
     </div>
   );

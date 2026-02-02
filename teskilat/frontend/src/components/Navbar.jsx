@@ -27,11 +27,9 @@ const Navbar = () => {
           
           <div className="hidden md:flex items-center space-x-6">
             <Link to="/works" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Works</Link>
-            <Link to="/services" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Services</Link>
             <Link to="/about" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">About</Link>
             <Link to="/team" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Team</Link>
             <Link to="/brands" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">BRANDS</Link>
-            <Link to="/news" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">News</Link>
             <Link to="/contact" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Contact</Link>
             <Link to="/icom-network" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">ICOM Network</Link>
           </div>

@@ -1,20 +1,27 @@
 import { useState, useEffect } from 'react';
 import { FaLinkedin, FaVideo, FaPaintBrush, FaBullhorn, FaLaptopCode, FaChartLine, FaCameraRetro, FaMobileAlt, FaUsers, FaPlus, FaMinus, FaFilm, FaPalette } from 'react-icons/fa';
 import api from '../api';
+import teskilatImage from '../../assets/images/teskilat-icom.jpg';
 
 const About = () => {
   const [teamMembers, setTeamMembers] = useState([]);
   const [services, setServices] = useState([]);
+  const [aboutBackground, setAboutBackground] = useState('');
+  const [aboutOverlayOpacity, setAboutOverlayOpacity] = useState(0.8);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [teamRes, servicesRes] = await Promise.all([
+        const [teamRes, servicesRes, bgRes, opacityRes] = await Promise.all([
             api.get('/content/team'),
-            api.get('/content/services')
+            api.get('/content/services'),
+            api.get('/content/about/background'),
+            api.get('/content/about/overlay-opacity')
         ]);
         setTeamMembers(teamRes.data);
         setServices(servicesRes.data);
+        setAboutBackground(bgRes.data.url || '');
+        setAboutOverlayOpacity(parseFloat(opacityRes.data.opacity) || 0.8);
       } catch (err) {
         console.error('Failed to fetch data', err);
       }
@@ -47,24 +54,40 @@ const About = () => {
           <div className="relative">
             <div className="absolute -inset-4 bg-gradient-to-r from-accent to-accent-purple opacity-30 blur-lg rounded-lg"></div>
             <img 
-              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop" 
+              src={teskilatImage}
               alt="Office" 
-              className="relative rounded-lg shadow-2xl border border-white/10 grayscale hover:grayscale-0 transition duration-500"
+              className="relative rounded-lg shadow-2xl border border-white/10 opacity-90 hover:opacity-100 transition duration-500"
             />
           </div>
-          <div>
-            <h2 className="text-3xl font-display font-bold mb-6 text-accent">WHO WE ARE?</h2>
-            <p className="text-lg text-gray-300 mb-6 leading-relaxed">
-              In 2007 we started as an independent full-service advertising agency in Istanbul. In 2015 we 
-              joined ICOM, an exclusive global marketing network of over 70 like-minded independent 
-              agencies with a shared commitment to growth and collaboration. In 2023 we started 
-              MKNDRS, an agency specializing in AI-powered visual and video production. This is where AI 
-              meets creativity; faster production, hyper-real visuals, limitless possibilities.
-            </p>
-            <p className="text-lg text-gray-300 mb-8 leading-relaxed">
-              We believe in the power of connected ideas that go beyond the brief, connect with 
-              consumers, and drive measurable brand success. We go the extra mile!
-            </p>
+          <div className="relative rounded-xl overflow-hidden">
+            {/* Background Image */}
+            {aboutBackground && (
+              <div 
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url(${aboutBackground})` }}
+              />
+            )}
+            {/* Overlay */}
+            <div 
+              className="absolute inset-0 bg-primary"
+              style={{ opacity: aboutOverlayOpacity }}
+            ></div>
+            
+            {/* Content */}
+            <div className="relative z-10 p-8">
+              <h2 className="text-3xl font-display font-bold mb-6 text-accent">WHO WE ARE?</h2>
+              <p className="text-lg text-gray-300 mb-6 leading-relaxed">
+                In 2007 we started as an independent full-service advertising agency in Istanbul. In 2015 we 
+                joined ICOM, an exclusive global marketing network of over 70 like-minded independent 
+                agencies with a shared commitment to growth and collaboration. In 2023 we started 
+                MKNDRS, an agency specializing in AI-powered visual and video production. This is where AI 
+                meets creativity; faster production, hyper-real visuals, limitless possibilities.
+              </p>
+              <p className="text-lg text-gray-300 mb-8 leading-relaxed">
+                We believe in the power of connected ideas that go beyond the brief, connect with 
+                consumers, and drive measurable brand success. We go the extra mile!
+              </p>
+            </div>
           </div>
         </div>
 

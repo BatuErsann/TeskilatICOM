@@ -9,8 +9,6 @@ import Brands from './pages/Brands';
 import Contact from './pages/Contact';
 import Team from './pages/Team';
 import Works from './pages/Works';
-import Services from './pages/Services';
-import News from './pages/News';
 import IcomNetwork from './pages/IcomNetwork';
 import ProtectedRoute from './components/ProtectedRoute';
 import icomMemberLogo from '../assets/TeskilatLogo/member-of-icom-network.svg';
@@ -38,8 +36,6 @@ function App() {
             <Route path="/brands" element={<Brands />} />
             <Route path="/team" element={<Team />} />
             <Route path="/works" element={<Works />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/news" element={<News />} />
             <Route path="/icom-network" element={<IcomNetwork />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
@@ -65,7 +61,7 @@ function App() {
               <div className="flex flex-col">
                 <img src="/logo.svg" alt="Teşkilat ICOM" className="h-16 w-auto mb-4" />
                 <p className="text-gray-400 text-sm pl-12">
-                  &copy; 2026 Teskilat Platform.<br/>All rights reserved.
+                  &copy; 2025 Teskilat Platform.<br/>All rights reserved.
                 </p>
               </div>
 
