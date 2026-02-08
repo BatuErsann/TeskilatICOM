@@ -22,7 +22,13 @@ const Navbar = () => {
         {/* Left Side: Logo + Navigation Links */}
         <div className="flex items-center gap-x-8">
           <Link to="/" className="flex items-center">
-            <img src="/logo.svg" alt="Teşkilat ICOM" className="w-60 h-auto" />
+            <video 
+              src="/logo-video.webm" 
+              autoPlay 
+              muted 
+              playsInline 
+              className="w-60 h-auto"
+            />
           </Link>
           
           <div className="hidden md:flex items-center space-x-6">

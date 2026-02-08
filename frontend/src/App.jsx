@@ -18,7 +18,7 @@ import icomMemberLogo from '../assets/TeskilatLogo/member-of-icom-network.svg';
 const Layout = ({ children }) => {
   const location = useLocation();
   const isFullWidth = location.pathname === '/' || location.pathname === '/icom-network';
-  
+
   return (
     <main className={`flex-grow ${isFullWidth ? '' : 'container mx-auto px-4 py-8'}`}>
       {children}
@@ -44,19 +44,19 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            
+
             {/* Protected Admin Route */}
-            <Route 
-              path="/admin" 
+            <Route
+              path="/admin"
               element={
                 <ProtectedRoute roleRequired="admin">
                   <Dashboard />
                 </ProtectedRoute>
-              } 
+              }
             />
           </Routes>
         </Layout>
-        
+
         {/* Footer */}
         <footer className="bg-secondary border-t border-white/10">
           <div className="container mx-auto px-4 py-12">
@@ -65,7 +65,7 @@ function App() {
               <div className="flex flex-col">
                 <img src="/logo.svg" alt="Teşkilat ICOM" className="h-16 w-auto mb-4" />
                 <p className="text-gray-400 text-sm pl-12">
-                  &copy; 2026 Teskilat Platform.<br/>All rights reserved.
+                  &copy; 2026 Teskilat<br />All rights reserved.
                 </p>
               </div>
 
@@ -78,10 +78,10 @@ function App() {
 
                 {/* Contact */}
                 <div className="text-center md:text-right">
-                  <h4 className="text-accent font-bold uppercase tracking-wider text-sm mb-4">Contact</h4>
+                  <Link to="/contact" className="text-accent font-bold uppercase tracking-wider text-sm mb-4 hover:text-white transition-colors">Contact</Link>
                   <p className="text-gray-400 text-sm leading-relaxed mb-4">
-                    Kozyatağı Mah. Kaya Sultan Sok.<br/>
-                    Nanda Plaza No: 83 Kat: 1<br/>
+                    Kozyatağı Mah. Kaya Sultan Sok.<br />
+                    Nanda Plaza No: 83 Kat: 1<br />
                     34742 Kadıköy, Istanbul
                   </p>
                   <div className="text-gray-400 text-sm">
