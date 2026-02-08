@@ -35,8 +35,8 @@ const Home = () => {
 
         // Fetch services and content
         const [servicesRes, contentRes] = await Promise.all([
-            api.get('/content/services'),
-            api.get('/content/site-content')
+          api.get('/content/services'),
+          api.get('/content/site-content')
         ]);
         setServices(servicesRes.data);
         setContent(contentRes.data);
@@ -47,11 +47,11 @@ const Home = () => {
           api.get('/content/works/layout/featured')
         ]);
         setFeaturedWorks(featuredRes.data);
-        
+
         let layoutData = [];
         if (layoutRes.data && layoutRes.data.layout_data) {
-          layoutData = typeof layoutRes.data.layout_data === 'string' 
-            ? JSON.parse(layoutRes.data.layout_data) 
+          layoutData = typeof layoutRes.data.layout_data === 'string'
+            ? JSON.parse(layoutRes.data.layout_data)
             : layoutRes.data.layout_data;
         }
         setLayout(layoutData);
@@ -161,10 +161,10 @@ const Home = () => {
   const getTruncatedContent = (text, limit = 400) => {
     if (!text) return '';
     if (text.length <= limit) return text;
-    
+
     const sub = text.substring(0, limit);
     const lastPeriod = sub.lastIndexOf('.');
-    
+
     if (lastPeriod !== -1) {
       return sub.substring(0, lastPeriod + 1);
     }
@@ -177,21 +177,21 @@ const Home = () => {
       <div className="relative w-full min-h-screen flex items-start justify-center pt-40 bg-primary overflow-hidden">
         {/* Background Image */}
         {content.manifesto_bg_image && (
-          <div 
+          <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat will-change-transform"
-            style={{ 
+            style={{
               backgroundImage: `url(${content.manifesto_bg_image})`,
               transform: `translateY(${scrollY * 0.5}px)`
             }}
           />
         )}
-        
+
         {/* Overlay - Controlled by Admin */}
-        <div 
+        <div
           className="absolute inset-0 bg-primary"
-          style={{ 
-            opacity: content.manifesto_overlay_opacity !== undefined 
-              ? content.manifesto_overlay_opacity 
+          style={{
+            opacity: content.manifesto_overlay_opacity !== undefined
+              ? content.manifesto_overlay_opacity
               : 0.8 // Default opacity if not set
           }}
         ></div>
@@ -229,7 +229,7 @@ const Home = () => {
       {/* Hero Section - Works Gallery */}
       <div className="w-full relative bg-primary pt-8 pb-16">
         <div className="container mx-auto px-4">
-          
+
           {/* Works Masonry Grid */}
           <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4">
             {displayWorks.map((work, index) => (
@@ -259,65 +259,65 @@ const Home = () => {
             <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-4">Our Services</h2>
             <div className="w-24 h-1 bg-accent mx-auto"></div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.length > 0 ? (
-                services.map((service, index) => (
-                    <FadeIn key={service.id} delay={index * 100} direction="up">
-                        <ServiceAccordion service={service} />
-                    </FadeIn>
-                ))
+              services.map((service, index) => (
+                <FadeIn key={service.id} delay={index * 100} direction="up">
+                  <ServiceAccordion service={service} />
+                </FadeIn>
+              ))
             ) : (
-                // Fallback to static if no services in DB (or while loading)
-                <>
-            <div className="glass-panel p-8 rounded-xl hover:border-accent transition group">
-              <div className="w-14 h-14 bg-accent/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-accent/30 transition">
-                <FaBullhorn className="text-accent text-2xl" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Strategic Communications</h3>
-              <p className="text-gray-400">Crafting compelling narratives that resonate with your audience and drive meaningful engagement.</p>
-            </div>
-            
-            <div className="glass-panel p-8 rounded-xl hover:border-accent transition group">
-              <div className="w-14 h-14 bg-accent/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-accent/30 transition">
-                <FaPalette className="text-accent text-2xl" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Creative Design</h3>
-              <p className="text-gray-400">Visual storytelling that captures attention and communicates your brand's unique identity.</p>
-            </div>
-            
-            <div className="glass-panel p-8 rounded-xl hover:border-accent transition group">
-              <div className="w-14 h-14 bg-accent/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-accent/30 transition">
-                <FaFilm className="text-accent text-2xl" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Video Production</h3>
-              <p className="text-gray-400">High-quality video content from concept to final cut, tailored to your brand message.</p>
-            </div>
-            
-            <div className="glass-panel p-8 rounded-xl hover:border-accent transition group">
-              <div className="w-14 h-14 bg-accent/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-accent/30 transition">
-                <FaMobileAlt className="text-accent text-2xl" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Digital Marketing</h3>
-              <p className="text-gray-400">Data-driven strategies that maximize your online presence and deliver measurable results.</p>
-            </div>
-            
-            <div className="glass-panel p-8 rounded-xl hover:border-accent transition group">
-              <div className="w-14 h-14 bg-accent/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-accent/30 transition">
-                <FaChartLine className="text-accent text-2xl" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Brand Strategy</h3>
-              <p className="text-gray-400">Building strong brand foundations that drive recognition and long-term growth.</p>
-            </div>
-            
-            <div className="glass-panel p-8 rounded-xl hover:border-accent transition group">
-              <div className="w-14 h-14 bg-accent/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-accent/30 transition">
-                <FaUsers className="text-accent text-2xl" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Event Management</h3>
-              <p className="text-gray-400">Creating memorable experiences that connect your brand with your audience.</p>
-            </div>
-                </>
+              // Fallback to static if no services in DB (or while loading)
+              <>
+                <div className="glass-panel p-8 rounded-xl hover:border-accent transition group">
+                  <div className="w-14 h-14 bg-accent/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-accent/30 transition">
+                    <FaBullhorn className="text-accent text-2xl" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-3">Strategic Communications</h3>
+                  <p className="text-gray-400">Crafting compelling narratives that resonate with your audience and drive meaningful engagement.</p>
+                </div>
+
+                <div className="glass-panel p-8 rounded-xl hover:border-accent transition group">
+                  <div className="w-14 h-14 bg-accent/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-accent/30 transition">
+                    <FaPalette className="text-accent text-2xl" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-3">Creative Design</h3>
+                  <p className="text-gray-400">Visual storytelling that captures attention and communicates your brand's unique identity.</p>
+                </div>
+
+                <div className="glass-panel p-8 rounded-xl hover:border-accent transition group">
+                  <div className="w-14 h-14 bg-accent/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-accent/30 transition">
+                    <FaFilm className="text-accent text-2xl" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-3">Video Production</h3>
+                  <p className="text-gray-400">High-quality video content from concept to final cut, tailored to your brand message.</p>
+                </div>
+
+                <div className="glass-panel p-8 rounded-xl hover:border-accent transition group">
+                  <div className="w-14 h-14 bg-accent/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-accent/30 transition">
+                    <FaMobileAlt className="text-accent text-2xl" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-3">Digital Marketing</h3>
+                  <p className="text-gray-400">Data-driven strategies that maximize your online presence and deliver measurable results.</p>
+                </div>
+
+                <div className="glass-panel p-8 rounded-xl hover:border-accent transition group">
+                  <div className="w-14 h-14 bg-accent/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-accent/30 transition">
+                    <FaChartLine className="text-accent text-2xl" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-3">Brand Strategy</h3>
+                  <p className="text-gray-400">Building strong brand foundations that drive recognition and long-term growth.</p>
+                </div>
+
+                <div className="glass-panel p-8 rounded-xl hover:border-accent transition group">
+                  <div className="w-14 h-14 bg-accent/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-accent/30 transition">
+                    <FaUsers className="text-accent text-2xl" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-3">Event Management</h3>
+                  <p className="text-gray-400">Creating memorable experiences that connect your brand with your audience.</p>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -332,14 +332,14 @@ const Home = () => {
                 <FaBullhorn className="text-accent text-2xl" />
                 <h2 className="text-3xl font-display font-bold text-white">News</h2>
               </div>
-              <Link 
-                to="/news" 
+              <Link
+                to="/news"
                 className="flex items-center gap-2 text-accent hover:text-accent/80 transition font-semibold"
               >
                 View All <FaArrowRight />
               </Link>
             </div>
-            
+
             <div className="bg-primary rounded-xl overflow-hidden shadow-2xl border border-accent/20">
               <div className="md:flex">
                 {announcements[0].image_url && (
@@ -355,9 +355,9 @@ const Home = () => {
                 <div className={`p-8 ${announcements[0].image_url ? 'md:w-5/6' : 'w-full'} relative`}>
                   <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-4">
                     {announcements[0].link_url ? (
-                      <a 
-                        href={announcements[0].link_url} 
-                        target="_blank" 
+                      <a
+                        href={announcements[0].link_url}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="hover:text-accent transition"
                       >
@@ -376,7 +376,7 @@ const Home = () => {
                     <p className="text-gray-300 mb-6">
                       {getTruncatedContent(announcements[0].full_content)}
                       {announcements[0].full_content.length > getTruncatedContent(announcements[0].full_content).length && (
-                         <Link to="/works#announcements" className="text-accent ml-2 hover:underline font-bold">Read More</Link>
+                        <Link to="/works#announcements" className="text-accent ml-2 hover:underline font-bold">Read More</Link>
                       )}
                     </p>
                   )}
@@ -400,9 +400,9 @@ const Home = () => {
 
       {/* Work Modal */}
       {selectedWork && (
-        <HomeWorkModal 
-          work={selectedWork} 
-          onClose={() => setSelectedWork(null)} 
+        <HomeWorkModal
+          work={selectedWork}
+          onClose={() => setSelectedWork(null)}
           getImageUrl={getImageUrl}
           getYouTubeId={getYouTubeId}
         />
@@ -419,7 +419,7 @@ const HeroWorkCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
   const youtubeId = (platform === 'youtube' && isVideo) ? getYouTubeId(work.media_url) : null;
   const vimeoId = (platform === 'vimeo' && isVideo) ? work.media_url?.match(/vimeo\.com\/(\d+)/)?.[1] : null;
   const isShort = work.media_url?.includes('shorts') || work.layoutConfig?.aspectRatio === 'portrait';
-  
+
   const createPlatformPlaceholder = (platform, text, colors) => {
     const svg = `
       <svg width="1920" height="1080" xmlns="http://www.w3.org/2000/svg">
@@ -434,11 +434,11 @@ const HeroWorkCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
     `;
     return `data:image/svg+xml;base64,${btoa(svg)}`;
   };
-  
+
   const getThumbnailUrl = () => {
     // 1. Öncelik: Manuel yüklenmiş thumbnail (backend'den gelen)
     if (work.thumbnail_url) return getImageUrl(work.thumbnail_url);
-    
+
     if (isVideo) {
       // 2. Platform'a göre otomatik thumbnail
       if (platform === 'youtube' && youtubeId) {
@@ -456,7 +456,7 @@ const HeroWorkCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
     }
     return getImageUrl(work.media_url);
   };
-  
+
   const thumbnail = getThumbnailUrl();
 
   const getAspectRatio = () => {
@@ -469,7 +469,7 @@ const HeroWorkCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
   };
 
   return (
-    <div 
+    <div
       className="break-inside-avoid mb-4 group cursor-pointer"
       onClick={onClick}
     >
@@ -481,13 +481,13 @@ const HeroWorkCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
           onLoad={() => setLoaded(true)}
           referrerPolicy="no-referrer"
         />
-        
+
         {!loaded && (
           <div className="absolute inset-0 bg-gray-700 animate-pulse" />
         )}
-        
+
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
-        
+
         {isVideo && (
           <div className="absolute inset-0 flex items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity">
             <div className="w-14 h-14 rounded-full bg-accent/90 flex items-center justify-center transform group-hover:scale-110 transition-transform shadow-xl">
@@ -495,17 +495,16 @@ const HeroWorkCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
             </div>
           </div>
         )}
-        
+
         <div className="absolute bottom-0 left-0 right-0 p-4">
           <div className="flex items-center gap-2 mb-2">
-            <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-md font-medium ${
-              isVideo ? 'bg-red-500/80 text-white' : 'bg-blue-500/80 text-white'
-            }`}>
+            <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-md font-medium ${isVideo ? 'bg-red-500/80 text-white' : 'bg-blue-500/80 text-white'
+              }`}>
               {isVideo ? <FaPlay size={8} /> : <FaImage size={8} />}
               {work.category || (isVideo ? 'VIDEO' : 'IMAGE')}
             </span>
           </div>
-          
+
           <h3 className="text-white font-bold text-base leading-tight drop-shadow-lg">
             {work.title}
           </h3>
@@ -527,7 +526,20 @@ const HeroWorkCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
 const HomeWorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
   const isVideo = work.media_type === 'video';
   const youtubeId = isVideo ? getYouTubeId(work.media_url) : null;
+  const vimeoId = isVideo ? work.media_url?.match(/vimeo\.com\/(\d+)/)?.[1] : null;
   const isShort = work.media_url?.includes('shorts') || work.layoutConfig?.aspectRatio === 'portrait';
+
+  // Detect platform
+  const getPlatform = () => {
+    if (work.video_platform) return work.video_platform;
+    const url = work.media_url || '';
+    if (url.includes('youtube.com') || url.includes('youtu.be')) return 'youtube';
+    if (url.includes('vimeo.com')) return 'vimeo';
+    if (url.includes('instagram.com')) return 'instagram';
+    if (url.includes('tiktok.com')) return 'tiktok';
+    return 'other';
+  };
+  const platform = getPlatform();
 
   useEffect(() => {
     const handleEsc = (e) => {
@@ -541,15 +553,112 @@ const HomeWorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
     };
   }, [onClose]);
 
+  // Render video content based on platform
+  const renderVideoContent = () => {
+    if (!isVideo) {
+      return (
+        <img
+          src={work.thumbnail_url ? getImageUrl(work.thumbnail_url) : getImageUrl(work.media_url)}
+          alt={work.title}
+          className="max-h-[70vh] max-w-full object-contain"
+          referrerPolicy="no-referrer"
+        />
+      );
+    }
+
+    // YouTube
+    if (platform === 'youtube' && youtubeId) {
+      return (
+        <div className={isShort ? 'w-[360px] h-[640px]' : 'w-[800px] h-[450px]'}>
+          <iframe
+            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1`}
+            title={work.title}
+            className="w-full h-full"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+      );
+    }
+
+    // Vimeo
+    if (platform === 'vimeo' && vimeoId) {
+      return (
+        <div className="w-[800px] h-[450px]">
+          <iframe
+            src={`https://player.vimeo.com/video/${vimeoId}?autoplay=1`}
+            title={work.title}
+            className="w-full h-full"
+            frameBorder="0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+      );
+    }
+
+    // Instagram, TikTok, and other platforms - show thumbnail with link
+    const thumbnailUrl = work.thumbnail_url ? getImageUrl(work.thumbnail_url) : null;
+    const platformColors = {
+      instagram: 'from-purple-500 via-pink-500 to-orange-500',
+      tiktok: 'from-cyan-400 via-black to-pink-500',
+      other: 'from-gray-600 to-gray-800'
+    };
+    const platformNames = {
+      instagram: 'Instagram',
+      tiktok: 'TikTok',
+      other: 'Video'
+    };
+
+    return (
+      <div className="relative">
+        {thumbnailUrl ? (
+          <>
+            <img
+              src={thumbnailUrl}
+              alt={work.title}
+              className="max-h-[70vh] max-w-full object-contain"
+              referrerPolicy="no-referrer"
+            />
+            <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center">
+              <a
+                href={work.media_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`bg-gradient-to-r ${platformColors[platform] || platformColors.other} text-white font-bold px-8 py-4 rounded-full flex items-center gap-3 hover:scale-105 transition-transform shadow-xl`}
+              >
+                <FaPlay size={20} />
+                <span>{platformNames[platform] || 'Video'}'da İzle</span>
+                <FaExternalLinkAlt size={14} />
+              </a>
+            </div>
+          </>
+        ) : (
+          <div className={`w-[400px] h-[300px] bg-gradient-to-br ${platformColors[platform] || platformColors.other} flex flex-col items-center justify-center rounded-lg`}>
+            <a
+              href={work.media_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white font-bold px-8 py-4 rounded-full flex items-center gap-3 bg-white/20 hover:bg-white/30 transition shadow-xl"
+            >
+              <FaPlay size={20} />
+              <span>{platformNames[platform] || 'Video'}'da İzle</span>
+              <FaExternalLinkAlt size={14} />
+            </a>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4"
       onClick={onClose}
     >
-      <div 
-        className={`relative bg-gray-900 rounded-2xl overflow-hidden shadow-2xl ${
-          isShort ? 'max-w-sm' : 'max-w-4xl'
-        } w-full mx-4 my-8`}
+      <div
+        className="relative bg-gray-900 rounded-2xl overflow-hidden shadow-2xl max-w-[90vw] max-h-[90vh] mx-4 my-8"
         onClick={e => e.stopPropagation()}
       >
         <button
@@ -559,26 +668,8 @@ const HomeWorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
           <FaTimes size={20} />
         </button>
 
-        <div className="max-h-[60vh] overflow-hidden">
-          <div className={`bg-black ${isShort ? 'aspect-[9/16] max-h-[50vh]' : 'aspect-video'}`}>
-            {isVideo && youtubeId ? (
-              <iframe
-                src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1`}
-                title={work.title}
-                className="w-full h-full"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            ) : (
-              <img
-                src={getImageUrl(work.media_url)}
-                alt={work.title}
-                className="w-full h-full object-contain"
-                referrerPolicy="no-referrer"
-              />
-            )}
-          </div>
+        <div className="max-h-[70vh] overflow-hidden flex items-center justify-center bg-black">
+          {renderVideoContent()}
         </div>
 
         <div className="p-5 bg-gray-900">
@@ -589,9 +680,9 @@ const HomeWorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
               </span>
             )}
           </div>
-          
+
           <h2 className="text-xl font-bold text-white mb-2">{work.title}</h2>
-          
+
           {work.description && (
             <p className="text-gray-400 text-sm mb-4">{work.description}</p>
           )}
