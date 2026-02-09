@@ -27,26 +27,26 @@ const Home = () => {
     const fetchContent = async () => {
       try {
         const videoRes = await api.get('/content/videos');
-        setVideos(videoRes.data);
+        setVideos(Array.isArray(videoRes.data) ? videoRes.data : []);
 
         // Fetch active announcements
         const announcementRes = await api.get('/content/announcements/active');
-        setAnnouncements(announcementRes.data);
+        setAnnouncements(Array.isArray(announcementRes.data) ? announcementRes.data : []);
 
         // Fetch services and content
         const [servicesRes, contentRes] = await Promise.all([
           api.get('/content/services'),
           api.get('/content/site-content')
         ]);
-        setServices(servicesRes.data);
-        setContent(contentRes.data);
+        setServices(Array.isArray(servicesRes.data) ? servicesRes.data : []);
+        setContent(contentRes.data || {});
 
         // Fetch ONLY featured works and featured layout
         const [featuredRes, layoutRes] = await Promise.all([
           api.get('/content/works/featured'),
           api.get('/content/works/layout/featured')
         ]);
-        setFeaturedWorks(featuredRes.data);
+        setFeaturedWorks(Array.isArray(featuredRes.data) ? featuredRes.data : []);
 
         let layoutData = [];
         if (layoutRes.data && layoutRes.data.layout_data) {

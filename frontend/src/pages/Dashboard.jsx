@@ -9,7 +9,7 @@ import { FaTrophy, FaEdit, FaTrash, FaToggleOn, FaToggleOff, FaPlus, FaSave, FaT
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [stats, setStats] = useState(null);
-  
+
   // Content Management States
   const [heroUrl, setHeroUrl] = useState('');
   const [videos, setVideos] = useState([]);
@@ -53,7 +53,7 @@ const Dashboard = () => {
     try {
       const usersRes = await api.get('/admin/users');
       const statsRes = await api.get('/admin/stats');
-      setUsers(usersRes.data);
+      setUsers(Array.isArray(usersRes.data) ? usersRes.data : []);
       setStats(statsRes.data);
     } catch (err) {
       console.error('Failed to fetch admin data', err);
@@ -85,9 +85,9 @@ const Dashboard = () => {
     try {
       const heroRes = await api.get('/content/hero');
       if (heroRes.data.url) setHeroUrl(heroRes.data.url);
-      
+
       const videoRes = await api.get('/content/videos');
-      setVideos(videoRes.data);
+      setVideos(Array.isArray(videoRes.data) ? videoRes.data : []);
     } catch (err) {
       console.error('Failed to fetch content', err);
     }
@@ -96,7 +96,7 @@ const Dashboard = () => {
   const fetchAnnouncements = async () => {
     try {
       const res = await api.get('/content/announcements');
-      setAnnouncements(res.data);
+      setAnnouncements(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error('Failed to fetch announcements', err);
     }
@@ -150,12 +150,12 @@ const Dashboard = () => {
   // Announcement Handlers
   const handleAnnouncementSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!announcementForm.image_url) {
       alert('Lütfen bir resim yükleyin!');
       return;
     }
-    
+
     try {
       if (editingAnnouncement) {
         await api.put(`/content/announcements/${editingAnnouncement.id}`, announcementForm);
@@ -247,16 +247,16 @@ const Dashboard = () => {
         // Upload to server
         const formData = new FormData();
         formData.append('image', file);
-        
+
         try {
           const response = await api.post('/upload/image', formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
           });
-          
+
           if (response.data.success) {
-            setAnnouncementForm({...announcementForm, image_url: response.data.url});
+            setAnnouncementForm({ ...announcementForm, image_url: response.data.url });
             alert('Resim başarıyla yüklendi!');
           }
         } catch (error) {
@@ -273,16 +273,16 @@ const Dashboard = () => {
     if (file && file.type.startsWith('image/')) {
       const formData = new FormData();
       formData.append('image', file);
-      
+
       try {
         const response = await api.post('/upload/image', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
-        
+
         if (response.data.success) {
-          setAnnouncementForm({...announcementForm, image_url: response.data.url});
+          setAnnouncementForm({ ...announcementForm, image_url: response.data.url });
           alert('Resim başarıyla yüklendi!');
         }
       } catch (error) {
@@ -299,7 +299,7 @@ const Dashboard = () => {
       // Extract file ID - supports formats: /d/ID/view, /d/ID, id=ID
       const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
       const fileId = idMatch ? idMatch[1] : null;
-      
+
       if (fileId) {
         // Use thumbnail endpoint which is more reliable for embedding
         return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1920-h1080`;
@@ -311,10 +311,10 @@ const Dashboard = () => {
   return (
     <div>
       <h1 className="text-3xl font-bold mb-8 text-white">Admin Dashboard</h1>
-      
+
       {/* Tabs */}
       <div className="flex space-x-4 mb-8 border-b border-gray-700 pb-4">
-        <button 
+        <button
           onClick={() => setActiveTab('users')}
           className={`px-4 py-2 rounded ${activeTab === 'users' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
         >
@@ -328,37 +328,37 @@ const Dashboard = () => {
           Content Management
         </button>
         */}
-        <button 
+        <button
           onClick={() => setActiveTab('works')}
           className={`px-4 py-2 rounded ${activeTab === 'works' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
         >
           Works Management
         </button>
-        <button 
+        <button
           onClick={() => setActiveTab('announcements')}
           className={`px-4 py-2 rounded ${activeTab === 'announcements' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
         >
           Announcements
         </button>
-        <button 
+        <button
           onClick={() => setActiveTab('team')}
           className={`px-4 py-2 rounded ${activeTab === 'team' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
         >
           Team
         </button>
-        <button 
+        <button
           onClick={() => setActiveTab('brands')}
           className={`px-4 py-2 rounded ${activeTab === 'brands' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
         >
           Brands
         </button>
-        <button 
+        <button
           onClick={() => setActiveTab('services')}
           className={`px-4 py-2 rounded ${activeTab === 'services' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
         >
           Services
         </button>
-        <button 
+        <button
           onClick={() => setActiveTab('security')}
           className={`px-4 py-2 rounded ${activeTab === 'security' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
         >
@@ -372,14 +372,14 @@ const Dashboard = () => {
             <FaShieldAlt className="text-accent" />
             Two-Factor Authentication (2FA)
           </h2>
-          
+
           <div className="mb-8">
             <p className="text-gray-600 mb-4">
               Secure your admin account by enabling 2FA. You will need an authenticator app like Google Authenticator.
             </p>
-            
+
             {!qrCode ? (
-              <button 
+              <button
                 onClick={setup2FA}
                 className="bg-primary text-white px-6 py-3 rounded hover:bg-secondary transition flex items-center gap-2"
               >
@@ -392,18 +392,18 @@ const Dashboard = () => {
                   <img src={qrCode} alt="2FA QR Code" className="mx-auto mb-4 border-4 border-white shadow-lg" />
                   <p className="text-sm font-bold text-gray-700">{securityMessage}</p>
                 </div>
-                
+
                 <div>
                   <label className="block text-gray-700 font-bold mb-2">Enter Verification Code</label>
                   <div className="flex gap-2">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={twoFactorCode}
                       onChange={(e) => setTwoFactorCode(e.target.value)}
                       className="flex-1 p-3 border rounded focus:outline-none focus:ring-2 focus:ring-accent text-center text-xl tracking-widest"
                       placeholder="000000"
                     />
-                    <button 
+                    <button
                       onClick={verify2FA}
                       className="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 transition font-bold"
                     >
@@ -413,7 +413,7 @@ const Dashboard = () => {
                 </div>
               </div>
             )}
-            
+
             {securityMessage && !qrCode && (
               <div className="mt-4 p-4 bg-green-100 text-green-800 rounded border border-green-200">
                 {securityMessage}
@@ -464,7 +464,7 @@ const Dashboard = () => {
                       </span>
                     </td>
                     <td className="p-4">
-                      <button 
+                      <button
                         onClick={() => handleDeleteUser(user.id)}
                         className="text-red-500 hover:text-red-700 text-sm font-semibold"
                       >
@@ -485,8 +485,8 @@ const Dashboard = () => {
           <div className="bg-white p-6 rounded shadow text-gray-900">
             <h2 className="text-xl font-bold mb-4">Hero Image Settings</h2>
             <form onSubmit={handleUpdateHero} className="flex gap-4">
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={heroUrl}
                 onChange={(e) => setHeroUrl(e.target.value)}
                 placeholder="Enter Image URL"
@@ -499,10 +499,10 @@ const Dashboard = () => {
             {heroUrl && (
               <div className="mt-4">
                 <p className="text-sm text-gray-500 mb-2">Preview:</p>
-                <img 
-                  src={getImageUrl(heroUrl)} 
-                  alt="Hero Preview" 
-                  className="h-40 object-cover rounded" 
+                <img
+                  src={getImageUrl(heroUrl)}
+                  alt="Hero Preview"
+                  className="h-40 object-cover rounded"
                   referrerPolicy="no-referrer"
                 />
               </div>
@@ -512,21 +512,21 @@ const Dashboard = () => {
           {/* Video Gallery Settings */}
           <div className="bg-white p-6 rounded shadow text-gray-900">
             <h2 className="text-xl font-bold mb-4">Video Gallery Management</h2>
-            
+
             {/* Add Video Form */}
             <form onSubmit={handleAddVideo} className="mb-8 p-4 bg-gray-50 rounded border">
               <h3 className="font-semibold mb-3">Add New Video</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={newVideoTitle}
                   onChange={(e) => setNewVideoTitle(e.target.value)}
                   placeholder="Video Title"
                   className="p-2 border rounded"
                   required
                 />
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={newVideoUrl}
                   onChange={(e) => setNewVideoUrl(e.target.value)}
                   placeholder="YouTube URL"
@@ -544,14 +544,14 @@ const Dashboard = () => {
               {videos.map(video => (
                 <div key={video.id} className="border rounded p-3 relative group">
                   <div className="aspect-w-16 aspect-h-9 mb-2 bg-gray-200 rounded overflow-hidden">
-                     {/* Simple preview or placeholder */}
-                     <div className="flex items-center justify-center h-32 bg-gray-800 text-white">
-                        Video Preview
-                     </div>
+                    {/* Simple preview or placeholder */}
+                    <div className="flex items-center justify-center h-32 bg-gray-800 text-white">
+                      Video Preview
+                    </div>
                   </div>
                   <h4 className="font-bold truncate">{video.title}</h4>
                   <p className="text-xs text-gray-500 truncate">{video.youtube_url}</p>
-                  <button 
+                  <button
                     onClick={() => handleDeleteVideo(video.id)}
                     className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded text-xs opacity-0 group-hover:opacity-100 transition"
                   >
@@ -563,7 +563,7 @@ const Dashboard = () => {
 
             {/* Site Text Content Manager */}
             <div className="border-t pt-8">
-                <ContentManager />
+              <ContentManager />
             </div>
           </div>
         </div>
@@ -606,14 +606,14 @@ const Dashboard = () => {
                   <FaTimes />
                 </button>
               </div>
-              
+
               <form onSubmit={handleAnnouncementSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Title *</label>
                   <input
                     type="text"
                     value={announcementForm.title}
-                    onChange={(e) => setAnnouncementForm({...announcementForm, title: e.target.value})}
+                    onChange={(e) => setAnnouncementForm({ ...announcementForm, title: e.target.value })}
                     className="w-full p-2 border rounded text-gray-900"
                     required
                   />
@@ -627,11 +627,10 @@ const Dashboard = () => {
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                     onClick={() => document.getElementById('announcementImageInput').click()}
-                    className={`border-2 border-dashed rounded-lg p-8 text-center transition-all cursor-pointer ${
-                      isDragging 
-                        ? 'border-blue-500 bg-blue-50' 
+                    className={`border-2 border-dashed rounded-lg p-8 text-center transition-all cursor-pointer ${isDragging
+                        ? 'border-blue-500 bg-blue-50'
                         : 'border-gray-300 bg-gray-50 hover:border-gray-400 hover:bg-gray-100'
-                    }`}
+                      }`}
                   >
                     <input
                       id="announcementImageInput"
@@ -667,7 +666,7 @@ const Dashboard = () => {
                   <input
                     type="text"
                     value={announcementForm.short_description}
-                    onChange={(e) => setAnnouncementForm({...announcementForm, short_description: e.target.value})}
+                    onChange={(e) => setAnnouncementForm({ ...announcementForm, short_description: e.target.value })}
                     className="w-full p-2 border rounded text-gray-900"
                     placeholder="Short description shown below title in modal"
                   />
@@ -677,7 +676,7 @@ const Dashboard = () => {
                   <label className="block text-sm font-medium mb-1">Full Content</label>
                   <textarea
                     value={announcementForm.full_content}
-                    onChange={(e) => setAnnouncementForm({...announcementForm, full_content: e.target.value})}
+                    onChange={(e) => setAnnouncementForm({ ...announcementForm, full_content: e.target.value })}
                     className="w-full p-2 border rounded h-32 text-gray-900"
                     placeholder="Full description text shown in modal"
                   />
@@ -689,7 +688,7 @@ const Dashboard = () => {
                     <input
                       type="text"
                       value={announcementForm.link_url}
-                      onChange={(e) => setAnnouncementForm({...announcementForm, link_url: e.target.value})}
+                      onChange={(e) => setAnnouncementForm({ ...announcementForm, link_url: e.target.value })}
                       className="w-full p-2 border rounded text-gray-900"
                       placeholder="https://..."
                     />
@@ -699,7 +698,7 @@ const Dashboard = () => {
                     <input
                       type="text"
                       value={announcementForm.link_text}
-                      onChange={(e) => setAnnouncementForm({...announcementForm, link_text: e.target.value})}
+                      onChange={(e) => setAnnouncementForm({ ...announcementForm, link_text: e.target.value })}
                       className="w-full p-2 border rounded text-gray-900"
                       placeholder="Read More"
                     />
@@ -709,7 +708,7 @@ const Dashboard = () => {
                     <input
                       type="number"
                       value={announcementForm.display_order}
-                      onChange={(e) => setAnnouncementForm({...announcementForm, display_order: parseInt(e.target.value) || 0})}
+                      onChange={(e) => setAnnouncementForm({ ...announcementForm, display_order: parseInt(e.target.value) || 0 })}
                       className="w-full p-2 border rounded text-gray-900"
                     />
                   </div>
@@ -720,7 +719,7 @@ const Dashboard = () => {
                     type="checkbox"
                     id="is_active"
                     checked={announcementForm.is_active}
-                    onChange={(e) => setAnnouncementForm({...announcementForm, is_active: e.target.checked})}
+                    onChange={(e) => setAnnouncementForm({ ...announcementForm, is_active: e.target.checked })}
                     className="w-4 h-4"
                   />
                   <label htmlFor="is_active" className="text-sm">Active (visible in Hero)</label>

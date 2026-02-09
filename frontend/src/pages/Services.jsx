@@ -12,7 +12,7 @@ const Services = () => {
         const fetchServices = async () => {
             try {
                 const res = await api.get('/content/services');
-                setServices(res.data);
+                setServices(Array.isArray(res.data) ? res.data : []);
             } catch (err) {
                 console.error('Failed to fetch services', err);
             } finally {
@@ -50,11 +50,11 @@ const Services = () => {
                         ))
                     ) : (
                         // Fallback static content if needed
-                         <>
+                        <>
                             <div className="glass-panel p-8 rounded-xl border border-white/5">
                                 <p className="text-gray-400 text-center">No services found.</p>
                             </div>
-                         </>
+                        </>
                     )}
                 </div>
             </div>

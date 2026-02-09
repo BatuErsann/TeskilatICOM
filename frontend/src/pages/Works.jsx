@@ -21,13 +21,14 @@ const Works = () => {
         api.get('/content/works'),
         api.get('/content/works/layout')
       ]);
-      setWorks(worksRes.data);
-      
+      setWorks(Array.isArray(worksRes.data) ? worksRes.data : []);
+
       let layoutData = [];
       if (layoutRes.data && layoutRes.data.layout_data) {
-        layoutData = typeof layoutRes.data.layout_data === 'string' 
-          ? JSON.parse(layoutRes.data.layout_data) 
+        const parsed = typeof layoutRes.data.layout_data === 'string'
+          ? JSON.parse(layoutRes.data.layout_data)
           : layoutRes.data.layout_data;
+        layoutData = Array.isArray(parsed) ? parsed : [];
       }
       setLayout(layoutData);
     } catch (err) {
@@ -69,9 +70,9 @@ const Works = () => {
   const getVideoThumbnail = (work) => {
     // 1. Öncelik: Manuel yüklenmiş thumbnail (backend'den gelen)
     if (work.thumbnail_url) return getImageUrl(work.thumbnail_url);
-    
+
     const platform = detectVideoPlatform(work);
-    
+
     // SVG placeholder oluştur
     const createPlatformPlaceholder = (platform, text, colors) => {
       const svg = `
@@ -87,9 +88,9 @@ const Works = () => {
       `;
       return `data:image/svg+xml;base64,${btoa(svg)}`;
     };
-    
+
     // 2. Platform'a göre otomatik thumbnail
-    switch(platform) {
+    switch (platform) {
       case 'youtube': {
         const ytId = getYouTubeId(work.media_url);
         if (ytId) return `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
@@ -197,9 +198,9 @@ const Works = () => {
 
       {/* Modal */}
       {selectedWork && (
-        <WorkModal 
-          work={selectedWork} 
-          onClose={() => setSelectedWork(null)} 
+        <WorkModal
+          work={selectedWork}
+          onClose={() => setSelectedWork(null)}
           getImageUrl={getImageUrl}
           getYouTubeId={getYouTubeId}
         />
@@ -216,7 +217,7 @@ const MasonryCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
   const youtubeId = (platform === 'youtube' && isVideo) ? getYouTubeId(work.media_url) : null;
   const vimeoId = (platform === 'vimeo' && isVideo) ? work.media_url?.match(/vimeo\.com\/(\d+)/)?.[1] : null;
   const isShort = work.media_url?.includes('shorts') || work.layoutConfig?.aspectRatio === 'portrait';
-  
+
   // Thumbnail önceliği: work.thumbnail_url > platform thumbnail > media_url
   const getThumbnailUrl = () => {
     if (work.thumbnail_url) return getImageUrl(work.thumbnail_url);
@@ -226,7 +227,7 @@ const MasonryCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
     }
     return getImageUrl(work.media_url);
   };
-  
+
   const thumbnail = getThumbnailUrl();
 
   // Aspect ratio'yu layoutConfig'den al
@@ -240,7 +241,7 @@ const MasonryCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
   };
 
   return (
-    <div 
+    <div
       className="break-inside-avoid mb-4 group cursor-pointer"
       onClick={onClick}
     >
@@ -253,15 +254,15 @@ const MasonryCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
           onLoad={() => setLoaded(true)}
           referrerPolicy="no-referrer"
         />
-        
+
         {/* Loading placeholder */}
         {!loaded && (
           <div className="absolute inset-0 bg-gray-700 animate-pulse" />
         )}
-        
+
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
-        
+
         {/* Play Button for Videos */}
         {isVideo && (
           <div className="absolute inset-0 flex items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity">
@@ -270,19 +271,18 @@ const MasonryCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
             </div>
           </div>
         )}
-        
+
         {/* Content Overlay */}
         <div className="absolute bottom-0 left-0 right-0 p-4">
           {/* Category Badge */}
           <div className="flex items-center gap-2 mb-2">
-            <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-md font-medium ${
-              isVideo ? 'bg-red-500/80 text-white' : 'bg-blue-500/80 text-white'
-            }`}>
+            <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-md font-medium ${isVideo ? 'bg-red-500/80 text-white' : 'bg-blue-500/80 text-white'
+              }`}>
               {isVideo ? <FaPlay size={8} /> : <FaImage size={8} />}
               {work.category || (isVideo ? 'VIDEO' : 'IMAGE')}
             </span>
           </div>
-          
+
           {/* Title */}
           <h3 className="text-white font-bold text-base leading-tight drop-shadow-lg">
             {work.title}
@@ -323,14 +323,13 @@ const WorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
   }, [onClose]);
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4"
       onClick={onClose}
     >
-      <div 
-        className={`relative bg-gray-900 rounded-2xl overflow-hidden shadow-2xl ${
-          isShort ? 'max-w-sm' : 'max-w-5xl'
-        } w-full max-h-[90vh] flex flex-col`}
+      <div
+        className={`relative bg-gray-900 rounded-2xl overflow-hidden shadow-2xl ${isShort ? 'max-w-sm' : 'max-w-5xl'
+          } w-full max-h-[90vh] flex flex-col`}
         onClick={e => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -369,9 +368,9 @@ const WorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
                 <div className="w-full h-full flex items-center justify-center text-white">
                   <div className="text-center">
                     <p className="mb-4">Instagram videoları harici bağlantı olarak açılır</p>
-                    <a 
-                      href={work.media_url} 
-                      target="_blank" 
+                    <a
+                      href={work.media_url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full hover:scale-105 transition inline-block"
                     >
@@ -384,9 +383,9 @@ const WorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
                 <div className="w-full h-full flex items-center justify-center text-white">
                   <div className="text-center">
                     <p className="mb-4">TikTok videoları harici bağlantı olarak açılır</p>
-                    <a 
-                      href={work.media_url} 
-                      target="_blank" 
+                    <a
+                      href={work.media_url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="px-6 py-3 bg-black rounded-full hover:scale-105 transition inline-block"
                     >
@@ -399,9 +398,9 @@ const WorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
                 <div className="w-full h-full flex items-center justify-center text-white">
                   <div className="text-center">
                     <p className="mb-4">Video harici bağlantı olarak açılır</p>
-                    <a 
-                      href={work.media_url} 
-                      target="_blank" 
+                    <a
+                      href={work.media_url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="px-6 py-3 bg-blue-600 rounded-full hover:scale-105 transition inline-block"
                     >
@@ -430,16 +429,16 @@ const WorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
               </span>
             )}
           </div>
-          
+
           <h2 className="text-xl font-bold text-white mb-2">{work.title}</h2>
-          
+
           {work.description && (
             <p className="text-gray-400 text-sm mb-4">{work.description}</p>
           )}
 
           <div className="flex flex-wrap gap-3">
             {(work.link_url || work.layoutConfig?.link_url) && (
-                <a
+              <a
                 href={work.link_url || work.layoutConfig?.link_url}
                 target="_blank"
                 rel="noopener noreferrer"

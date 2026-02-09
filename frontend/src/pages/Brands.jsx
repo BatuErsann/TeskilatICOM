@@ -8,7 +8,7 @@ const Brands = () => {
     const fetchBrands = async () => {
       try {
         const res = await api.get('/brands');
-        setBrands(res.data);
+        setBrands(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error('Failed to fetch brands', err);
       }

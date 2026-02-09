@@ -18,8 +18,8 @@ const About = () => {
           api.get('/content/about/background'),
           api.get('/content/about/overlay-opacity')
         ]);
-        setTeamMembers(teamRes.data);
-        setServices(servicesRes.data);
+        setTeamMembers(Array.isArray(teamRes.data) ? teamRes.data : []);
+        setServices(Array.isArray(servicesRes.data) ? servicesRes.data : []);
         setAboutBackground(bgRes.data.url || '');
         setAboutOverlayOpacity(parseFloat(opacityRes.data.opacity) || 0.8);
       } catch (err) {

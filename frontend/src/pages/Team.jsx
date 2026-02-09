@@ -10,7 +10,7 @@ const Team = () => {
     const fetchTeam = async () => {
       try {
         const res = await api.get('/content/team');
-        setTeamMembers(res.data);
+        setTeamMembers(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error('Failed to fetch team', err);
       } finally {
@@ -59,9 +59,9 @@ const Team = () => {
               <div key={member.id} className="group relative overflow-hidden rounded-xl bg-gray-900">
                 <div className="aspect-[3/4] w-full">
                   {member.image_url ? (
-                    <img 
-                      src={getImageUrl(member.image_url)} 
-                      alt={`${member.name} ${member.surname}`} 
+                    <img
+                      src={getImageUrl(member.image_url)}
+                      alt={`${member.name} ${member.surname}`}
                       className="w-full h-full object-cover transition duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0"
                       referrerPolicy="no-referrer"
                     />
@@ -75,9 +75,9 @@ const Team = () => {
                   <h3 className="text-2xl font-display font-bold text-white">{member.name} {member.surname}</h3>
                   <p className="text-accent font-medium">{member.title}</p>
                   {member.linkedin_url && (
-                    <a 
-                      href={member.linkedin_url} 
-                      target="_blank" 
+                    <a
+                      href={member.linkedin_url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 mt-3 text-white hover:text-accent transition"
                     >

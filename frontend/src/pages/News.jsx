@@ -10,7 +10,7 @@ const News = () => {
         const fetchAnnouncements = async () => {
             try {
                 const res = await api.get('/content/announcements/active');
-                setAnnouncements(res.data);
+                setAnnouncements(Array.isArray(res.data) ? res.data : []);
             } catch (err) {
                 console.error('Failed to fetch announcements', err);
             } finally {
@@ -83,7 +83,7 @@ const News = () => {
                                                     announcement.title
                                                 )}
                                             </h3>
-                                            
+
                                             <div className="w-12 h-1 bg-accent/30 mb-6"></div>
 
                                             {announcement.short_description && (

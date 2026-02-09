@@ -11,7 +11,7 @@ const Announcements = () => {
     const fetchAnnouncements = async () => {
       try {
         const res = await api.get('/content/announcements/active');
-        setAnnouncements(res.data);
+        setAnnouncements(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error('Failed to fetch announcements', err);
       } finally {
@@ -38,10 +38,10 @@ const Announcements = () => {
   const formatDate = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   };
 
@@ -73,11 +73,10 @@ const Announcements = () => {
         ) : (
           <div className="space-y-8">
             {announcements.map((announcement, index) => (
-              <div 
-                key={announcement.id} 
-                className={`bg-secondary rounded-xl overflow-hidden shadow-xl border border-accent/10 hover:border-accent/30 transition ${
-                  selectedAnnouncement === announcement.id ? 'ring-2 ring-accent' : ''
-                }`}
+              <div
+                key={announcement.id}
+                className={`bg-secondary rounded-xl overflow-hidden shadow-xl border border-accent/10 hover:border-accent/30 transition ${selectedAnnouncement === announcement.id ? 'ring-2 ring-accent' : ''
+                  }`}
               >
                 <div className="flex flex-col">
                   {/* Content */}
