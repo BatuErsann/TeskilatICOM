@@ -174,7 +174,7 @@ const Home = () => {
   return (
     <div>
       {/* Manifesto Section */}
-      <div className="relative w-full min-h-screen flex items-start justify-center pt-40 bg-primary overflow-hidden">
+      <div className="relative w-full min-h-screen flex items-start justify-center pt-24 bg-primary overflow-hidden">
         {/* Background Image */}
         {content.manifesto_bg_image && (
           <div
@@ -196,31 +196,15 @@ const Home = () => {
           }}
         ></div>
 
-        <div className="relative z-10 container mx-auto px-4 py-5 text-center">
+        <div className="relative z-10 container mx-auto px-4 py-5 flex items-center justify-center">
           <FadeIn direction="up">
-            <div style={{ transform: `translateY(${scrollY * 0.2}px)` }} className="will-change-transform">
-              <h1 className="text-5xl md:text-7xl font-display font-light text-white mb-8 tracking-tight">
-                We go the extra mile!
-              </h1>
-            </div>
-          </FadeIn>
-          <FadeIn delay={200} direction="up">
-            <div style={{ transform: `translateY(${scrollY * 0.1}px)` }} className="will-change-transform flex flex-col items-center justify-center text-center">
-              <p className="text-xl md:text-2xl text-gray-400 font-light mb-2">
-                At its core,
-              </p>
-              <p className="text-xl md:text-3xl text-white font-bold mb-2 tracking-tight">
-                Teşkilat believes in the power of
-              </p>
-              <h2 className="text-4xl md:text-6xl font-display font-extrabold text-gray-300 tracking-tight leading-none mb-3">
-                connected ideas
-              </h2>
-              <p className="text-xl md:text-2xl text-gray-400 font-light mb-3">
-                that go beyond the brief and connect with consumers,
-              </p>
-              <h2 className="text-4xl md:text-6xl font-display font-extrabold text-gray-300 tracking-tight leading-tight">
-                <span className="text-gray-500">driving</span> measurable<br />brand success.
-              </h2>
+            <div style={{ transform: `translateY(${scrollY * 0.1}px)` }} className="will-change-transform">
+              <img
+                src="/assets/images/t-header_main.svg"
+                alt="We go the extra mile - Teşkilat believes in the power of connected ideas"
+                className="w-full max-w-7xl mx-auto px-4"
+                style={{ minWidth: '60vw' }}
+              />
             </div>
           </FadeIn>
         </div>
