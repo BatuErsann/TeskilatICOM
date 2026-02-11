@@ -59,3 +59,11 @@ body {
 .neon-border {
   box-shadow: 0 0 10px rgba(255, 205, 0, 0.2), inset 0 0 10px rgba(255, 205, 0, 0.1);
 }
+
+/* Safari video logo fix */
+video {
+  background: transparent !important;
+  background-color: transparent !important;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
