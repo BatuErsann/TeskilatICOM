@@ -22,6 +22,13 @@ const Dashboard = () => {
   const [twoFactorCode, setTwoFactorCode] = useState('');
   const [securityMessage, setSecurityMessage] = useState('');
 
+  // User Management States
+  const [showAddUserForm, setShowAddUserForm] = useState(false);
+  const [newUser, setNewUser] = useState({ username: '', email: '', password: '', role: 'user' });
+  const [editingUserId, setEditingUserId] = useState(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [userMessage, setUserMessage] = useState({ type: '', text: '' });
+
   // Announcements States
   const [announcements, setAnnouncements] = useState([]);
   const [editingAnnouncement, setEditingAnnouncement] = useState(null);
@@ -107,9 +114,48 @@ const Dashboard = () => {
       try {
         await api.delete(`/admin/users/${id}`);
         fetchData();
+        setUserMessage({ type: 'success', text: 'User deleted successfully' });
       } catch (err) {
-        alert('Failed to delete user');
+        setUserMessage({ type: 'error', text: 'Failed to delete user' });
       }
+    }
+  };
+
+  const handleCreateUser = async (e) => {
+    e.preventDefault();
+    try {
+      await api.post('/admin/users', newUser);
+      setNewUser({ username: '', email: '', password: '', role: 'user' });
+      setShowAddUserForm(false);
+      fetchData();
+      setUserMessage({ type: 'success', text: 'User created successfully' });
+    } catch (err) {
+      setUserMessage({ type: 'error', text: err.response?.data?.message || 'Failed to create user' });
+    }
+  };
+
+  const handleUpdatePassword = async (userId) => {
+    if (!newPassword || newPassword.length < 6) {
+      setUserMessage({ type: 'error', text: 'Password must be at least 6 characters' });
+      return;
+    }
+    try {
+      await api.put(`/admin/users/${userId}/password`, { password: newPassword });
+      setEditingUserId(null);
+      setNewPassword('');
+      setUserMessage({ type: 'success', text: 'Password updated successfully' });
+    } catch (err) {
+      setUserMessage({ type: 'error', text: 'Failed to update password' });
+    }
+  };
+
+  const handleUpdateRole = async (userId, newRole) => {
+    try {
+      await api.put(`/admin/users/${userId}/role`, { role: newRole });
+      fetchData();
+      setUserMessage({ type: 'success', text: 'Role updated successfully' });
+    } catch (err) {
+      setUserMessage({ type: 'error', text: 'Failed to update role' });
     }
   };
 
@@ -438,6 +484,82 @@ const Dashboard = () => {
             </div>
           )}
 
+          {/* User Message */}
+          {userMessage.text && (
+            <div className={`mb-4 p-4 rounded ${userMessage.type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'}`}>
+              {userMessage.text}
+              <button onClick={() => setUserMessage({ type: '', text: '' })} className="float-right font-bold">&times;</button>
+            </div>
+          )}
+
+          {/* Add User Button & Form */}
+          <div className="mb-6">
+            <button
+              onClick={() => setShowAddUserForm(!showAddUserForm)}
+              className="bg-accent text-primary px-4 py-2 rounded font-bold hover:bg-yellow-400 transition flex items-center gap-2"
+            >
+              <FaPlus /> Add New User
+            </button>
+
+            {showAddUserForm && (
+              <form onSubmit={handleCreateUser} className="mt-4 bg-white p-6 rounded shadow text-gray-900">
+                <h3 className="text-lg font-bold mb-4">Create New User</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Username</label>
+                    <input
+                      type="text"
+                      value={newUser.username}
+                      onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
+                      className="w-full p-2 border rounded"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Email</label>
+                    <input
+                      type="email"
+                      value={newUser.email}
+                      onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                      className="w-full p-2 border rounded"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Password</label>
+                    <input
+                      type="password"
+                      value={newUser.password}
+                      onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                      className="w-full p-2 border rounded"
+                      required
+                      minLength={6}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Role</label>
+                    <select
+                      value={newUser.role}
+                      onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+                      className="w-full p-2 border rounded"
+                    >
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="mt-4 flex gap-2">
+                  <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                    Create User
+                  </button>
+                  <button type="button" onClick={() => setShowAddUserForm(false)} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+
           <div className="bg-white rounded shadow overflow-hidden text-gray-900">
             <div className="p-4 border-b">
               <h2 className="text-xl font-semibold">User Management</h2>
@@ -459,17 +581,57 @@ const Dashboard = () => {
                     <td className="p-4 font-medium">{user.username}</td>
                     <td className="p-4">{user.email}</td>
                     <td className="p-4">
-                      <span className={`px-2 py-1 rounded text-xs ${user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}`}>
-                        {user.role}
-                      </span>
+                      <select
+                        value={user.role}
+                        onChange={(e) => handleUpdateRole(user.id, e.target.value)}
+                        className={`px-2 py-1 rounded text-xs border ${user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}`}
+                      >
+                        <option value="user">user</option>
+                        <option value="admin">admin</option>
+                      </select>
                     </td>
                     <td className="p-4">
-                      <button
-                        onClick={() => handleDeleteUser(user.id)}
-                        className="text-red-500 hover:text-red-700 text-sm font-semibold"
-                      >
-                        Delete
-                      </button>
+                      <div className="flex items-center gap-2">
+                        {editingUserId === user.id ? (
+                          <>
+                            <input
+                              type="password"
+                              value={newPassword}
+                              onChange={(e) => setNewPassword(e.target.value)}
+                              placeholder="New password"
+                              className="p-1 border rounded text-sm w-32"
+                              minLength={6}
+                            />
+                            <button
+                              onClick={() => handleUpdatePassword(user.id)}
+                              className="text-green-600 hover:text-green-800 text-sm font-semibold"
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={() => { setEditingUserId(null); setNewPassword(''); }}
+                              className="text-gray-500 hover:text-gray-700 text-sm"
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => setEditingUserId(user.id)}
+                              className="text-blue-500 hover:text-blue-700 text-sm font-semibold"
+                            >
+                              Change Password
+                            </button>
+                            <button
+                              onClick={() => handleDeleteUser(user.id)}
+                              className="text-red-500 hover:text-red-700 text-sm font-semibold"
+                            >
+                              Delete
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
