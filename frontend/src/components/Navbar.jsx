@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaInstagram, FaLinkedin, FaYoutube, FaVimeoV, FaBars, FaTimes } from 'react-icons/fa';
 
@@ -7,6 +7,15 @@ const Navbar = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+  // Safari tarayıcısını algıla
+  const isSafari = useMemo(() => {
+    const ua = navigator.userAgent.toLowerCase();
+    return ua.includes('safari') && !ua.includes('chrome') && !ua.includes('chromium');
+  }, []);
+
+  // Safari için MOV, diğerleri için WEBM kullan
+  const logoVideoSrc = isSafari ? '/logo-video.mov' : '/logo-video.webm';
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -23,7 +32,7 @@ const Navbar = () => {
         <div className="flex items-center gap-x-8">
           <Link to="/" className="flex items-center">
             <video 
-              src="/logo-video.webm" 
+              src={logoVideoSrc} 
               autoPlay 
               muted 
               playsInline 
