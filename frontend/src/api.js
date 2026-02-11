@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const baseURL = import.meta.env.MODE === 'production' ? '/api' : 'http://localhost:5000/api';
+// Production'da doğrudan backend subdomain'i kullan
+const baseURL = import.meta.env.MODE === 'production' 
+  ? 'https://backend.teskilat.com.tr/api' 
+  : 'http://localhost:5000/api';
 
 const api = axios.create({
   baseURL,
