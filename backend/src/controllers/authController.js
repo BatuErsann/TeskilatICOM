@@ -175,3 +175,37 @@ exports.getProfile = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.id;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: 'Current and new passwords are required' });
+    }
+
+    if (newPassword.length < 6) {
+       return res.status(400).json({ message: 'New password must be at least 6 characters' });
+    }
+
+    const [users] = await db.query('SELECT password_hash FROM users WHERE id = ?', [userId]);
+    if (users.length === 0) return res.status(404).json({ message: 'User not found' });
+    
+    // Verify current password
+    const isValid = await verifyPassword(currentPassword, users[0].password_hash);
+    if (!isValid) {
+      return res.status(400).json({ message: 'Invalid current password' });
+    }
+
+    // Hash new password
+    const hashedPassword = await hashPassword(newPassword);
+
+    await db.query('UPDATE users SET password_hash = ? WHERE id = ?', [hashedPassword, userId]);
+
+    res.json({ message: 'Password updated successfully' });
+  } catch (error) {
+    console.error('Password Change Error:', error);
+    res.status(500).json({ message: 'Server error during password change' });
+  }
+};

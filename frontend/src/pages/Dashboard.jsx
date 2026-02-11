@@ -4,7 +4,7 @@ import WorksManager from '../components/WorksManager';
 import TeamManager from '../components/TeamManager';
 import BrandsManager from '../components/BrandsManager';
 import ServicesManager from '../components/ServicesManager';
-import { FaTrophy, FaEdit, FaTrash, FaToggleOn, FaToggleOff, FaPlus, FaSave, FaTimes, FaShieldAlt, FaQrcode } from 'react-icons/fa';
+import { FaTrophy, FaEdit, FaTrash, FaToggleOn, FaToggleOff, FaPlus, FaSave, FaTimes, FaShieldAlt, FaQrcode, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
@@ -21,6 +21,15 @@ const Dashboard = () => {
   const [qrCode, setQrCode] = useState('');
   const [twoFactorCode, setTwoFactorCode] = useState('');
   const [securityMessage, setSecurityMessage] = useState('');
+
+  // Password Change States
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPasswordProfile, setNewPasswordProfile] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordMessage, setPasswordMessage] = useState({ type: '', text: '' });
 
   // User Management States
   const [showAddUserForm, setShowAddUserForm] = useState(false);
@@ -85,6 +94,34 @@ const Dashboard = () => {
       setTwoFactorCode('');
     } catch (err) {
       setSecurityMessage('Invalid Code. Please try again.');
+    }
+  };
+
+  const handleProfilePasswordChange = async (e) => {
+    e.preventDefault();
+    setPasswordMessage({ type: '', text: '' });
+
+    if (newPasswordProfile !== confirmPassword) {
+      setPasswordMessage({ type: 'error', text: 'New passwords do not match' });
+      return;
+    }
+
+    if (newPasswordProfile.length < 6) {
+      setPasswordMessage({ type: 'error', text: 'New password must be at least 6 characters' });
+      return;
+    }
+
+    try {
+      await api.post('/auth/change-password', {
+        currentPassword,
+        newPassword: newPasswordProfile
+      });
+      setPasswordMessage({ type: 'success', text: 'Password changed successfully!' });
+      setCurrentPassword('');
+      setNewPasswordProfile('');
+      setConfirmPassword('');
+    } catch (err) {
+      setPasswordMessage({ type: 'error', text: err.response?.data?.message || 'Failed to change password' });
     }
   };
 
@@ -465,6 +502,90 @@ const Dashboard = () => {
                 {securityMessage}
               </div>
             )}
+          </div>
+
+          <div className="border-t border-gray-200 pt-8 mt-8">
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+              <FaShieldAlt className="text-accent" />
+              Change Password
+            </h2>
+            
+            {passwordMessage.text && (
+               <div className={`mb-4 p-4 rounded ${passwordMessage.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                 {passwordMessage.text}
+               </div>
+            )}
+
+            <form onSubmit={handleProfilePasswordChange} className="space-y-4">
+               <div>
+                  <label className="block font-bold mb-1">Current Password</label>
+                  <div className="relative">
+                    <input 
+                      type={showCurrentPassword ? "text" : "password"}
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      className="w-full p-3 border rounded pr-10"
+                      required
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                      className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
+                    >
+                      {showCurrentPassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </div>
+               </div>
+
+               <div>
+                  <label className="block font-bold mb-1">New Password</label>
+                  <div className="relative">
+                    <input 
+                      type={showNewPassword ? "text" : "password"}
+                      value={newPasswordProfile}
+                      onChange={(e) => setNewPasswordProfile(e.target.value)}
+                      className="w-full p-3 border rounded pr-10"
+                      required
+                      minLength={6}
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
+                    >
+                      {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </div>
+               </div>
+
+               <div>
+                  <label className="block font-bold mb-1">Confirm New Password</label>
+                  <div className="relative">
+                    <input 
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full p-3 border rounded pr-10"
+                      required
+                      minLength={6}
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
+                    >
+                      {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </div>
+               </div>
+
+               <button 
+                 type="submit" 
+                 className="bg-accent text-primary font-bold px-6 py-3 rounded hover:bg-yellow-400 transition"
+               >
+                 Update Password
+               </button>
+            </form>
           </div>
         </div>
       )}
