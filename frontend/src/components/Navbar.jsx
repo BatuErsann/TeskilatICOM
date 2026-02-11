@@ -26,7 +26,6 @@ const Navbar = () => {
               src="/logo-video.webm" 
               autoPlay 
               muted 
-              loop
               playsInline 
               className="w-60 h-auto"
               style={{ background: 'transparent', mixBlendMode: 'screen' }}

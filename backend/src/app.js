@@ -12,6 +12,7 @@ const contentRoutes = require('./routes/contentRoutes');
 const brandRoutes = require('./routes/brandRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const { initDefaultAdmin } = require('./utils/initDefaultAdmin');
 
 const app = express();
 
@@ -64,6 +65,9 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
+  
+  // Initialize default admin user
+  await initDefaultAdmin();
 });

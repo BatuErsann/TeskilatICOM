@@ -9,6 +9,11 @@ exports.register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
     
+    // Validate input
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: 'Username, email and password are required' });
+    }
+    
     // Check if user exists
     const [existing] = await db.query('SELECT * FROM users WHERE email = ? OR username = ?', [email, username]);
     if (existing.length > 0) {
@@ -26,8 +31,17 @@ exports.register = async (req, res) => {
 
     res.status(201).json({ message: 'User registered successfully', userId: result.insertId });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Register Error:', error.message, error.stack);
+    
+    // More specific error messages
+    if (error.message && error.message.includes('PEPPER_SECRET')) {
+      return res.status(500).json({ message: 'Server configuration error: Missing PEPPER_SECRET' });
+    }
+    if (error.code === 'ECONNREFUSED') {
+      return res.status(500).json({ message: 'Database connection failed' });
+    }
+    
+    res.status(500).json({ message: 'Server error', error: process.env.NODE_ENV === 'development' ? error.message : undefined });
   }
 };
 
@@ -35,10 +49,15 @@ exports.login = async (req, res) => {
   try {
     const { email, password, twoFactorCode } = req.body;
 
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
     // Find user
     const [users] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
     if (users.length === 0) {
-      await logSecurityEvent('LOGIN_FAIL', req, { email, reason: 'User not found' });
+      logSecurityEvent('LOGIN_FAIL', req, { email, reason: 'User not found' }).catch(() => {});
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
@@ -47,7 +66,7 @@ exports.login = async (req, res) => {
     // Verify password
     const isValid = await verifyPassword(password, user.password_hash);
     if (!isValid) {
-      await logSecurityEvent('LOGIN_FAIL', req, { email, reason: 'Invalid password' });
+      logSecurityEvent('LOGIN_FAIL', req, { email, reason: 'Invalid password' }).catch(() => {});
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
@@ -67,7 +86,7 @@ exports.login = async (req, res) => {
       });
 
       if (!verified) {
-        await logSecurityEvent('LOGIN_FAIL_2FA', req, { email, reason: 'Invalid 2FA code' });
+        logSecurityEvent('LOGIN_FAIL_2FA', req, { email, reason: 'Invalid 2FA code' }).catch(() => {});
         return res.status(401).json({ message: 'Invalid 2FA code' });
       }
     }
@@ -91,8 +110,8 @@ exports.login = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Login Error:', error.message, error.stack);
+    res.status(500).json({ message: 'Server error', error: process.env.NODE_ENV === 'development' ? error.message : undefined });
   }
 };
 
