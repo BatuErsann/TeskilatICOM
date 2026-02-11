@@ -110,7 +110,16 @@ exports.login = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Login Error:', error.message, error.stack);
+    console.error('Login Error:', error.message, error.code, error.sqlMessage || '');
+    
+    // Database connection errors
+    if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
+      return res.status(500).json({ message: 'Database connection failed' });
+    }
+    if (error.code === 'ER_NO_SUCH_TABLE') {
+      return res.status(500).json({ message: 'Database table not found. Please run migrations.' });
+    }
+    
     res.status(500).json({ message: 'Server error', error: process.env.NODE_ENV === 'development' ? error.message : undefined });
   }
 };

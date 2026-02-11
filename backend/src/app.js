@@ -16,6 +16,9 @@ const { initDefaultAdmin } = require('./utils/initDefaultAdmin');
 
 const app = express();
 
+// Trust proxy - Required when behind reverse proxy (Traefik, Nginx, etc.)
+app.set('trust proxy', 1);
+
 // Rate Limiter - Brute Force Protection
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
