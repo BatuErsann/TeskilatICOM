@@ -1,0 +1,4 @@
+root: C:\Users\Acer\Desktop\TeskilatICOM\frontend\public\assets\images 
+path: C:\Program Files\nodejs 
+arch: 64 
+proxy: none

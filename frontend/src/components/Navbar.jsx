@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaInstagram, FaLinkedin, FaYoutube, FaVimeoV, FaBars, FaTimes } from 'react-icons/fa';
 
@@ -15,7 +15,24 @@ const Navbar = () => {
   }, []);
 
   // Safari için MOV, diğerleri için WEBM kullan
-  const logoVideoSrc = isSafari ? '/logo-video.mov' : '/logo-video.webm';
+  const videoRef = useRef(null);
+  const [videoReady, setVideoReady] = useState(false);
+
+  // Preload video as soon as possible
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleCanPlay = () => setVideoReady(true);
+    video.addEventListener('canplaythrough', handleCanPlay);
+
+    // Safari: force load
+    if (isSafari) {
+      video.load();
+    }
+
+    return () => video.removeEventListener('canplaythrough', handleCanPlay);
+  }, [isSafari]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -27,20 +44,33 @@ const Navbar = () => {
   return (
     <nav className="bg-primary/90 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
-        
+
         {/* Left Side: Logo + Navigation Links */}
         <div className="flex items-center gap-x-8">
           <Link to="/" className="flex items-center">
-            <video 
-              src={logoVideoSrc} 
-              autoPlay 
-              muted 
-              playsInline 
-              className="w-60 h-auto"
+            {/* Show SVG fallback until video is ready */}
+            {!videoReady && (
+              <img
+                src="/logo.svg"
+                alt="Teşkilat ICOM"
+                className="w-36 md:w-60 h-auto"
+              />
+            )}
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              playsInline
+              loop
+              preload="auto"
+              className={`w-36 md:w-60 h-auto ${videoReady ? 'block' : 'hidden'}`}
               style={{ background: 'transparent', mixBlendMode: 'screen' }}
-            />
+            >
+              <source src="/logo-video.webm" type="video/webm" />
+              <source src="/logo-video.mov" type='video/quicktime' />
+            </video>
           </Link>
-          
+
           <div className="hidden md:flex items-center space-x-6">
             <Link to="/works" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Works</Link>
             <Link to="/services" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Services</Link>
@@ -83,39 +113,40 @@ const Navbar = () => {
 
         {/* Mobile Hamburger Button */}
         <div className="md:hidden flex items-center">
-            <button onClick={() => setIsOpen(!isOpen)} className="text-white focus:outline-none">
-                {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-            </button>
+          <button onClick={() => setIsOpen(!isOpen)} className="text-white focus:outline-none">
+            {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-primary border-t border-white/10 absolute w-full left-0 top-full shadow-xl">
-            <div className="flex flex-col px-4 py-6 space-y-4">
-                <Link to="/works" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Works</Link>
-                <Link to="/about" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">About</Link>
-                <Link to="/team" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Team</Link>
-                <Link to="/brands" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">BRANDS</Link>
-                <Link to="/contact" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Contact</Link>
-                <Link to="/icom-network" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">ICOM Network</Link>
-                
-                <div className="border-t border-white/10 pt-4 mt-4">
-                    {!token ? (
-                        <div className="flex flex-col space-y-4">
-                            <Link to="/login" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-white transition text-sm uppercase font-bold">Login</Link>
-                            <Link to="/register" onClick={() => setIsOpen(false)} className="text-accent hover:text-accent-purple transition text-sm uppercase font-bold">Sign Up</Link>
-                        </div>
-                    ) : (
-                        <div className="flex flex-col space-y-4">
-                            {user.role === 'admin' && (
-                                <Link to="/admin" onClick={() => setIsOpen(false)} className="text-accent-purple hover:text-white transition font-bold text-sm uppercase">Admin Panel</Link>
-                            )}
-                            <button onClick={handleLogout} className="text-left text-red-400 hover:text-red-300 transition text-sm uppercase font-bold">Logout</button>
-                        </div>
-                    )}
-                </div>
+          <div className="flex flex-col px-4 py-6 space-y-4">
+            <Link to="/works" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Works</Link>
+            <Link to="/services" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Services</Link>
+            <Link to="/about" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">About</Link>
+            <Link to="/team" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Team</Link>
+            <Link to="/brands" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">BRANDS</Link>
+            <Link to="/news" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">News</Link>
+            <Link to="/contact" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Contact</Link>
+            <Link to="/icom-network" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">ICOM Network</Link>
+
+            {/* Social Media Icons - Mobile */}
+            <div className="border-t border-white/10 pt-4 mt-2 flex items-center space-x-5 text-gray-400">
+              <a href="https://www.instagram.com/teskilaticom/" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaInstagram size={20} /></a>
+              <a href="https://www.linkedin.com/company/teskilaticom/posts/?feedView=all" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaLinkedin size={20} /></a>
+              <a href="https://www.youtube.com/@teskilaticom3784" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaYoutube size={20} /></a>
+              <a href="https://vimeo.com/teskilaticom" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaVimeoV size={20} /></a>
             </div>
+
+            {/* Admin Panel only - no Login/Logout for public users */}
+            {token && user.role === 'admin' && (
+              <div className="border-t border-white/10 pt-4 mt-2">
+                <Link to="/admin" onClick={() => setIsOpen(false)} className="text-accent hover:text-white transition font-bold text-sm uppercase">Admin Panel</Link>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </nav>
