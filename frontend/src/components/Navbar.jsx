@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaInstagram, FaLinkedin, FaYoutube, FaVimeoV, FaBars, FaTimes } from 'react-icons/fa';
 
@@ -14,26 +14,6 @@ const Navbar = () => {
     return ua.includes('safari') && !ua.includes('chrome') && !ua.includes('chromium');
   }, []);
 
-  // Safari için MOV, diğerleri için WEBM kullan
-  const videoRef = useRef(null);
-  const [videoReady, setVideoReady] = useState(false);
-
-  // Preload video as soon as possible
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const handleCanPlay = () => setVideoReady(true);
-    video.addEventListener('canplaythrough', handleCanPlay);
-
-    // Safari: force load
-    if (isSafari) {
-      video.load();
-    }
-
-    return () => video.removeEventListener('canplaythrough', handleCanPlay);
-  }, [isSafari]);
-
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -48,25 +28,16 @@ const Navbar = () => {
         {/* Left Side: Logo + Navigation Links */}
         <div className="flex items-center gap-x-8">
           <Link to="/" className="flex items-center">
-            {/* Show SVG fallback until video is ready */}
-            {!videoReady && (
-              <img
-                src="/logo.svg"
-                alt="Teşkilat ICOM"
-                className="w-36 md:w-60 h-auto"
-              />
-            )}
             <video
-              ref={videoRef}
               autoPlay
               muted
               playsInline
               preload="auto"
-              className={`w-36 md:w-60 h-auto ${videoReady ? 'block' : 'hidden'}`}
+              className="w-36 md:w-60 h-auto safari-video-fix"
               style={{ background: 'transparent', mixBlendMode: 'screen' }}
             >
               <source src="/logo-video.webm" type="video/webm" />
-              <source src="/logo-video.mov" type='video/quicktime' />
+              <source src="/logo-video.mov" type="video/quicktime" />
             </video>
           </Link>
 

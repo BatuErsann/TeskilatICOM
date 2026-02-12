@@ -67,3 +67,29 @@ video {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
+
+/* Safari play button / controls gizle */
+.safari-video-fix::-webkit-media-controls {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
+.safari-video-fix::-webkit-media-controls-panel {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
+.safari-video-fix::-webkit-media-controls-play-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
+.safari-video-fix::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
+.safari-video-fix::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
