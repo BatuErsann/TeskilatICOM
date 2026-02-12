@@ -60,36 +60,24 @@ body {
   box-shadow: 0 0 10px rgba(255, 205, 0, 0.2), inset 0 0 10px rgba(255, 205, 0, 0.1);
 }
 
-/* Safari video logo fix */
-video {
-  background: transparent !important;
-  background-color: transparent !important;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
+/* Safari video logo fix - Aggressive Reset */
+video::-webkit-media-controls {
+  display: none !important;
 }
 
-/* Safari play button / controls gizle */
-.safari-video-fix::-webkit-media-controls {
+video::-webkit-media-controls-play-button,
+video::-webkit-media-controls-start-playback-button {
   display: none !important;
   -webkit-appearance: none;
+  opacity: 0;
 }
 
-.safari-video-fix::-webkit-media-controls-panel {
-  display: none !important;
-  -webkit-appearance: none;
-}
-
-.safari-video-fix::-webkit-media-controls-play-button {
-  display: none !important;
-  -webkit-appearance: none;
-}
-
-.safari-video-fix::-webkit-media-controls-start-playback-button {
-  display: none !important;
-  -webkit-appearance: none;
-}
-
-.safari-video-fix::-webkit-media-controls-overlay-play-button {
-  display: none !important;
-  -webkit-appearance: none;
+.safari-video-fix {
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  pointer-events: none;
+  /* Kullanıcı etkileşimini engelle */
 }

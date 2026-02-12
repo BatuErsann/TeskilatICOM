@@ -16,6 +16,16 @@ const Navbar = () => {
 
   // Safari için MP4 (H.264), diğerleri için WEBM kullan
   const logoVideoSrc = isSafari ? '/logo-video.mp4' : '/logo-video.webm';
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    // Safari'de bazen autoPlay tetiklenmez, elle zorlayalım
+    if (videoRef.current) {
+      videoRef.current.play().catch(err => {
+        console.log("Video autoplay failed:", err);
+      });
+    }
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -32,12 +42,16 @@ const Navbar = () => {
         <div className="flex items-center gap-x-8">
           <Link to="/" className="flex items-center">
             <video
+              ref={videoRef}
               src={logoVideoSrc}
+              poster="/logo.svg"
+              playsInline
+              webkit-playsinline="true"
               autoPlay
               muted
-              playsInline
-              className="w-36 md:w-60 h-auto"
-              style={{ background: 'transparent', mixBlendMode: 'screen' }}
+              loop={false}
+              className="w-36 md:w-60 h-auto safari-video-fix"
+              style={{ background: 'transparent' }}
             />
           </Link>
 
