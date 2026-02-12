@@ -14,8 +14,8 @@ const Navbar = () => {
     return ua.includes('safari') && !ua.includes('chrome') && !ua.includes('chromium');
   }, []);
 
-  // Safari için MOV, diğerleri için WEBM kullan
-  const logoVideoSrc = isSafari ? '/logo-video.mov' : '/logo-video.webm';
+  // Safari için MP4 (H.264), diğerleri için WEBM kullan
+  const logoVideoSrc = isSafari ? '/logo-video.mp4' : '/logo-video.webm';
 
   const handleLogout = () => {
     localStorage.removeItem('token');

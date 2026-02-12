@@ -42,7 +42,7 @@ Teskilat ICOM is a full-stack web application designed for creative agencies to 
 - Express.js
 - MySQL2
 - JWT Authentication
-- Bcrypt
+- Bcryptjs
 - Multer (File Uploads)
 - Nodemailer
 - Helmet (Security)
@@ -207,7 +207,7 @@ The frontend will run on `http://localhost:5173`.
 
 ### Security
 - JWT-based authentication
-- Password hashing with bcrypt
+- Password hashing with bcryptjs
 - Rate limiting
 - Helmet security headers
 - Protected admin routes
