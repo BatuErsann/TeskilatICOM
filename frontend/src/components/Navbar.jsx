@@ -14,6 +14,9 @@ const Navbar = () => {
     return ua.includes('safari') && !ua.includes('chrome') && !ua.includes('chromium');
   }, []);
 
+  // Safari için MOV, diğerleri için WEBM kullan
+  const logoVideoSrc = isSafari ? '/logo-video.mov' : '/logo-video.webm';
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -29,16 +32,13 @@ const Navbar = () => {
         <div className="flex items-center gap-x-8">
           <Link to="/" className="flex items-center">
             <video
+              src={logoVideoSrc}
               autoPlay
               muted
               playsInline
-              preload="auto"
-              className="w-36 md:w-60 h-auto safari-video-fix"
+              className="w-36 md:w-60 h-auto"
               style={{ background: 'transparent', mixBlendMode: 'screen' }}
-            >
-              <source src="/logo-video.webm" type="video/webm" />
-              <source src="/logo-video.mov" type="video/quicktime" />
-            </video>
+            />
           </Link>
 
           <div className="hidden md:flex items-center space-x-6">
