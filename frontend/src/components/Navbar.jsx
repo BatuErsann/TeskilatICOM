@@ -61,7 +61,6 @@ const Navbar = () => {
               autoPlay
               muted
               playsInline
-              loop
               preload="auto"
               className={`w-36 md:w-60 h-auto ${videoReady ? 'block' : 'hidden'}`}
               style={{ background: 'transparent', mixBlendMode: 'screen' }}
