@@ -283,3 +283,4 @@ All rights reserved. Copyright 2025 Teskilat Platform.
 - Email: info@teskilat.com.tr
 - Phone: (0216) 356 59 99
 - Address: Kozyatagi Mah. Kaya Sultan Sok. Nanda Plaza No: 83 Kat: 1, 34742 Kadikoy, Istanbul
+ 
