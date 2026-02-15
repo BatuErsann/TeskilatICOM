@@ -15,7 +15,7 @@ const Navbar = () => {
   }, []);
 
   // Safari için MP4 (H.264), diğerleri için WEBM kullan
-  const logoVideoSrc = isSafari ? '/logo-video.mp4' : '/logo-video.webm';
+  const logoVideoSrc = isSafari ? '/Comp 1.mp4' : '/logo-video.webm';
   const videoRef = useRef(null);
 
   useEffect(() => {
