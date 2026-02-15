@@ -17,34 +17,91 @@ const Navbar = () => {
   // Safari için MP4 (H.264), diğerleri için WEBM kullan
   const logoVideoSrc = isSafari ? '/Comp 1.mp4' : '/logo-video.webm';
   const videoRef = useRef(null);
-  const [videoFailed, setVideoFailed] = useState(false);
+  const canvasRef = useRef(null);
+  const [useCanvas, setUseCanvas] = useState(false);
+  const [videoError, setVideoError] = useState(false);
 
-  const tryPlayVideo = useCallback(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(err => {
-        console.log("Video autoplay failed:", err);
-        // Güç tasarrufu modunda video oynatılamayabilir, tekrar dene
-        setTimeout(() => {
-          if (videoRef.current) {
-            videoRef.current.play().catch(() => setVideoFailed(true));
-          }
-        }, 1500);
+  // Canvas üzerinde video frame'lerini çiz (güç tasarrufu modu workaround)
+  const drawCanvasFrames = useCallback(() => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const fps = 30;
+    const frameDuration = 1 / fps;
+    let startTime = null;
+    let animId = null;
+
+    const drawFrame = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = (timestamp - startTime) / 1000;
+
+      // Video süresini aşma
+      if (elapsed >= video.duration) {
+        // Son frame'i çiz ve dur
+        video.currentTime = video.duration - 0.01;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        return;
+      }
+
+      video.currentTime = elapsed;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      animId = requestAnimationFrame(drawFrame);
+    };
+
+    // Video metadata yüklendiğinde canvas boyutunu ayarla ve çizmeye başla
+    const startDrawing = () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      animId = requestAnimationFrame(drawFrame);
+    };
+
+    if (video.readyState >= 2) {
+      startDrawing();
+    } else {
+      video.addEventListener('loadeddata', startDrawing, { once: true });
+    }
+
+    return () => {
+      if (animId) cancelAnimationFrame(animId);
+    };
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Önce normal autoplay dene
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        console.log("Autoplay blocked, switching to canvas fallback");
+        // Autoplay engellendi — canvas moduna geç
+        setUseCanvas(true);
       });
     }
   }, []);
 
+  // Canvas modu aktifse frame çizmeye başla
   useEffect(() => {
-    tryPlayVideo();
-    // Sayfa görünür olduğunda tekrar dene (güç tasarrufu modundan çıkınca)
+    if (useCanvas) {
+      const cleanup = drawCanvasFrames();
+      return cleanup;
+    }
+  }, [useCanvas, drawCanvasFrames]);
+
+  // Sayfa görünür olduğunda tekrar dene
+  useEffect(() => {
     const handleVisibility = () => {
-      if (document.visibilityState === 'visible') {
-        setVideoFailed(false);
-        tryPlayVideo();
+      if (document.visibilityState === 'visible' && useCanvas) {
+        drawCanvasFrames();
       }
     };
     document.addEventListener('visibilitychange', handleVisibility);
     return () => document.removeEventListener('visibilitychange', handleVisibility);
-  }, [tryPlayVideo]);
+  }, [useCanvas, drawCanvasFrames]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -60,25 +117,35 @@ const Navbar = () => {
         {/* Left Side: Logo + Navigation Links */}
         <div className="flex items-center gap-x-8">
           <Link to="/" className="flex items-center">
-            {videoFailed ? (
+            {/* Gizli video element - canvas modunda frame kaynağı olarak kullanılır */}
+            <video
+              ref={videoRef}
+              src={logoVideoSrc}
+              poster="/logo.svg"
+              playsInline
+              webkit-playsinline="true"
+              autoPlay
+              muted
+              loop={false}
+              className={`w-48 md:w-60 h-auto safari-video-fix ${useCanvas || videoError ? 'hidden' : ''}`}
+              style={{ background: 'transparent' }}
+              onError={() => setVideoError(true)}
+              preload="auto"
+            />
+            {/* Canvas fallback - güç tasarrufu modunda video frame'leri burada çizilir */}
+            {useCanvas && !videoError && (
+              <canvas
+                ref={canvasRef}
+                className="w-48 md:w-60 h-auto"
+                style={{ background: 'transparent' }}
+              />
+            )}
+            {/* Statik logo - video tamamen yüklenemezse */}
+            {videoError && (
               <img
                 src="/logo.svg"
                 alt="Logo"
                 className="w-48 md:w-60 h-auto"
-              />
-            ) : (
-              <video
-                ref={videoRef}
-                src={logoVideoSrc}
-                poster="/logo.svg"
-                playsInline
-                webkit-playsinline="true"
-                autoPlay
-                muted
-                loop={false}
-                className="w-48 md:w-60 h-auto safari-video-fix"
-                style={{ background: 'transparent' }}
-                onError={() => setVideoFailed(true)}
               />
             )}
           </Link>
