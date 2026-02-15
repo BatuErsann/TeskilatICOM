@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaInstagram, FaLinkedin, FaYoutube, FaVimeoV, FaBars, FaTimes } from 'react-icons/fa';
 
@@ -17,15 +17,34 @@ const Navbar = () => {
   // Safari için MP4 (H.264), diğerleri için WEBM kullan
   const logoVideoSrc = isSafari ? '/Comp 1.mp4' : '/logo-video.webm';
   const videoRef = useRef(null);
+  const [videoFailed, setVideoFailed] = useState(false);
 
-  useEffect(() => {
-    // Safari'de bazen autoPlay tetiklenmez, elle zorlayalım
+  const tryPlayVideo = useCallback(() => {
     if (videoRef.current) {
       videoRef.current.play().catch(err => {
         console.log("Video autoplay failed:", err);
+        // Güç tasarrufu modunda video oynatılamayabilir, tekrar dene
+        setTimeout(() => {
+          if (videoRef.current) {
+            videoRef.current.play().catch(() => setVideoFailed(true));
+          }
+        }, 1500);
       });
     }
   }, []);
+
+  useEffect(() => {
+    tryPlayVideo();
+    // Sayfa görünür olduğunda tekrar dene (güç tasarrufu modundan çıkınca)
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        setVideoFailed(false);
+        tryPlayVideo();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, [tryPlayVideo]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -36,23 +55,32 @@ const Navbar = () => {
 
   return (
     <nav className="bg-primary/90 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-2 flex justify-between items-center">
+      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
 
         {/* Left Side: Logo + Navigation Links */}
         <div className="flex items-center gap-x-8">
           <Link to="/" className="flex items-center">
-            <video
-              ref={videoRef}
-              src={logoVideoSrc}
-              poster="/logo.svg"
-              playsInline
-              webkit-playsinline="true"
-              autoPlay
-              muted
-              loop={false}
-              className="w-36 md:w-60 h-auto safari-video-fix"
-              style={{ background: 'transparent' }}
-            />
+            {videoFailed ? (
+              <img
+                src="/logo.svg"
+                alt="Logo"
+                className="w-48 md:w-60 h-auto"
+              />
+            ) : (
+              <video
+                ref={videoRef}
+                src={logoVideoSrc}
+                poster="/logo.svg"
+                playsInline
+                webkit-playsinline="true"
+                autoPlay
+                muted
+                loop={false}
+                className="w-48 md:w-60 h-auto safari-video-fix"
+                style={{ background: 'transparent' }}
+                onError={() => setVideoFailed(true)}
+              />
+            )}
           </Link>
 
           <div className="hidden md:flex items-center space-x-6">
