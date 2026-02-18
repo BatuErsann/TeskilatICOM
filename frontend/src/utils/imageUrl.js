@@ -8,7 +8,12 @@
  */
 
 // Backend base URL (without /api)
-const BACKEND_BASE = import.meta.env.MODE === 'production'
+// Use both hostname check AND env mode for maximum reliability
+const isProduction = typeof window !== 'undefined'
+    ? !window.location.hostname.includes('localhost')
+    : import.meta.env.MODE === 'production';
+
+const BACKEND_BASE = isProduction
     ? 'https://backend.teskilat.com.tr'
     : 'http://localhost:5000';
 
