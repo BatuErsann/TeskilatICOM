@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../api';
+import { getImageUrl } from '../utils/imageUrl';
 import WorksManager from '../components/WorksManager';
 import TeamManager from '../components/TeamManager';
 import BrandsManager from '../components/BrandsManager';
@@ -374,22 +375,7 @@ const Dashboard = () => {
     }
   };
 
-  // Helper to convert Google Drive link to direct image link
-  const getImageUrl = (url) => {
-    if (!url) return '';
-    // Check if it's a Google Drive link
-    if (url.includes('drive.google.com')) {
-      // Extract file ID - supports formats: /d/ID/view, /d/ID, id=ID
-      const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
-      const fileId = idMatch ? idMatch[1] : null;
 
-      if (fileId) {
-        // Use thumbnail endpoint which is more reliable for embedding
-        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1920-h1080`;
-      }
-    }
-    return url;
-  };
 
   return (
     <div>
@@ -509,82 +495,82 @@ const Dashboard = () => {
               <FaShieldAlt className="text-accent" />
               Change Password
             </h2>
-            
+
             {passwordMessage.text && (
-               <div className={`mb-4 p-4 rounded ${passwordMessage.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                 {passwordMessage.text}
-               </div>
+              <div className={`mb-4 p-4 rounded ${passwordMessage.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                {passwordMessage.text}
+              </div>
             )}
 
             <form onSubmit={handleProfilePasswordChange} className="space-y-4">
-               <div>
-                  <label className="block font-bold mb-1">Current Password</label>
-                  <div className="relative">
-                    <input 
-                      type={showCurrentPassword ? "text" : "password"}
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                      className="w-full p-3 border rounded pr-10"
-                      required
-                    />
-                    <button 
-                      type="button"
-                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                      className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
-                    >
-                      {showCurrentPassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                  </div>
-               </div>
+              <div>
+                <label className="block font-bold mb-1">Current Password</label>
+                <div className="relative">
+                  <input
+                    type={showCurrentPassword ? "text" : "password"}
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    className="w-full p-3 border rounded pr-10"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                    className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
+                  >
+                    {showCurrentPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
+              </div>
 
-               <div>
-                  <label className="block font-bold mb-1">New Password</label>
-                  <div className="relative">
-                    <input 
-                      type={showNewPassword ? "text" : "password"}
-                      value={newPasswordProfile}
-                      onChange={(e) => setNewPasswordProfile(e.target.value)}
-                      className="w-full p-3 border rounded pr-10"
-                      required
-                      minLength={6}
-                    />
-                    <button 
-                      type="button"
-                      onClick={() => setShowNewPassword(!showNewPassword)}
-                      className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
-                    >
-                      {showNewPassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                  </div>
-               </div>
+              <div>
+                <label className="block font-bold mb-1">New Password</label>
+                <div className="relative">
+                  <input
+                    type={showNewPassword ? "text" : "password"}
+                    value={newPasswordProfile}
+                    onChange={(e) => setNewPasswordProfile(e.target.value)}
+                    className="w-full p-3 border rounded pr-10"
+                    required
+                    minLength={6}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
+                  >
+                    {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
+              </div>
 
-               <div>
-                  <label className="block font-bold mb-1">Confirm New Password</label>
-                  <div className="relative">
-                    <input 
-                      type={showConfirmPassword ? "text" : "password"}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full p-3 border rounded pr-10"
-                      required
-                      minLength={6}
-                    />
-                    <button 
-                      type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
-                    >
-                      {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                  </div>
-               </div>
+              <div>
+                <label className="block font-bold mb-1">Confirm New Password</label>
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full p-3 border rounded pr-10"
+                    required
+                    minLength={6}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
+                  >
+                    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
+              </div>
 
-               <button 
-                 type="submit" 
-                 className="bg-accent text-primary font-bold px-6 py-3 rounded hover:bg-yellow-400 transition"
-               >
-                 Update Password
-               </button>
+              <button
+                type="submit"
+                className="bg-accent text-primary font-bold px-6 py-3 rounded hover:bg-yellow-400 transition"
+              >
+                Update Password
+              </button>
             </form>
           </div>
         </div>
@@ -911,8 +897,8 @@ const Dashboard = () => {
                     onDrop={handleDrop}
                     onClick={() => document.getElementById('announcementImageInput').click()}
                     className={`border-2 border-dashed rounded-lg p-8 text-center transition-all cursor-pointer ${isDragging
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-300 bg-gray-50 hover:border-gray-400 hover:bg-gray-100'
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-300 bg-gray-50 hover:border-gray-400 hover:bg-gray-100'
                       }`}
                   >
                     <input

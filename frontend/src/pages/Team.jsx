@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaLinkedin } from 'react-icons/fa';
 import api from '../api';
+import { getImageUrl } from '../utils/imageUrl';
 
 const Team = () => {
   const [teamMembers, setTeamMembers] = useState([]);
@@ -20,18 +21,7 @@ const Team = () => {
     fetchTeam();
   }, []);
 
-  // Get image URL (supports Google Drive)
-  const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.includes('drive.google.com')) {
-      const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
-      const fileId = idMatch ? idMatch[1] : null;
-      if (fileId) {
-        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w800-h1000`;
-      }
-    }
-    return url;
-  };
+
 
   if (loading) {
     return (

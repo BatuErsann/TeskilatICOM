@@ -49,11 +49,10 @@ router.post('/image', verifyToken, upload.single('image'), (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: 'Dosya yüklenemedi' });
     }
-    
-    // Dosya URL'ini döndür
-    const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
-    const imageUrl = `${baseUrl}/uploads/${req.file.filename}`;
-    
+
+    // Relative path döndür - frontend kendi base URL'ini ekleyecek
+    const imageUrl = `/uploads/${req.file.filename}`;
+
     res.json({
       success: true,
       message: 'Dosya başarıyla yüklendi',
@@ -72,13 +71,12 @@ router.post('/images', verifyToken, upload.array('images', 10), (req, res) => {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: 'Dosya yüklenemedi' });
     }
-    
-    const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
+
     const urls = req.files.map(file => ({
-      url: `${baseUrl}/uploads/${file.filename}`,
+      url: `/uploads/${file.filename}`,
       filename: file.filename
     }));
-    
+
     res.json({
       success: true,
       message: 'Dosyalar başarıyla yüklendi',
@@ -94,7 +92,7 @@ router.post('/images', verifyToken, upload.array('images', 10), (req, res) => {
 router.delete('/:filename', verifyToken, (req, res) => {
   try {
     const filePath = path.join(uploadDir, req.params.filename);
-    
+
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
       res.json({ success: true, message: 'Dosya silindi' });

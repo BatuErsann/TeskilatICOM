@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { FaPlus, FaTrash, FaEdit, FaSave, FaGripVertical, FaImage, FaVideo, FaLink, FaTimes, FaExpand, FaCompress, FaEye, FaStar, FaInstagram, FaTiktok } from 'react-icons/fa';
 import api from '../api';
+import { getImageUrl } from '../utils/imageUrl';
 import ImageUploader from './ImageUploader';
 
 const WorksManager = () => {
@@ -14,7 +15,7 @@ const WorksManager = () => {
   const [layoutChanged, setLayoutChanged] = useState(false);
   const [featuredLayoutChanged, setFeaturedLayoutChanged] = useState(false);
   const [draggedItem, setDraggedItem] = useState(null);
-  
+
   // Form state
   const [formData, setFormData] = useState({
     title: '',
@@ -42,19 +43,19 @@ const WorksManager = () => {
         api.get('/content/works/layout/featured')
       ]);
       setWorks(worksRes.data);
-      
+
       let layoutData = [];
       if (layoutRes.data && layoutRes.data.layout_data) {
-        layoutData = typeof layoutRes.data.layout_data === 'string' 
-          ? JSON.parse(layoutRes.data.layout_data) 
+        layoutData = typeof layoutRes.data.layout_data === 'string'
+          ? JSON.parse(layoutRes.data.layout_data)
           : layoutRes.data.layout_data;
       }
       setLayout(layoutData);
 
       let featuredLayoutData = [];
       if (featuredLayoutRes.data && featuredLayoutRes.data.layout_data) {
-        featuredLayoutData = typeof featuredLayoutRes.data.layout_data === 'string' 
-          ? JSON.parse(featuredLayoutRes.data.layout_data) 
+        featuredLayoutData = typeof featuredLayoutRes.data.layout_data === 'string'
+          ? JSON.parse(featuredLayoutRes.data.layout_data)
           : featuredLayoutRes.data.layout_data;
       }
       setFeaturedLayout(featuredLayoutData);
@@ -164,18 +165,7 @@ const WorksManager = () => {
     }
   };
 
-  // Get image URL (supports Google Drive)
-  const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.includes('drive.google.com')) {
-      const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
-      const fileId = idMatch ? idMatch[1] : null;
-      if (fileId) {
-        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w400-h300`;
-      }
-    }
-    return url;
-  };
+
 
   const getYouTubeId = (url) => {
     if (!url) return null;
@@ -243,11 +233,11 @@ const WorksManager = () => {
   const getThumbnail = (work) => {
     // 1. Öncelik: Manuel yüklenmiş thumbnail
     if (work.thumbnail_url) return getImageUrl(work.thumbnail_url);
-    
+
     if (work.media_type === 'video') {
       const platform = work.video_platform || detectVideoPlatform(work.media_url);
-      
-      switch(platform) {
+
+      switch (platform) {
         case 'youtube': {
           const ytId = getYouTubeId(work.media_url);
           if (ytId) return `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`;
@@ -289,26 +279,23 @@ const WorksManager = () => {
           <div className="flex bg-gray-100 rounded-lg p-1">
             <button
               onClick={() => setActiveTab('list')}
-              className={`px-4 py-2 rounded-lg font-medium transition ${
-                activeTab === 'list' ? 'bg-white shadow text-gray-900' : 'text-gray-600 hover:text-gray-900'
-              }`}
+              className={`px-4 py-2 rounded-lg font-medium transition ${activeTab === 'list' ? 'bg-white shadow text-gray-900' : 'text-gray-600 hover:text-gray-900'
+                }`}
             >
               List
             </button>
             <button
               onClick={() => setActiveTab('layout')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${
-                activeTab === 'layout' ? 'bg-purple-600 text-white' : 'text-gray-600 hover:text-gray-900'
-              }`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${activeTab === 'layout' ? 'bg-purple-600 text-white' : 'text-gray-600 hover:text-gray-900'
+                }`}
             >
               <FaGripVertical size={12} />
               Works Layout
             </button>
             <button
               onClick={() => setActiveTab('featured')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${
-                activeTab === 'featured' ? 'bg-yellow-500 text-black' : 'text-gray-600 hover:text-gray-900'
-              }`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${activeTab === 'featured' ? 'bg-yellow-500 text-black' : 'text-gray-600 hover:text-gray-900'
+                }`}
             >
               <FaStar size={12} />
               Home Layout
@@ -330,7 +317,7 @@ const WorksManager = () => {
 
       {/* Tab Content */}
       {activeTab === 'layout' ? (
-        <LayoutEditor 
+        <LayoutEditor
           works={works}
           layout={layout}
           setLayout={setLayout}
@@ -344,7 +331,7 @@ const WorksManager = () => {
           description="Order and format of content to be displayed on the Works page"
         />
       ) : activeTab === 'featured' ? (
-        <LayoutEditor 
+        <LayoutEditor
           works={works.filter(w => w.is_featured)}
           layout={featuredLayout}
           setLayout={setFeaturedLayout}
@@ -395,9 +382,8 @@ const WorksManager = () => {
                 </div>
                 {/* Type badge */}
                 <div className="absolute top-2 left-2">
-                  <span className={`px-2 py-1 rounded text-xs font-bold ${
-                    work.media_type === 'video' ? 'bg-red-500 text-white' : 'bg-blue-500 text-white'
-                  }`}>
+                  <span className={`px-2 py-1 rounded text-xs font-bold ${work.media_type === 'video' ? 'bg-red-500 text-white' : 'bg-blue-500 text-white'
+                    }`}>
                     {work.media_type === 'video' ? <FaVideo className="inline" /> : <FaImage className="inline" />}
                     <span className="ml-1 uppercase">{work.media_type}</span>
                   </span>
@@ -419,7 +405,7 @@ const WorksManager = () => {
                   </div>
                 )}
               </div>
-              
+
               {/* Info */}
               <div className="p-4">
                 <div className="flex items-center gap-2 mb-1">
@@ -502,7 +488,7 @@ const LayoutEditor = ({ works, layout, setLayout, setLayoutChanged, layoutChange
 
   // Update item aspect ratio
   const updateItemAspectRatio = (workId, aspectRatio) => {
-    setLayout(layout.map(item => 
+    setLayout(layout.map(item =>
       item.workId === workId ? { ...item, aspectRatio } : item
     ));
     setLayoutChanged(true);
@@ -510,7 +496,7 @@ const LayoutEditor = ({ works, layout, setLayout, setLayoutChanged, layoutChange
 
   // Update item size (legacy function - kept for backwards compatibility)
   const updateItemSize = (workId, colSpan, rowSpan) => {
-    setLayout(layout.map(item => 
+    setLayout(layout.map(item =>
       item.workId === workId ? { ...item, colSpan, rowSpan } : item
     ));
     setLayoutChanged(true);
@@ -518,7 +504,7 @@ const LayoutEditor = ({ works, layout, setLayout, setLayoutChanged, layoutChange
 
   // Update item link
   const updateItemLink = (workId, link_url) => {
-    setLayout(layout.map(item => 
+    setLayout(layout.map(item =>
       item.workId === workId ? { ...item, link_url } : item
     ));
     setLayoutChanged(true);
@@ -597,9 +583,8 @@ const LayoutEditor = ({ works, layout, setLayout, setLayoutChanged, layoutChange
               <button
                 key={work.id}
                 onClick={() => addToLayout(work)}
-                className={`flex items-center gap-2 bg-white border-2 border-dashed rounded-lg p-2 transition group ${
-                  isFeaturedMode ? 'border-yellow-300 hover:border-yellow-500 hover:bg-yellow-50' : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50'
-                }`}
+                className={`flex items-center gap-2 bg-white border-2 border-dashed rounded-lg p-2 transition group ${isFeaturedMode ? 'border-yellow-300 hover:border-yellow-500 hover:bg-yellow-50' : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50'
+                  }`}
               >
                 <img
                   src={getThumbnail(work)}
@@ -624,16 +609,16 @@ const LayoutEditor = ({ works, layout, setLayout, setLayoutChanged, layoutChange
           <FaEye />
           Layout Preview (Drag & Drop)
         </h3>
-        
+
         {layout.length > 0 ? (
           <div className="columns-2 md:columns-3 lg:columns-4 gap-4">
             {layout.map((item, index) => {
               const work = getWork(item.workId);
               if (!work) return null;
-              
+
               const aspectClass = getAspectClass(item.aspectRatio);
               const isPortrait = item.aspectRatio === 'portrait';
-              
+
               return (
                 <div
                   key={item.workId}
@@ -652,19 +637,18 @@ const LayoutEditor = ({ works, layout, setLayout, setLayoutChanged, layoutChange
                     className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
                   />
-                  
+
                   {/* Aspect Ratio Badge */}
-                  <div className={`absolute top-2 left-2 text-white text-xs px-2 py-1 rounded ${
-                    isPortrait ? 'bg-purple-500' : 'bg-blue-500'
-                  }`}>
+                  <div className={`absolute top-2 left-2 text-white text-xs px-2 py-1 rounded ${isPortrait ? 'bg-purple-500' : 'bg-blue-500'
+                    }`}>
                     {aspectRatioOptions.find(o => o.value === item.aspectRatio)?.label?.split(' ')[0] || '📺'}
                   </div>
-                  
+
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
                     <FaGripVertical className="text-white/50 text-2xl" />
                     <p className="text-white text-sm font-medium text-center px-2">{work.title}</p>
-                    
+
                     {/* Actions */}
                     <div className="flex gap-2 mt-2">
                       <button
@@ -697,7 +681,7 @@ const LayoutEditor = ({ works, layout, setLayout, setLayoutChanged, layoutChange
                       <FaLink className="text-primary text-xs" />
                     </div>
                   )}
-                  
+
                   {/* Index indicator */}
                   <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
                     #{index + 1}
@@ -725,7 +709,7 @@ const LayoutEditor = ({ works, layout, setLayout, setLayoutChanged, layoutChange
               <FaTimes />
             </button>
           </div>
-          
+
           {/* Aspect Ratio Selection */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-3">Content Format</label>
@@ -735,20 +719,18 @@ const LayoutEditor = ({ works, layout, setLayout, setLayoutChanged, layoutChange
                   key={opt.value}
                   onClick={() => {
                     updateItemAspectRatio(selectedItem.workId, opt.value);
-                    setSelectedItem({...selectedItem, aspectRatio: opt.value});
+                    setSelectedItem({ ...selectedItem, aspectRatio: opt.value });
                   }}
-                  className={`p-4 rounded-lg border-2 transition-all flex flex-col items-center gap-2 ${
-                    selectedItem.aspectRatio === opt.value 
-                      ? 'border-accent bg-accent/10' 
+                  className={`p-4 rounded-lg border-2 transition-all flex flex-col items-center gap-2 ${selectedItem.aspectRatio === opt.value
+                      ? 'border-accent bg-accent/10'
                       : 'border-gray-200 hover:border-gray-300'
-                  }`}
+                    }`}
                 >
-                  <div className={`bg-gray-300 rounded ${
-                    opt.value === 'landscape' ? 'w-16 h-9' :
-                    opt.value === 'portrait' ? 'w-9 h-16' :
-                    opt.value === 'square' ? 'w-12 h-12' :
-                    'w-10 h-14'
-                  }`}></div>
+                  <div className={`bg-gray-300 rounded ${opt.value === 'landscape' ? 'w-16 h-9' :
+                      opt.value === 'portrait' ? 'w-9 h-16' :
+                        opt.value === 'square' ? 'w-12 h-12' :
+                          'w-10 h-14'
+                    }`}></div>
                   <span className="text-sm font-medium">{opt.label}</span>
                 </button>
               ))}
@@ -790,11 +772,11 @@ const LinkEditModal = ({ item, work, onSave, onClose }) => {
             <FaTimes />
           </button>
         </div>
-        
+
         <p className="text-sm text-gray-500 mb-4">
           Enter the link to open when "{work?.title}" is clicked.
         </p>
-        
+
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">URL</label>
@@ -806,7 +788,7 @@ const LinkEditModal = ({ item, work, onSave, onClose }) => {
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
             />
           </div>
-          
+
           <div className="flex gap-3">
             <button
               onClick={onClose}
@@ -836,7 +818,7 @@ const WorkFormModal = ({ formData, setFormData, onSubmit, onClose, isEditing, ge
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-      <div 
+      <div
         className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={e => e.stopPropagation()}
       >
@@ -883,9 +865,8 @@ const WorkFormModal = ({ formData, setFormData, onSubmit, onClose, isEditing, ge
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Content Type *</label>
             <div className="flex gap-4">
-              <label className={`flex-1 flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition ${
-                formData.media_type === 'image' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
-              }`}>
+              <label className={`flex-1 flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition ${formData.media_type === 'image' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+                }`}>
                 <input
                   type="radio"
                   name="media_type"
@@ -899,9 +880,8 @@ const WorkFormModal = ({ formData, setFormData, onSubmit, onClose, isEditing, ge
                   Image
                 </span>
               </label>
-              <label className={`flex-1 flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition ${
-                formData.media_type === 'video' ? 'border-red-500 bg-red-50' : 'border-gray-200 hover:border-gray-300'
-              }`}>
+              <label className={`flex-1 flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition ${formData.media_type === 'video' ? 'border-red-500 bg-red-50' : 'border-gray-200 hover:border-gray-300'
+                }`}>
                 <input
                   type="radio"
                   name="media_type"
@@ -930,11 +910,10 @@ const WorkFormModal = ({ formData, setFormData, onSubmit, onClose, isEditing, ge
                   <label className="block text-sm font-medium text-gray-700 mb-2">Video Platformu</label>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                     {['youtube', 'instagram', 'vimeo', 'tiktok'].map(platform => (
-                      <label key={platform} className={`flex items-center justify-center gap-2 p-3 border-2 rounded-lg cursor-pointer transition ${
-                        formData.video_platform === platform 
-                          ? 'border-blue-500 bg-blue-50 text-blue-900 font-medium' 
+                      <label key={platform} className={`flex items-center justify-center gap-2 p-3 border-2 rounded-lg cursor-pointer transition ${formData.video_platform === platform
+                          ? 'border-blue-500 bg-blue-50 text-blue-900 font-medium'
                           : 'border-gray-200 hover:border-gray-300 text-gray-600'
-                      }`}>
+                        }`}>
                         <input
                           type="radio"
                           name="video_platform"

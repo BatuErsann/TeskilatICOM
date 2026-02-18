@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../api';
+import { getImageUrl } from '../utils/imageUrl';
 
 const Brands = () => {
   const [brands, setBrands] = useState([]);
@@ -16,23 +17,7 @@ const Brands = () => {
     fetchBrands();
   }, []);
 
-  // Helper for image url - handles both local uploads and external URLs
-  const getImageUrl = (url) => {
-    if (!url) return '';
-    // If it's a local upload path, prepend the API base URL
-    if (url.startsWith('/uploads/')) {
-      return `http://localhost:5000${url}`;
-    }
-    // Handle Google Drive URLs
-    if (url.includes('drive.google.com')) {
-      const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
-      const fileId = idMatch ? idMatch[1] : null;
-      if (fileId) {
-        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w400-h400`;
-      }
-    }
-    return url;
-  };
+
 
   return (
     <div className="py-12">

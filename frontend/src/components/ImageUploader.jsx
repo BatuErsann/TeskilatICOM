@@ -1,10 +1,11 @@
 import { useState, useCallback, useRef } from 'react';
 import { FaCloudUploadAlt, FaSpinner, FaCheck, FaTimes, FaTrash, FaLink } from 'react-icons/fa';
 import api from '../api';
+import { getImageUrl } from '../utils/imageUrl';
 
-const ImageUploader = ({ 
-  value, 
-  onChange, 
+const ImageUploader = ({
+  value,
+  onChange,
   placeholder = "Görsel yüklemek için sürükle-bırak veya tıkla",
   accept = "image/*",
   maxSize = 10, // MB
@@ -118,18 +119,7 @@ const ImageUploader = ({
     }
   };
 
-  // Google Drive URL dönüştürme
-  const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.includes('drive.google.com')) {
-      const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
-      const fileId = idMatch ? idMatch[1] : null;
-      if (fileId) {
-        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w400-h300`;
-      }
-    }
-    return url;
-  };
+
 
   return (
     <div className={`space-y-3 ${className}`}>
@@ -138,11 +128,10 @@ const ImageUploader = ({
         <button
           type="button"
           onClick={() => setMode('upload')}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-            mode === 'upload' 
-              ? 'bg-blue-100 text-blue-700 border border-blue-300' 
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition ${mode === 'upload'
+              ? 'bg-blue-100 text-blue-700 border border-blue-300'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-          }`}
+            }`}
         >
           <FaCloudUploadAlt size={14} />
           Dosya Yükle
@@ -150,11 +139,10 @@ const ImageUploader = ({
         <button
           type="button"
           onClick={() => setMode('url')}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-            mode === 'url' 
-              ? 'bg-blue-100 text-blue-700 border border-blue-300' 
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition ${mode === 'url'
+              ? 'bg-blue-100 text-blue-700 border border-blue-300'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-          }`}
+            }`}
         >
           <FaLink size={14} />
           URL Gir
@@ -171,8 +159,8 @@ const ImageUploader = ({
           onClick={() => fileInputRef.current?.click()}
           className={`
             relative border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all duration-200
-            ${isDragging 
-              ? 'border-blue-500 bg-blue-50 scale-[1.02]' 
+            ${isDragging
+              ? 'border-blue-500 bg-blue-50 scale-[1.02]'
               : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50'
             }
             ${isUploading ? 'pointer-events-none opacity-70' : ''}
@@ -191,7 +179,7 @@ const ImageUploader = ({
               <FaSpinner className="mx-auto text-3xl text-blue-500 animate-spin" />
               <p className="text-gray-600">Yükleniyor... %{uploadProgress}</p>
               <div className="w-full bg-gray-200 rounded-full h-2">
-                <div 
+                <div
                   className="bg-blue-500 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}
                 />
@@ -245,7 +233,7 @@ const ImageUploader = ({
               }}
             />
           </div>
-          
+
           {/* Overlay with Remove Button */}
           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
             <button

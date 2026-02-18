@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaTrophy, FaExternalLinkAlt, FaCalendarAlt } from 'react-icons/fa';
 import api from '../api';
+import { getImageUrl } from '../utils/imageUrl';
 
 const Announcements = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -21,19 +22,7 @@ const Announcements = () => {
     fetchAnnouncements();
   }, []);
 
-  // Helper to convert Google Drive link to direct image link
-  const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.includes('drive.google.com')) {
-      const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
-      const fileId = idMatch ? idMatch[1] : null;
-      if (fileId) {
-        // Use larger size to preserve original image dimensions
-        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`;
-      }
-    }
-    return url;
-  };
+
 
   const formatDate = (dateString) => {
     if (!dateString) return '';

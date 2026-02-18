@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaPlus, FaTrash, FaEdit, FaTimes, FaLinkedin, FaUser, FaGripVertical } from 'react-icons/fa';
 import api from '../api';
+import { getImageUrl } from '../utils/imageUrl';
 import ImageUploader from './ImageUploader';
 
 const TeamManager = () => {
@@ -8,7 +9,7 @@ const TeamManager = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingMember, setEditingMember] = useState(null);
-  
+
   const [formData, setFormData] = useState({
     name: '',
     surname: '',
@@ -88,18 +89,7 @@ const TeamManager = () => {
     }
   };
 
-  // Get image URL (supports Google Drive)
-  const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.includes('drive.google.com')) {
-      const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
-      const fileId = idMatch ? idMatch[1] : null;
-      if (fileId) {
-        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w400-h400`;
-      }
-    }
-    return url;
-  };
+
 
   if (loading) {
     return (
@@ -145,7 +135,7 @@ const TeamManager = () => {
                   <FaUser className="text-6xl text-gray-300" />
                 </div>
               )}
-              
+
               {/* Overlay */}
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
                 <button
@@ -168,7 +158,7 @@ const TeamManager = () => {
                 #{member.display_order}
               </div>
             </div>
-            
+
             {/* Info */}
             <div className="p-4">
               <h3 className="font-bold text-gray-900">{member.name} {member.surname}</h3>
@@ -176,9 +166,9 @@ const TeamManager = () => {
                 <p className="text-sm text-gray-500">{member.title}</p>
               )}
               {member.linkedin_url && (
-                <a 
-                  href={member.linkedin_url} 
-                  target="_blank" 
+                <a
+                  href={member.linkedin_url}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 mt-2 text-blue-600 hover:text-blue-800 text-sm"
                 >
@@ -238,7 +228,7 @@ const TeamManager = () => {
                   <input
                     type="text"
                     value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                     required
                   />
@@ -250,7 +240,7 @@ const TeamManager = () => {
                   <input
                     type="text"
                     value={formData.surname}
-                    onChange={(e) => setFormData({...formData, surname: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, surname: e.target.value })}
                     className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                     required
                   />
@@ -262,7 +252,7 @@ const TeamManager = () => {
                   <input
                     type="text"
                     value={formData.title}
-                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     placeholder="e.g. Creative Director"
                     className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                   />
@@ -273,7 +263,7 @@ const TeamManager = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Profile Photo</label>
                   <ImageUploader
                     value={formData.image_url}
-                    onChange={(url) => setFormData({...formData, image_url: url})}
+                    onChange={(url) => setFormData({ ...formData, image_url: url })}
                     placeholder="Fotoğraf yüklemek için sürükle-bırak veya tıkla"
                     previewClassName="w-32 h-32 rounded-full mx-auto"
                   />
@@ -286,7 +276,7 @@ const TeamManager = () => {
                   <input
                     type="url"
                     value={formData.linkedin_url}
-                    onChange={(e) => setFormData({...formData, linkedin_url: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, linkedin_url: e.target.value })}
                     placeholder="https://linkedin.com/in/username"
                     className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                   />
@@ -298,7 +288,7 @@ const TeamManager = () => {
                   <input
                     type="number"
                     value={formData.display_order}
-                    onChange={(e) => setFormData({...formData, display_order: parseInt(e.target.value) || 1})}
+                    onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) || 1 })}
                     className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                     min="1"
                   />

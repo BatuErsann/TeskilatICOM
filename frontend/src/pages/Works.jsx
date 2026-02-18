@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { FaPlay, FaImage, FaExternalLinkAlt, FaTimes, FaInstagram, FaLinkedin, FaYoutube, FaTrophy, FaArrowRight, FaFacebook, FaTwitter, FaLink } from 'react-icons/fa';
 import { Link, useLocation } from 'react-router-dom';
 import api from '../api';
+import { getImageUrl } from '../utils/imageUrl';
 
 const Works = () => {
   const [works, setWorks] = useState([]);
@@ -112,17 +113,7 @@ const Works = () => {
     }
   };
 
-  const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.includes('drive.google.com')) {
-      const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
-      const fileId = idMatch ? idMatch[1] : null;
-      if (fileId) {
-        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1920-h1080`;
-      }
-    }
-    return url;
-  };
+
 
   const categories = ['all', ...new Set(works.map(w => w.category).filter(Boolean))];
 
