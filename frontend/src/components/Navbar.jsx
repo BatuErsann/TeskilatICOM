@@ -127,7 +127,7 @@ const Navbar = () => {
               autoPlay
               muted
               loop={false}
-              className={`w-48 md:w-60 h-auto safari-video-fix ${useCanvas || videoError ? 'hidden' : ''}`}
+              className={`w-56 md:w-60 h-auto safari-video-fix ${useCanvas || videoError ? 'hidden' : ''}`}
               style={{ background: 'transparent' }}
               onError={() => setVideoError(true)}
               preload="auto"
@@ -136,7 +136,7 @@ const Navbar = () => {
             {useCanvas && !videoError && (
               <canvas
                 ref={canvasRef}
-                className="w-48 md:w-60 h-auto"
+                className="w-56 md:w-60 h-auto"
                 style={{ background: 'transparent' }}
               />
             )}
@@ -145,7 +145,7 @@ const Navbar = () => {
               <img
                 src="/logo.svg"
                 alt="Logo"
-                className="w-48 md:w-60 h-auto"
+                className="w-56 md:w-60 h-auto"
               />
             )}
           </Link>
