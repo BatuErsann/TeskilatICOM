@@ -13,6 +13,7 @@ const brandRoutes = require('./routes/brandRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const { initDefaultAdmin } = require('./utils/initDefaultAdmin');
+const { initDatabase } = require('./utils/initDatabase');
 
 const app = express();
 
@@ -23,7 +24,7 @@ app.set('trust proxy', 1);
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
-  standardHeaders: true, 
+  standardHeaders: true,
   legacyHeaders: false,
   message: 'Too many requests from this IP, please try again after 15 minutes'
 });
@@ -70,7 +71,10 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
-  
+
+  // Initialize database tables first
+  await initDatabase();
+
   // Initialize default admin user
   await initDefaultAdmin();
 });

@@ -128,6 +128,17 @@ CREATE TABLE IF NOT EXISTS security_logs (
     INDEX idx_created_at (created_at)
 );
 
+-- ==================== SITE CONTENTS TABLE ====================
+CREATE TABLE IF NOT EXISTS site_contents (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    content_key VARCHAR(100) NOT NULL UNIQUE,
+    content_value TEXT,
+    page_name VARCHAR(50) DEFAULT 'general',
+    section_name VARCHAR(50) DEFAULT 'general',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 -- ==================== INITIAL DATA ====================
 
 -- Insert default hero image setting
