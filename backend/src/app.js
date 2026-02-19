@@ -46,7 +46,9 @@ app.use(morgan('dev')); // Logging
 app.use('/api/', limiter); // Apply global rate limit to API
 
 // Static dosyaları sun (yüklenen görseller için)
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// UPLOAD_DIR env variable ile kalıcı bir dizin belirlenebilir
+const uploadsPath = process.env.UPLOAD_DIR || path.join(__dirname, '../uploads');
+app.use('/uploads', express.static(uploadsPath));
 
 // Routes
 app.use('/api/auth', authLimiter, authRoutes); // Apply stricter limit to auth

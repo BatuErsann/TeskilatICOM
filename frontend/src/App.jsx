@@ -60,17 +60,17 @@ function App() {
         {/* Footer */}
         <footer className="bg-secondary border-t border-white/10">
           <div className="container mx-auto px-4 py-12">
-            <div className="flex flex-col md:flex-row justify-between items-start gap-8">
+            <div className="flex flex-col items-center md:flex-row md:justify-between md:items-start gap-8">
               {/* Left: Teşkilat Logo & Copyright */}
-              <div className="flex flex-col">
+              <div className="flex flex-col items-center md:items-start">
                 <img src="/logo.svg" alt="Teşkilat ICOM" className="h-16 w-auto mb-4" />
-                <p className="text-gray-400 text-sm pl-12">
+                <p className="text-gray-400 text-sm text-center md:text-left">
                   &copy; 2026 Teskilat<br />All rights reserved.
                 </p>
               </div>
 
               {/* Right: ICOM Logo & Contact */}
-              <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12">
+              <div className="flex flex-col items-center md:flex-row md:items-start gap-8 md:gap-12">
                 {/* Member of ICOM */}
                 <div className="flex items-center">
                   <img src={icomMemberLogo} alt="Member of ICOM" className="h-16 w-auto opacity-80 hover:opacity-100 transition-opacity" />

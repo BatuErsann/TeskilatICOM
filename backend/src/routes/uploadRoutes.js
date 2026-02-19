@@ -7,7 +7,9 @@ const { verifyToken } = require('../middlewares/authMiddleware');
 const router = express.Router();
 
 // Uploads klasörünü oluştur
-const uploadDir = path.join(__dirname, '../../uploads');
+// UPLOAD_DIR env variable ile kalıcı bir dizin belirlenebilir (Coolify/Docker deploy'larda önemli)
+// Belirtilmezse varsayılan olarak backend/uploads/ kullanılır
+const uploadDir = process.env.UPLOAD_DIR || path.join(__dirname, '../../uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
