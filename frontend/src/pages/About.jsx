@@ -54,7 +54,7 @@ const About = () => {
             {aboutBackground && (
               <div
                 className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: `url(${aboutBackground})` }}
+                style={{ backgroundImage: `url(${getImageUrl(aboutBackground)})` }}
               />
             )}
             {/* Overlay */}

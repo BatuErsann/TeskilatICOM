@@ -170,7 +170,7 @@ const Home = () => {
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat will-change-transform"
             style={{
-              backgroundImage: `url(${content.manifesto_bg_image})`,
+              backgroundImage: `url(${getImageUrl(content.manifesto_bg_image)})`,
               transform: `translateY(${scrollY * 0.5}px)`
             }}
           />

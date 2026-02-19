@@ -16,7 +16,7 @@ const Dashboard = () => {
   const [videos, setVideos] = useState([]);
   const [newVideoUrl, setNewVideoUrl] = useState('');
   const [newVideoTitle, setNewVideoTitle] = useState('');
-  const [activeTab, setActiveTab] = useState('users'); // users, content, works, announcements, team, security
+  const [activeTab, setActiveTab] = useState('works'); // works, services, announcements(news), team, brands, users, security
 
   // Security States
   const [qrCode, setQrCode] = useState('');
@@ -381,55 +381,47 @@ const Dashboard = () => {
     <div>
       <h1 className="text-3xl font-bold mb-8 text-white">Admin Dashboard</h1>
 
-      {/* Tabs */}
-      <div className="flex space-x-4 mb-8 border-b border-gray-700 pb-4">
-        <button
-          onClick={() => setActiveTab('users')}
-          className={`px-4 py-2 rounded ${activeTab === 'users' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
-        >
-          User Management
-        </button>
-        {/*
-        <button 
-          onClick={() => setActiveTab('content')}
-          className={`px-4 py-2 rounded ${activeTab === 'content' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
-        >
-          Content Management
-        </button>
-        */}
+      {/* Tabs - Navbar sıralamasıyla aynı */}
+      <div className="flex space-x-4 mb-8 border-b border-gray-700 pb-4 overflow-x-auto">
         <button
           onClick={() => setActiveTab('works')}
-          className={`px-4 py-2 rounded ${activeTab === 'works' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
+          className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === 'works' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
         >
-          Works Management
+          Works
+        </button>
+        <button
+          onClick={() => setActiveTab('services')}
+          className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === 'services' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
+        >
+          Services
         </button>
         <button
           onClick={() => setActiveTab('announcements')}
-          className={`px-4 py-2 rounded ${activeTab === 'announcements' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
+          className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === 'announcements' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
         >
-          Announcements
+          News
         </button>
         <button
           onClick={() => setActiveTab('team')}
-          className={`px-4 py-2 rounded ${activeTab === 'team' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
+          className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === 'team' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
         >
           Team
         </button>
         <button
           onClick={() => setActiveTab('brands')}
-          className={`px-4 py-2 rounded ${activeTab === 'brands' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
+          className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === 'brands' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
         >
           Brands
         </button>
         <button
-          onClick={() => setActiveTab('services')}
-          className={`px-4 py-2 rounded ${activeTab === 'services' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
+          onClick={() => setActiveTab('users')}
+          className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === 'users' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
         >
-          Services
+          Users
         </button>
         <button
           onClick={() => setActiveTab('security')}
-          className={`px-4 py-2 rounded ${activeTab === 'security' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
+          className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === 'security' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
         >
           Security
         </button>
@@ -911,9 +903,10 @@ const Dashboard = () => {
                     {announcementForm.image_url ? (
                       <div className="space-y-2">
                         <img
-                          src={announcementForm.image_url}
+                          src={getImageUrl(announcementForm.image_url)}
                           alt="Preview"
                           className="max-h-40 mx-auto rounded"
+                          referrerPolicy="no-referrer"
                         />
                         <p className="text-sm text-green-600 font-medium">✓ Resim yüklendi</p>
                         <p className="text-xs text-gray-500">Değiştirmek için yeni resim yükleyin</p>
