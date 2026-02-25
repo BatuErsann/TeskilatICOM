@@ -7,6 +7,8 @@ router.post('/register', authController.register);
 router.post('/login', authController.login);
 router.get('/profile', verifyToken, authController.getProfile);
 router.post('/change-password', verifyToken, authController.changePassword);
+router.post('/forgot-password', authController.forgotPassword);
+router.post('/reset-password', authController.resetPassword);
 
 // 2FA Routes
 router.post('/2fa/setup', verifyToken, authController.setup2FA);

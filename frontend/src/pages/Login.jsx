@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import api from '../api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,7 +13,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
+
     try {
       const payload = { email, password };
       if (require2FA) {
@@ -29,13 +29,13 @@ const Login = () => {
 
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
-      
+
       // Admin Gate URL'ine yönlendir (Eğer admin ise)
       // Not: Kullanıcı admin olsa bile, doğru URL'i bilmiyorsa 404 alır.
       // Bu yüzden burayı sadece '/' veya dashboard'a yönlendirebiliriz.
       // Ancak kullanıcı deneyimi için ana sayfaya atalım.
       navigate('/');
-      
+
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
       // Eğer 2FA kodu yanlışsa, inputu temizle
@@ -55,8 +55,8 @@ const Login = () => {
           <>
             <div>
               <label className="block text-gray-700">Email</label>
-              <input 
-                type="email" 
+              <input
+                type="email"
                 className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-accent text-gray-900"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -65,8 +65,8 @@ const Login = () => {
             </div>
             <div>
               <label className="block text-gray-700">Password</label>
-              <input 
-                type="password" 
+              <input
+                type="password"
                 className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-accent text-gray-900"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -78,8 +78,8 @@ const Login = () => {
           <div>
             <label className="block text-gray-700 font-bold">Two-Factor Authentication Code</label>
             <p className="text-sm text-gray-500 mb-2">Please enter the code from your authenticator app.</p>
-            <input 
-              type="text" 
+            <input
+              type="text"
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 text-center text-xl tracking-widest"
               value={twoFactorCode}
               onChange={(e) => setTwoFactorCode(e.target.value)}
@@ -89,10 +89,18 @@ const Login = () => {
             />
           </div>
         )}
-        
+
         <button type="submit" className="w-full bg-primary text-white py-2 rounded hover:bg-secondary transition">
           {require2FA ? 'Verify & Login' : 'Sign In'}
         </button>
+
+        {!require2FA && (
+          <div className="text-center">
+            <Link to="/forgot-password" className="text-accent hover:underline text-sm">
+              Şifremi Unuttum
+            </Link>
+          </div>
+        )}
       </form>
     </div>
   );

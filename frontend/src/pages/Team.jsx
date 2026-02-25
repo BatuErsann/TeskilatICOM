@@ -44,7 +44,7 @@ const Team = () => {
             <p className="text-gray-400">No team members yet.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
             {teamMembers.map((member) => (
               <div key={member.id} className="group relative overflow-hidden rounded-xl bg-gray-900">
                 <div className="aspect-[3/4] w-full">

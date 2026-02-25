@@ -47,20 +47,20 @@ const News = () => {
                         announcements.map((announcement, index) => (
                             <FadeIn key={announcement.id} delay={index * 100} direction="up">
                                 <div className="bg-secondary rounded-xl overflow-hidden shadow-2xl border border-accent/20">
-                                    <div className="md:flex">
+                                    <div className="md:flex md:items-start">
                                         {announcement.image_url && (
-                                            <div className="md:w-1/3 relative group cursor-pointer overflow-hidden">
+                                            <div className="md:w-2/5 md:flex-shrink-0 relative group cursor-pointer overflow-hidden aspect-video">
                                                 <img
                                                     src={getImageUrl(announcement.image_url)}
                                                     alt={announcement.title}
-                                                    className="w-full h-64 md:h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                                     referrerPolicy="no-referrer"
                                                 />
                                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                             </div>
                                         )}
-                                        <div className={`p-8 ${announcement.image_url ? 'md:w-2/3' : 'w-full'} relative`}>
-                                            <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-4">
+                                        <div className={`p-5 ${announcement.image_url ? 'md:flex-1' : 'w-full'} relative`}>
+                                            <h3 className="text-xl md:text-2xl font-display font-bold text-white mb-3">
                                                 {announcement.link_url ? (
                                                     <a
                                                         href={announcement.link_url}
@@ -75,15 +75,15 @@ const News = () => {
                                                 )}
                                             </h3>
 
-                                            <div className="w-12 h-1 bg-accent/30 mb-6"></div>
+                                            <div className="w-12 h-1 bg-accent/30 mb-3"></div>
 
                                             {announcement.short_description && (
-                                                <p className="text-gray-300 text-lg mb-4 leading-relaxed">
+                                                <p className="text-gray-300 text-base mb-2 leading-relaxed">
                                                     {announcement.short_description}
                                                 </p>
                                             )}
                                             {announcement.full_content && (
-                                                <p className="text-gray-400 mb-6 leading-relaxed">
+                                                <p className="text-gray-400 mb-3 leading-relaxed">
                                                     {announcement.full_content}
                                                 </p>
                                             )}

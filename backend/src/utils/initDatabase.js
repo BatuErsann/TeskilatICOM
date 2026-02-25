@@ -5,11 +5,11 @@ const db = require('../config/db');
  * Backend başlatıldığında çalışır - tablolar zaten varsa tekrar oluşturmaz.
  */
 async function initDatabase() {
-    try {
-        console.log('🔄 Veritabanı tabloları kontrol ediliyor...');
+  try {
+    console.log('🔄 Veritabanı tabloları kontrol ediliyor...');
 
-        // Users tablosu
-        await db.execute(`
+    // Users tablosu
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(50) NOT NULL UNIQUE,
@@ -21,8 +21,8 @@ async function initDatabase() {
       )
     `);
 
-        // Site Settings tablosu
-        await db.execute(`
+    // Site Settings tablosu
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS site_settings (
         id INT AUTO_INCREMENT PRIMARY KEY,
         setting_key VARCHAR(100) NOT NULL UNIQUE,
@@ -32,8 +32,8 @@ async function initDatabase() {
       )
     `);
 
-        // Videos tablosu
-        await db.execute(`
+    // Videos tablosu
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS videos (
         id INT AUTO_INCREMENT PRIMARY KEY,
         title VARCHAR(255),
@@ -43,8 +43,8 @@ async function initDatabase() {
       )
     `);
 
-        // Works tablosu
-        await db.execute(`
+    // Works tablosu
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS works (
         id INT AUTO_INCREMENT PRIMARY KEY,
         title VARCHAR(255) NOT NULL,
@@ -64,8 +64,8 @@ async function initDatabase() {
       )
     `);
 
-        // Works Layout tablosu
-        await db.execute(`
+    // Works Layout tablosu
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS works_layout (
         id INT AUTO_INCREMENT PRIMARY KEY,
         layout_data JSON,
@@ -75,8 +75,8 @@ async function initDatabase() {
       )
     `);
 
-        // Announcements tablosu
-        await db.execute(`
+    // Announcements tablosu
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS announcements (
         id INT AUTO_INCREMENT PRIMARY KEY,
         title VARCHAR(255) NOT NULL,
@@ -92,8 +92,8 @@ async function initDatabase() {
       )
     `);
 
-        // Team Members tablosu
-        await db.execute(`
+    // Team Members tablosu
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS team_members (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
@@ -107,8 +107,8 @@ async function initDatabase() {
       )
     `);
 
-        // Brands tablosu
-        await db.execute(`
+    // Brands tablosu
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS brands (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
@@ -118,8 +118,8 @@ async function initDatabase() {
       )
     `);
 
-        // Contact Messages tablosu
-        await db.execute(`
+    // Contact Messages tablosu
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS contact_messages (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
@@ -130,8 +130,8 @@ async function initDatabase() {
       )
     `);
 
-        // Services tablosu
-        await db.execute(`
+    // Services tablosu
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS services (
         id INT AUTO_INCREMENT PRIMARY KEY,
         title VARCHAR(100) NOT NULL,
@@ -142,8 +142,8 @@ async function initDatabase() {
       )
     `);
 
-        // Security Logs tablosu
-        await db.execute(`
+    // Security Logs tablosu
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS security_logs (
         id INT AUTO_INCREMENT PRIMARY KEY,
         event_type VARCHAR(50) NOT NULL,
@@ -156,8 +156,8 @@ async function initDatabase() {
       )
     `);
 
-        // Site Contents tablosu
-        await db.execute(`
+    // Site Contents tablosu
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS site_contents (
         id INT AUTO_INCREMENT PRIMARY KEY,
         content_key VARCHAR(100) NOT NULL UNIQUE,
@@ -169,16 +169,39 @@ async function initDatabase() {
       )
     `);
 
-        // Default hero image ayarını ekle
-        await db.execute(`
+    // Default hero image ayarını ekle
+    await db.execute(`
       INSERT IGNORE INTO site_settings (setting_key, setting_value) VALUES ('hero_image', '')
     `);
 
-        console.log('✅ Tüm veritabanı tabloları hazır!');
-    } catch (error) {
-        console.error('❌ Veritabanı tabloları oluşturulurken hata:', error.message);
-        // Hata olsa bile uygulama çalışmaya devam etsin
+    // Password Reset Tokens tablosu
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS password_reset_tokens (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        token_hash VARCHAR(255) NOT NULL,
+        expires_at DATETIME NOT NULL,
+        used BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_token_hash (token_hash),
+        INDEX idx_expires (expires_at),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    `);
+
+    // 2FA sütunlarını ekle (yoksa)
+    try {
+      await db.execute(`ALTER TABLE users ADD COLUMN IF NOT EXISTS two_factor_secret VARCHAR(255) DEFAULT NULL`);
+      await db.execute(`ALTER TABLE users ADD COLUMN IF NOT EXISTS two_factor_enabled BOOLEAN DEFAULT FALSE`);
+    } catch (e) {
+      // Sütunlar zaten varsa hata vermesini engelle
     }
+
+    console.log('✅ Tüm veritabanı tabloları hazır!');
+  } catch (error) {
+    console.error('❌ Veritabanı tabloları oluşturulurken hata:', error.message);
+    // Hata olsa bile uygulama çalışmaya devam etsin
+  }
 }
 
 module.exports = { initDatabase };
