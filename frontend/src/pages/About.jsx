@@ -92,7 +92,7 @@ const About = () => {
               <div className="w-24 h-1 bg-accent mx-auto mt-4"></div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
               {teamMembers.map((member) => (
                 <div key={member.id} className="group relative overflow-hidden rounded-xl bg-secondary">
                   <div className="aspect-[3/4] w-full">
