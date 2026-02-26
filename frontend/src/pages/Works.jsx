@@ -319,8 +319,10 @@ const WorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
       onClick={onClose}
     >
       <div
-        className={`relative bg-gray-900 rounded-2xl overflow-hidden shadow-2xl ${isShort ? 'max-w-sm' : 'max-w-5xl'
-          } w-full max-h-[90vh] flex flex-col`}
+        className={`relative bg-gray-900 rounded-2xl overflow-hidden shadow-2xl ${isVideo
+            ? (isShort ? 'max-w-sm w-full' : 'max-w-5xl w-full')
+            : 'w-auto max-w-[90vw]'
+          } max-h-[90vh] flex flex-col`}
         onClick={e => e.stopPropagation()}
       >
         {/* Close Button */}
