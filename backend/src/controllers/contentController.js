@@ -7,14 +7,14 @@ async function getVideoThumbnail(media_url, platform) {
   try {
     // Node.js 18+ için global fetch, eski sürümler için fallback
     const fetchFunc = typeof fetch !== 'undefined' ? fetch : require('node-fetch');
-    
+
     switch (platform) {
       case 'youtube': {
         const match = media_url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]+)/);
         const videoId = match ? match[1] : null;
         return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : null;
       }
-      
+
       case 'vimeo': {
         const match = media_url.match(/vimeo\.com\/(\d+)/);
         const videoId = match ? match[1] : null;
@@ -29,7 +29,7 @@ async function getVideoThumbnail(media_url, platform) {
         }
         return null;
       }
-      
+
       case 'tiktok': {
         try {
           const response = await fetchFunc(`https://www.tiktok.com/oembed?url=${encodeURIComponent(media_url)}`);
@@ -39,7 +39,7 @@ async function getVideoThumbnail(media_url, platform) {
           return null;
         }
       }
-      
+
       case 'instagram': {
         try {
           // Instagram oembed API (public postlar için)
@@ -58,7 +58,7 @@ async function getVideoThumbnail(media_url, platform) {
           }
         }
       }
-      
+
       default:
         return null;
     }
@@ -220,18 +220,18 @@ exports.getWorkById = async (req, res) => {
 
 // Add Work (Admin only)
 exports.addWork = async (req, res) => {
-  const { title, description, media_type, media_url, video_platform, thumbnail_url, link_url, instagram_url, linkedin_url, youtube_url, category } = req.body;
+  const { title, description, media_type, media_url, video_platform, thumbnail_url, link_url, instagram_url, linkedin_url, youtube_url, tiktok_url, category } = req.body;
   try {
     let finalThumbnail = thumbnail_url;
-    
+
     // Eğer video ve thumbnail yoksa otomatik al
     if (media_type === 'video' && !thumbnail_url && video_platform) {
       finalThumbnail = await getVideoThumbnail(media_url, video_platform);
     }
-    
+
     const [result] = await db.execute(
-      'INSERT INTO works (title, description, media_type, media_url, video_platform, thumbnail_url, link_url, instagram_url, linkedin_url, youtube_url, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [title, description, media_type, media_url, video_platform || 'youtube', finalThumbnail || null, link_url || null, instagram_url || null, linkedin_url || null, youtube_url || null, category || null]
+      'INSERT INTO works (title, description, media_type, media_url, video_platform, thumbnail_url, link_url, instagram_url, linkedin_url, youtube_url, tiktok_url, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [title, description, media_type, media_url, video_platform || 'youtube', finalThumbnail || null, link_url || null, instagram_url || null, linkedin_url || null, youtube_url || null, tiktok_url || null, category || null]
     );
     res.status(201).json({ message: 'Work added successfully', id: result.insertId });
   } catch (err) {
@@ -242,18 +242,18 @@ exports.addWork = async (req, res) => {
 // Update Work (Admin only)
 exports.updateWork = async (req, res) => {
   const { id } = req.params;
-  const { title, description, media_type, media_url, video_platform, thumbnail_url, link_url, instagram_url, linkedin_url, youtube_url, category } = req.body;
+  const { title, description, media_type, media_url, video_platform, thumbnail_url, link_url, instagram_url, linkedin_url, youtube_url, tiktok_url, category } = req.body;
   try {
     let finalThumbnail = thumbnail_url;
-    
+
     // Eğer video ve thumbnail yoksa otomatik al
     if (media_type === 'video' && !thumbnail_url && video_platform) {
       finalThumbnail = await getVideoThumbnail(media_url, video_platform);
     }
-    
+
     await db.execute(
-      'UPDATE works SET title = ?, description = ?, media_type = ?, media_url = ?, video_platform = ?, thumbnail_url = ?, link_url = ?, instagram_url = ?, linkedin_url = ?, youtube_url = ?, category = ? WHERE id = ?',
-      [title, description, media_type, media_url, video_platform || 'youtube', finalThumbnail || null, link_url || null, instagram_url || null, linkedin_url || null, youtube_url || null, category || null, id]
+      'UPDATE works SET title = ?, description = ?, media_type = ?, media_url = ?, video_platform = ?, thumbnail_url = ?, link_url = ?, instagram_url = ?, linkedin_url = ?, youtube_url = ?, tiktok_url = ?, category = ? WHERE id = ?',
+      [title, description, media_type, media_url, video_platform || 'youtube', finalThumbnail || null, link_url || null, instagram_url || null, linkedin_url || null, youtube_url || null, tiktok_url || null, category || null, id]
     );
     res.json({ message: 'Work updated successfully' });
   } catch (err) {
@@ -314,7 +314,7 @@ exports.saveWorksLayout = async (req, res) => {
   try {
     // Check if layout exists
     const [check] = await db.execute('SELECT * FROM works_layout ORDER BY id DESC LIMIT 1');
-    
+
     if (check.length > 0) {
       await db.execute('UPDATE works_layout SET layout_data = ? WHERE id = ?', [JSON.stringify(layout_data), check[0].id]);
     } else {
@@ -346,7 +346,7 @@ exports.saveFeaturedWorksLayout = async (req, res) => {
   try {
     // Check if featured layout exists
     const [check] = await db.execute("SELECT * FROM works_layout WHERE layout_type = 'featured' ORDER BY id DESC LIMIT 1");
-    
+
     if (check.length > 0) {
       await db.execute('UPDATE works_layout SET layout_data = ? WHERE id = ?', [JSON.stringify(layout_data), check[0].id]);
     } else {
@@ -581,14 +581,14 @@ exports.updateContent = async (req, res) => {
   // Expecting { key, value, page, section } or array of them
   try {
     const items = Array.isArray(req.body) ? req.body : [req.body];
-    
+
     for (const item of items) {
-        if (item.key && item.value !== undefined) {
-            await db.execute(
-                'INSERT INTO site_contents (content_key, content_value, page_name, section_name) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE content_value = ?',
-                [item.key, item.value, item.page || 'general', item.section || 'general', item.value]
-            );
-        }
+      if (item.key && item.value !== undefined) {
+        await db.execute(
+          'INSERT INTO site_contents (content_key, content_value, page_name, section_name) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE content_value = ?',
+          [item.key, item.value, item.page || 'general', item.section || 'general', item.value]
+        );
+      }
     }
     res.json({ message: 'Content updated successfully' });
   } catch (err) {

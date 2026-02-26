@@ -57,6 +57,7 @@ async function initDatabase() {
         instagram_url VARCHAR(500),
         linkedin_url VARCHAR(500),
         youtube_url VARCHAR(500),
+        tiktok_url VARCHAR(500),
         category VARCHAR(100),
         is_featured BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -195,6 +196,13 @@ async function initDatabase() {
       await db.execute(`ALTER TABLE users ADD COLUMN IF NOT EXISTS two_factor_enabled BOOLEAN DEFAULT FALSE`);
     } catch (e) {
       // Sütunlar zaten varsa hata vermesini engelle
+    }
+
+    // tiktok_url sütununu ekle (mevcut production DB için migration)
+    try {
+      await db.execute(`ALTER TABLE works ADD COLUMN IF NOT EXISTS tiktok_url VARCHAR(500) DEFAULT NULL`);
+    } catch (e) {
+      // Sütun zaten varsa hata vermesini engelle
     }
 
     console.log('✅ Tüm veritabanı tabloları hazır!');

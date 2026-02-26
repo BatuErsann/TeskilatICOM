@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FaPlay, FaImage, FaExternalLinkAlt, FaTimes, FaInstagram, FaLinkedin, FaYoutube, FaTrophy, FaArrowRight, FaFacebook, FaTwitter, FaLink } from 'react-icons/fa';
+import { SiTiktok } from 'react-icons/si';
 import { Link, useLocation } from 'react-router-dom';
 import api from '../api';
 import { getImageUrl } from '../utils/imageUrl';
@@ -320,8 +321,8 @@ const WorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
     >
       <div
         className={`relative bg-gray-900 rounded-2xl overflow-hidden shadow-2xl ${isVideo
-            ? (isShort ? 'max-w-sm w-full' : 'max-w-5xl w-full')
-            : 'w-auto max-w-[90vw]'
+          ? (isShort ? 'max-w-sm w-full' : 'max-w-5xl w-full')
+          : 'w-auto max-w-[90vw]'
           } max-h-[90vh] flex flex-col`}
         onClick={e => e.stopPropagation()}
       >
@@ -475,6 +476,18 @@ const WorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
                 title="View on YouTube"
               >
                 <FaYoutube size={20} />
+              </a>
+            )}
+
+            {work.tiktok_url && (
+              <a
+                href={work.tiktok_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center w-10 h-10 bg-white/10 hover:bg-black hover:text-white text-white rounded-lg transition"
+                title="View on TikTok"
+              >
+                <SiTiktok size={18} />
               </a>
             )}
           </div>

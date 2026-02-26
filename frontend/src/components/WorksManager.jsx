@@ -28,6 +28,7 @@ const WorksManager = () => {
     instagram_url: '',
     linkedin_url: '',
     youtube_url: '',
+    tiktok_url: '',
     category: ''
   });
 
@@ -115,6 +116,7 @@ const WorksManager = () => {
       instagram_url: work.instagram_url || '',
       linkedin_url: work.linkedin_url || '',
       youtube_url: work.youtube_url || '',
+      tiktok_url: work.tiktok_url || '',
       category: work.category || ''
     });
     setShowAddModal(true);
@@ -722,14 +724,14 @@ const LayoutEditor = ({ works, layout, setLayout, setLayoutChanged, layoutChange
                     setSelectedItem({ ...selectedItem, aspectRatio: opt.value });
                   }}
                   className={`p-4 rounded-lg border-2 transition-all flex flex-col items-center gap-2 ${selectedItem.aspectRatio === opt.value
-                      ? 'border-accent bg-accent/10'
-                      : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-accent bg-accent/10'
+                    : 'border-gray-200 hover:border-gray-300'
                     }`}
                 >
                   <div className={`bg-gray-300 rounded ${opt.value === 'landscape' ? 'w-16 h-9' :
-                      opt.value === 'portrait' ? 'w-9 h-16' :
-                        opt.value === 'square' ? 'w-12 h-12' :
-                          'w-10 h-14'
+                    opt.value === 'portrait' ? 'w-9 h-16' :
+                      opt.value === 'square' ? 'w-12 h-12' :
+                        'w-10 h-14'
                     }`}></div>
                   <span className="text-sm font-medium">{opt.label}</span>
                 </button>
@@ -911,8 +913,8 @@ const WorkFormModal = ({ formData, setFormData, onSubmit, onClose, isEditing, ge
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                     {['youtube', 'instagram', 'vimeo', 'tiktok'].map(platform => (
                       <label key={platform} className={`flex items-center justify-center gap-2 p-3 border-2 rounded-lg cursor-pointer transition ${formData.video_platform === platform
-                          ? 'border-blue-500 bg-blue-50 text-blue-900 font-medium'
-                          : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                        ? 'border-blue-500 bg-blue-50 text-blue-900 font-medium'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-600'
                         }`}>
                         <input
                           type="radio"
@@ -981,7 +983,7 @@ const WorkFormModal = ({ formData, setFormData, onSubmit, onClose, isEditing, ge
           </div>
 
           {/* Social Media Links */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Instagram URL</label>
               <input
@@ -1013,6 +1015,17 @@ const WorkFormModal = ({ formData, setFormData, onSubmit, onClose, isEditing, ge
                 onChange={handleChange}
                 className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                 placeholder="https://youtube.com/..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">TikTok URL</label>
+              <input
+                type="url"
+                name="tiktok_url"
+                value={formData.tiktok_url}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                placeholder="https://tiktok.com/@..."
               />
             </div>
           </div>

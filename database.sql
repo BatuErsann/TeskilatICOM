@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS works (
     instagram_url VARCHAR(500),
     linkedin_url VARCHAR(500),
     youtube_url VARCHAR(500),
+    tiktok_url VARCHAR(500),
     category VARCHAR(100),
     is_featured BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
