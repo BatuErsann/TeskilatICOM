@@ -332,84 +332,84 @@ const WorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
         </button>
 
         {/* Media */}
-        <div className={`bg-black flex-shrink-0 ${isShort ? 'aspect-[9/16]' : 'aspect-video'}`}>
-          {isVideo ? (
-            <>
-              {platform === 'youtube' && youtubeId && (
-                <iframe
-                  src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1`}
-                  title={work.title}
-                  className="w-full h-full"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              )}
-              {platform === 'vimeo' && vimeoId && (
-                <iframe
-                  src={`https://player.vimeo.com/video/${vimeoId}?autoplay=1`}
-                  title={work.title}
-                  className="w-full h-full"
-                  frameBorder="0"
-                  allow="autoplay; fullscreen; picture-in-picture"
-                  allowFullScreen
-                />
-              )}
-              {platform === 'instagram' && (
-                <div className="w-full h-full flex items-center justify-center text-white">
-                  <div className="text-center">
-                    <p className="mb-4">Instagram videoları harici bağlantı olarak açılır</p>
-                    <a
-                      href={work.media_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full hover:scale-105 transition inline-block"
-                    >
-                      Instagram'da Aç
-                    </a>
-                  </div>
+        {isVideo ? (
+          <div className={`bg-black flex-shrink-0 ${isShort ? 'aspect-[9/16]' : 'aspect-video'}`}>
+            {platform === 'youtube' && youtubeId && (
+              <iframe
+                src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1`}
+                title={work.title}
+                className="w-full h-full"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            )}
+            {platform === 'vimeo' && vimeoId && (
+              <iframe
+                src={`https://player.vimeo.com/video/${vimeoId}?autoplay=1`}
+                title={work.title}
+                className="w-full h-full"
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen
+              />
+            )}
+            {platform === 'instagram' && (
+              <div className="w-full h-full flex items-center justify-center text-white">
+                <div className="text-center">
+                  <p className="mb-4">Instagram videoları harici bağlantı olarak açılır</p>
+                  <a
+                    href={work.media_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full hover:scale-105 transition inline-block"
+                  >
+                    Instagram'da Aç
+                  </a>
                 </div>
-              )}
-              {platform === 'tiktok' && (
-                <div className="w-full h-full flex items-center justify-center text-white">
-                  <div className="text-center">
-                    <p className="mb-4">TikTok videoları harici bağlantı olarak açılır</p>
-                    <a
-                      href={work.media_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-6 py-3 bg-black rounded-full hover:scale-105 transition inline-block"
-                    >
-                      TikTok'ta Aç
-                    </a>
-                  </div>
+              </div>
+            )}
+            {platform === 'tiktok' && (
+              <div className="w-full h-full flex items-center justify-center text-white">
+                <div className="text-center">
+                  <p className="mb-4">TikTok videoları harici bağlantı olarak açılır</p>
+                  <a
+                    href={work.media_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-6 py-3 bg-black rounded-full hover:scale-105 transition inline-block"
+                  >
+                    TikTok'ta Aç
+                  </a>
                 </div>
-              )}
-              {(!youtubeId && !vimeoId && platform === 'other') && (
-                <div className="w-full h-full flex items-center justify-center text-white">
-                  <div className="text-center">
-                    <p className="mb-4">Video harici bağlantı olarak açılır</p>
-                    <a
-                      href={work.media_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-6 py-3 bg-blue-600 rounded-full hover:scale-105 transition inline-block"
-                    >
-                      Videoyu Aç
-                    </a>
-                  </div>
+              </div>
+            )}
+            {(!youtubeId && !vimeoId && platform === 'other') && (
+              <div className="w-full h-full flex items-center justify-center text-white">
+                <div className="text-center">
+                  <p className="mb-4">Video harici bağlantı olarak açılır</p>
+                  <a
+                    href={work.media_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-6 py-3 bg-blue-600 rounded-full hover:scale-105 transition inline-block"
+                  >
+                    Videoyu Aç
+                  </a>
                 </div>
-              )}
-            </>
-          ) : (
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="bg-black flex-shrink-0 flex items-center justify-center max-h-[70vh]">
             <img
               src={getImageUrl(work.media_url)}
               alt={work.title}
-              className="w-full h-full object-contain"
+              className="max-w-full max-h-[70vh] object-contain"
               referrerPolicy="no-referrer"
             />
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Info */}
         <div className="p-5 overflow-y-auto">
