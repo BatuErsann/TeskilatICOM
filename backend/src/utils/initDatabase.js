@@ -200,9 +200,13 @@ async function initDatabase() {
 
     // tiktok_url sütununu ekle (mevcut production DB için migration)
     try {
-      await db.execute(`ALTER TABLE works ADD COLUMN IF NOT EXISTS tiktok_url VARCHAR(500) DEFAULT NULL`);
+      const [cols] = await db.execute(`SHOW COLUMNS FROM works LIKE 'tiktok_url'`);
+      if (cols.length === 0) {
+        await db.execute(`ALTER TABLE works ADD COLUMN tiktok_url VARCHAR(500) DEFAULT NULL`);
+        console.log('✅ works.tiktok_url kolonu eklendi');
+      }
     } catch (e) {
-      // Sütun zaten varsa hata vermesini engelle
+      console.warn('tiktok_url migration atlandı:', e.message);
     }
 
     console.log('✅ Tüm veritabanı tabloları hazır!');

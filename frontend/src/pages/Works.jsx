@@ -141,6 +141,7 @@ const Works = () => {
     if (url.includes('youtube.com') || url.includes('youtu.be')) return <FaYoutube size={24} />;
     if (url.includes('facebook.com')) return <FaFacebook size={24} />;
     if (url.includes('twitter.com') || url.includes('x.com')) return <FaTwitter size={24} />;
+    if (url.includes('tiktok.com')) return <SiTiktok size={22} />;
     return <FaLink size={24} />;
   };
 
