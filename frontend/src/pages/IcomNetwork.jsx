@@ -12,7 +12,7 @@ const IcomNetwork = () => {
       text: '⁠We share knowledge, resources, and experience to empower us, and our clients, grow.'
     },
     {
-      text: 'We elevate our work through, mentorship, training, and global collaboration.'
+      text: 'We elevate our work through mentorship, training, and global collaboration.'
     },
     {
       text: 'We scale our services and unlock international opportunities without increasing overhead.'
