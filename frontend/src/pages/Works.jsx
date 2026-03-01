@@ -9,7 +9,6 @@ const Works = () => {
   const [works, setWorks] = useState([]);
   const [layout, setLayout] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedWork, setSelectedWork] = useState(null);
   const [filter, setFilter] = useState('all');
   const location = useLocation();
 
@@ -174,7 +173,6 @@ const Works = () => {
               work={work}
               getImageUrl={getImageUrl}
               getYouTubeId={getYouTubeId}
-              onClick={() => setSelectedWork(work)}
             />
           ))}
         </div>
@@ -185,25 +183,25 @@ const Works = () => {
             <p className="text-gray-500 text-lg">No works added yet.</p>
           </div>
         )}
-
-
       </div>
-
-      {/* Modal */}
-      {selectedWork && (
-        <WorkModal
-          work={selectedWork}
-          onClose={() => setSelectedWork(null)}
-          getImageUrl={getImageUrl}
-          getYouTubeId={getYouTubeId}
-        />
-      )}
     </div>
   );
 };
 
+// En uygun linki döndürür
+const getWorkLink = (work) => {
+  if (work.link_url || work.layoutConfig?.link_url) return work.link_url || work.layoutConfig?.link_url;
+  if (work.media_type === 'video' && work.media_url) return work.media_url;
+  if (work.instagram_url) return work.instagram_url;
+  if (work.tiktok_url) return work.tiktok_url;
+  if (work.youtube_url) return work.youtube_url;
+  if (work.linkedin_url) return work.linkedin_url;
+  return null;
+};
+
 // Masonry Card - Each content with its own aspect ratio
-const MasonryCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
+const MasonryCard = ({ work, getImageUrl, getYouTubeId }) => {
+  const link = getWorkLink(work);
   const [loaded, setLoaded] = useState(false);
   const isVideo = work.media_type === 'video';
   const platform = work.video_platform || (work.media_url?.includes('youtube.com') || work.media_url?.includes('youtu.be') ? 'youtube' : null);
@@ -234,9 +232,11 @@ const MasonryCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
   };
 
   return (
-    <div
-      className="break-inside-avoid mb-4 group cursor-pointer"
-      onClick={onClick}
+    <a
+      href={link || undefined}
+      target={link ? '_blank' : undefined}
+      rel={link ? 'noopener noreferrer' : undefined}
+      className={`break-inside-avoid mb-4 group block ${link ? 'cursor-pointer' : 'cursor-default'}`}
     >
       <div className={`relative overflow-hidden rounded-xl bg-gray-800 ${getAspectRatio()}`}>
         {/* Thumbnail */}
@@ -291,7 +291,7 @@ const MasonryCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
           </div>
         )}
       </div>
-    </div>
+    </a>
   );
 };
 

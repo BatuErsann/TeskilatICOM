@@ -1,4 +1,4 @@
-import { FaHandshake, FaLightbulb, FaGlobe, FaChartLine } from 'react-icons/fa';
+import { FaGlobe } from 'react-icons/fa';
 import icomLogo from '../../assets/images/icom-network.svg';
 import icomWorld from '../../assets/images/icom-world.svg';
 import madridWorkers from '../../assets/images/madridworkers.jpg';
@@ -6,24 +6,16 @@ import madridWorkers from '../../assets/images/madridworkers.jpg';
 const IcomNetwork = () => {
   const benefits = [
     {
-      icon: FaHandshake,
-      title: 'We work with trusted agency partners',
-      description: 'to deliver consistent and global execution.'
+      text: 'We work with trusted agency partners to deliver consistent and global execution.'
     },
     {
-      icon: FaLightbulb,
-      title: 'We share knowledge, resources, and experience',
-      description: 'to empower us and our clients, grow.'
+      text: 'We share knowledge, resources, and experience to empower us and our clients, grow.'
     },
     {
-      icon: FaGlobe,
-      title: 'We elevate our work',
-      description: 'through, mentorship, training, and global collaboration.'
+      text: 'We elevate our work through, mentorship, training, and global collaboration.'
     },
     {
-      icon: FaChartLine,
-      title: 'We scale our services',
-      description: 'and unlock international opportunities without increasing overhead.'
+      text: 'We scale our services and unlock international opportunities without increasing overhead.'
     }
   ];
 
@@ -41,13 +33,13 @@ const IcomNetwork = () => {
               </div>
 
               <p className="text-gray-300 text-lg mb-8 max-w-md">
-                ICOM is an exclusive global marketing network of over 70 like-minded 
+                ICOM is an exclusive global marketing network of over 70 like-minded
                 independent agencies with a shared commitment to growth and collaboration.
               </p>
 
-              <a 
-                href="https://icomagencies.com/" 
-                target="_blank" 
+              <a
+                href="https://icomagencies.com/"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block bg-accent hover:bg-accent/80 text-primary px-8 py-3 rounded-full font-medium transition"
               >
@@ -70,29 +62,29 @@ const IcomNetwork = () => {
             {/* Left Content */}
             <div>
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">Being a member</h2>
-              
+
               <p className="text-gray-300 text-lg mb-6">
-                As members of ICOM, we are part of a trusted, non-competing 
+                As members of ICOM, we are part of a trusted, non-competing
                 community that shares knowledge, resources, and opportunities.
               </p>
-              
+
               <p className="text-gray-300 text-lg mb-6">
-                This means our clients benefit from local expertise powered by 
-                global insight, rapid access to market intelligence, and access 
-                to experts through real-world collaboration, all delivered with 
+                This means our clients benefit from local expertise powered by
+                global insight, rapid access to market intelligence, and access
+                to experts through real-world collaboration, all delivered with
                 the personal attention of an independent agency.
               </p>
-              
+
               <p className="text-gray-300 text-lg">
-                ICOM keeps us agile, informed, and connected so we can 
-                deliver smarter, faster, and more impactful work, wherever it's 
+                ICOM keeps us agile, informed, and connected so we can
+                deliver smarter, faster, and more impactful work, wherever it's
                 needed.
               </p>
             </div>
 
             {/* Right Content - Madrid Workers Image */}
             <div className="relative flex items-center justify-center">
-              <img 
+              <img
                 src={madridWorkers}
                 alt="Madrid Workers - ICOM Network Event"
                 className="max-w-sm lg:max-w-md rounded-lg shadow-lg"
@@ -109,12 +101,7 @@ const IcomNetwork = () => {
             {benefits.map((benefit, index) => (
               <div key={index} className="flex items-start gap-4">
                 <div className="w-3 h-3 bg-accent rounded-full mt-2 flex-shrink-0"></div>
-                <div>
-                  <p className="text-gray-300">
-                    <span className="font-semibold text-white">{benefit.title}</span>{' '}
-                    <span>{benefit.description}</span>
-                  </p>
-                </div>
+                <p className="text-gray-300">{benefit.text}</p>
               </div>
             ))}
           </div>
