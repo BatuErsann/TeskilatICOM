@@ -14,7 +14,6 @@ const Home = () => {
   const [showModal, setShowModal] = useState(false);
   const [featuredWorks, setFeaturedWorks] = useState([]);
   const [layout, setLayout] = useState([]);
-  const [selectedWork, setSelectedWork] = useState(null);
   const [services, setServices] = useState([]);
   const [content, setContent] = useState({});
 
@@ -212,7 +211,6 @@ const Home = () => {
                   work={work}
                   getImageUrl={getImageUrl}
                   getYouTubeId={getYouTubeId}
-                  onClick={() => setSelectedWork(work)}
                 />
               </FadeIn>
             ))}
@@ -372,21 +370,24 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Work Modal */}
-      {selectedWork && (
-        <HomeWorkModal
-          work={selectedWork}
-          onClose={() => setSelectedWork(null)}
-          getImageUrl={getImageUrl}
-          getYouTubeId={getYouTubeId}
-        />
-      )}
     </div>
   );
 };
 
+// En uygun linki döndürür
+const getWorkLink = (work) => {
+  if (work.link_url || work.layoutConfig?.link_url) return work.link_url || work.layoutConfig?.link_url;
+  if (work.media_type === 'video' && work.media_url) return work.media_url;
+  if (work.instagram_url) return work.instagram_url;
+  if (work.tiktok_url) return work.tiktok_url;
+  if (work.youtube_url) return work.youtube_url;
+  if (work.linkedin_url) return work.linkedin_url;
+  return null;
+};
+
 // Hero Work Card Component
-const HeroWorkCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
+const HeroWorkCard = ({ work, getImageUrl, getYouTubeId }) => {
+  const link = getWorkLink(work);
   const [loaded, setLoaded] = useState(false);
   const isVideo = work.media_type === 'video';
   const platform = work.video_platform || (work.media_url?.includes('youtube.com') || work.media_url?.includes('youtu.be') ? 'youtube' : null);
@@ -443,9 +444,11 @@ const HeroWorkCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
   };
 
   return (
-    <div
-      className="break-inside-avoid mb-4 group cursor-pointer"
-      onClick={onClick}
+    <a
+      href={link || undefined}
+      target={link ? '_blank' : undefined}
+      rel={link ? 'noopener noreferrer' : undefined}
+      className={`break-inside-avoid mb-4 group block ${link ? 'cursor-pointer' : 'cursor-default'}`}
     >
       <div className={`relative overflow-hidden rounded-xl bg-gray-800 ${getAspectRatio()}`}>
         <img
@@ -492,9 +495,11 @@ const HeroWorkCard = ({ work, getImageUrl, getYouTubeId, onClick }) => {
           </div>
         )}
       </div>
-    </div>
+    </a>
   );
 };
+
+export default Home;
 
 // Home Work Modal Component
 const HomeWorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
@@ -715,5 +720,3 @@ const HomeWorkModal = ({ work, onClose, getImageUrl, getYouTubeId }) => {
     </div>
   );
 };
-
-export default Home;
