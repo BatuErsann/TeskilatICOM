@@ -6,10 +6,10 @@ import madridWorkers from '../../assets/images/madridworkers.jpg';
 const IcomNetwork = () => {
   const benefits = [
     {
-      text: 'We work with trusted agency partners to deliver consistent and global execution.'
+      text: 'We work with trusted agency partners to deliver local insights and global execution.'
     },
     {
-      text: 'We share knowledge, resources, and experience to empower us and our clients, grow.'
+      text: '⁠We share knowledge, resources, and experience to empower us, and our clients, grow.'
     },
     {
       text: 'We elevate our work through, mentorship, training, and global collaboration.'
