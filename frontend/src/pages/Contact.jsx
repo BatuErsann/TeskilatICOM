@@ -249,7 +249,7 @@ const Contact = () => {
                         onChange={handleWorkChange}
                         required
                         className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
-                        placeholder="name"
+                        placeholder="Name"
                       />
                     </div>
                     <div>
@@ -261,7 +261,7 @@ const Contact = () => {
                         onChange={handleWorkChange}
                         required
                         className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
-                        placeholder="surname"
+                        placeholder="Surname"
                       />
                     </div>
                   </div>
