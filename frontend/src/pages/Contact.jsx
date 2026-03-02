@@ -140,8 +140,8 @@ const Contact = () => {
               <button
                 onClick={() => { setActiveTab('contact'); setStatus({ type: '', message: '' }); }}
                 className={`flex-1 flex items-center justify-center gap-2 py-4 px-6 font-bold uppercase tracking-wider transition ${activeTab === 'contact'
-                    ? 'bg-accent text-primary'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-accent text-primary'
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
                   }`}
               >
                 <FaEnvelope />
@@ -150,8 +150,8 @@ const Contact = () => {
               <button
                 onClick={() => { setActiveTab('work'); setStatus({ type: '', message: '' }); }}
                 className={`flex-1 flex items-center justify-center gap-2 py-4 px-6 font-bold uppercase tracking-wider transition ${activeTab === 'work'
-                    ? 'bg-accent text-primary'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-accent text-primary'
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
                   }`}
               >
                 <FaUsers />
@@ -182,7 +182,7 @@ const Contact = () => {
                       onChange={handleContactChange}
                       required
                       className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
-                      placeholder="name surname"
+                      placeholder="Name Surname"
                     />
                   </div>
                   <div>
