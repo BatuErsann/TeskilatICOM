@@ -9,8 +9,10 @@ const Contact = () => {
 
   // Contact Form State
   const [contactForm, setContactForm] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
+    company: '',
     subject: '',
     message: ''
   });
@@ -39,12 +41,17 @@ const Contact = () => {
     setStatus({ type: '', message: '' });
 
     try {
-      await api.post('/contact', {
-        ...contactForm,
+      const payload = {
+        name: `${contactForm.firstName} ${contactForm.lastName}`,
+        email: contactForm.email,
+        subject: contactForm.subject,
+        message: `Company: ${contactForm.company}\n\nMessage:\n${contactForm.message}`,
         type: 'contact'
-      });
+      };
+
+      await api.post('/contact', payload);
       setStatus({ type: 'success', message: 'Message sent successfully! We will get back to you soon.' });
-      setContactForm({ name: '', email: '', subject: '', message: '' });
+      setContactForm({ firstName: '', lastName: '', email: '', company: '', subject: '', message: '' });
     } catch (error) {
       setStatus({ type: 'error', message: error.response?.data?.message || 'Failed to send message. Please try again.' });
     } finally {
@@ -173,16 +180,42 @@ const Contact = () => {
                 <p className="text-gray-400 mb-6">We'll get back to you as soon as possible.</p>
 
                 <form onSubmit={handleContactSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Name</label>
+                      <input
+                        type="text"
+                        name="firstName"
+                        value={contactForm.firstName}
+                        onChange={handleContactChange}
+                        required
+                        className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
+                        placeholder="Name"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Surname</label>
+                      <input
+                        type="text"
+                        name="lastName"
+                        value={contactForm.lastName}
+                        onChange={handleContactChange}
+                        required
+                        className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
+                        placeholder="Surname"
+                      />
+                    </div>
+                  </div>
                   <div>
-                    <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Full Name</label>
+                    <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Company Name</label>
                     <input
                       type="text"
-                      name="name"
-                      value={contactForm.name}
+                      name="company"
+                      value={contactForm.company}
                       onChange={handleContactChange}
                       required
                       className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
-                      placeholder="Name Surname"
+                      placeholder="Company Name"
                     />
                   </div>
                   <div>
@@ -241,7 +274,7 @@ const Contact = () => {
                 <form onSubmit={handleWorkSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">First Name</label>
+                      <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Name</label>
                       <input
                         type="text"
                         name="firstName"
@@ -253,7 +286,7 @@ const Contact = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Last Name</label>
+                      <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Surname</label>
                       <input
                         type="text"
                         name="lastName"
