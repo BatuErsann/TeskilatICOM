@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import { getImageUrl } from '../utils/imageUrl';
 
 const Brands = () => {
   const [brands, setBrands] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBrands = async () => {
@@ -51,12 +53,14 @@ const Brands = () => {
         </div>
 
         <div className="mt-24 bg-secondary/50 p-12 rounded-2xl border border-white/5 text-center">
-          <h2 className="text-3xl font-display font-bold mb-6">TAKE YOUR PLACE</h2>
+          <h2 className="text-3xl font-display font-bold mb-6"> Build Your Next Chapter</h2>
           <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
-            Work with us to take your brand to the next level.
-            Experience our global standard service and futuristic vision.
+            Partner with us to shape what’s next for your brand. Discover strategic thinking, global standards, and forward-thinking creativity.
           </p>
-          <button className="bg-transparent border border-accent text-accent hover:bg-accent hover:text-primary px-8 py-3 font-bold uppercase tracking-wider transition duration-300">
+          <button
+            onClick={() => navigate('/contact')}
+            className="bg-transparent border border-accent text-accent hover:bg-accent hover:text-primary px-8 py-3 font-bold uppercase tracking-wider transition duration-300"
+          >
             Contact Us
           </button>
         </div>

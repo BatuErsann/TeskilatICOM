@@ -80,13 +80,13 @@ const Contact = () => {
     <div className="py-12 min-h-screen flex items-center">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          
+
           <div>
             <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 text-white">CONTACT</h1>
             <p className="text-xl text-gray-400 mb-10">
               Get in touch with us for your projects. Let's design the future together.
             </p>
-            
+
             <div className="space-y-8">
               <div className="flex items-start space-x-4">
                 <div className="w-12 h-12 bg-secondary flex items-center justify-center rounded text-accent">
@@ -94,10 +94,10 @@ const Contact = () => {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-1">Address</h3>
-                  <p className="text-gray-400">Kozyatağı Mah. Kaya Sultan Sok.<br/>Nanda Plaza No: 83 Kat: 1<br/>34742 Kadıköy, Istanbul</p>
+                  <p className="text-gray-400">Kozyatağı Mah. Kaya Sultan Sok.<br />Nanda Plaza No: 83 Kat: 1<br />34742 Kadıköy, Istanbul</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start space-x-4">
                 <div className="w-12 h-12 bg-secondary flex items-center justify-center rounded text-accent">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
@@ -139,22 +139,20 @@ const Contact = () => {
             <div className="flex border-b border-white/10">
               <button
                 onClick={() => { setActiveTab('contact'); setStatus({ type: '', message: '' }); }}
-                className={`flex-1 flex items-center justify-center gap-2 py-4 px-6 font-bold uppercase tracking-wider transition ${
-                  activeTab === 'contact' 
-                    ? 'bg-accent text-primary' 
+                className={`flex-1 flex items-center justify-center gap-2 py-4 px-6 font-bold uppercase tracking-wider transition ${activeTab === 'contact'
+                    ? 'bg-accent text-primary'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }`}
+                  }`}
               >
                 <FaEnvelope />
                 Contact Us
               </button>
               <button
                 onClick={() => { setActiveTab('work'); setStatus({ type: '', message: '' }); }}
-                className={`flex-1 flex items-center justify-center gap-2 py-4 px-6 font-bold uppercase tracking-wider transition ${
-                  activeTab === 'work' 
-                    ? 'bg-accent text-primary' 
+                className={`flex-1 flex items-center justify-center gap-2 py-4 px-6 font-bold uppercase tracking-wider transition ${activeTab === 'work'
+                    ? 'bg-accent text-primary'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }`}
+                  }`}
               >
                 <FaUsers />
                 Work With Us
@@ -173,58 +171,58 @@ const Contact = () => {
               <div className="p-8">
                 <h2 className="text-2xl font-bold text-white mb-2">Send us a message</h2>
                 <p className="text-gray-400 mb-6">We'll get back to you as soon as possible.</p>
-                
+
                 <form onSubmit={handleContactSubmit} className="space-y-6">
                   <div>
                     <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Full Name</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       name="name"
                       value={contactForm.name}
                       onChange={handleContactChange}
                       required
-                      className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition" 
-                      placeholder="John Doe" 
+                      className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
+                      placeholder="name surname"
                     />
                   </div>
                   <div>
                     <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Email</label>
-                    <input 
-                      type="email" 
+                    <input
+                      type="email"
                       name="email"
                       value={contactForm.email}
                       onChange={handleContactChange}
                       required
-                      className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition" 
-                      placeholder="example@company.com" 
+                      className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
+                      placeholder="example@company.com"
                     />
                   </div>
                   <div>
                     <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Subject</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       name="subject"
                       value={contactForm.subject}
                       onChange={handleContactChange}
                       required
-                      className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition" 
-                      placeholder="Project inquiry" 
+                      className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
+                      placeholder="Project inquiry"
                     />
                   </div>
                   <div>
                     <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Your Message</label>
-                    <textarea 
-                      rows="4" 
+                    <textarea
+                      rows="4"
                       name="message"
                       value={contactForm.message}
                       onChange={handleContactChange}
                       required
-                      className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition" 
+                      className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
                       placeholder="Tell us about your project..."
                     ></textarea>
                   </div>
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     disabled={loading}
                     className="w-full bg-gradient-to-r from-accent to-accent-purple text-primary font-bold py-4 rounded uppercase tracking-widest hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -239,83 +237,83 @@ const Contact = () => {
               <div className="p-8">
                 <h2 className="text-2xl font-bold text-white mb-2">Join our creative team</h2>
                 <p className="text-gray-400 mb-6">We're always looking for talented individuals.</p>
-                
+
                 <form onSubmit={handleWorkSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">First Name</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="firstName"
                         value={workForm.firstName}
                         onChange={handleWorkChange}
                         required
-                        className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition" 
-                        placeholder="John" 
+                        className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
+                        placeholder="name"
                       />
                     </div>
                     <div>
                       <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Last Name</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="lastName"
                         value={workForm.lastName}
                         onChange={handleWorkChange}
                         required
-                        className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition" 
-                        placeholder="Doe" 
+                        className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
+                        placeholder="surname"
                       />
                     </div>
                   </div>
                   <div>
                     <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Email</label>
-                    <input 
-                      type="email" 
+                    <input
+                      type="email"
                       name="email"
                       value={workForm.email}
                       onChange={handleWorkChange}
                       required
-                      className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition" 
-                      placeholder="example@email.com" 
+                      className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
+                      placeholder="example@email.com"
                     />
                   </div>
                   <div>
                     <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Phone</label>
-                    <input 
-                      type="tel" 
+                    <input
+                      type="tel"
                       name="phone"
                       value={workForm.phone}
                       onChange={handleWorkChange}
                       required
-                      className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition" 
-                      placeholder="+90 5XX XXX XX XX" 
+                      className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
+                      placeholder="+90 5XX XXX XX XX"
                     />
                   </div>
                   <div>
                     <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Portfolio / LinkedIn URL</label>
-                    <input 
-                      type="url" 
+                    <input
+                      type="url"
                       name="portfolio"
                       value={workForm.portfolio}
                       onChange={handleWorkChange}
-                      className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition" 
-                      placeholder="https://..." 
+                      className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
+                      placeholder="https://..."
                     />
                   </div>
                   <div>
                     <label className="block text-gray-400 mb-2 text-sm uppercase tracking-wider">Tell us about yourself</label>
-                    <textarea 
-                      rows="4" 
+                    <textarea
+                      rows="4"
                       name="about"
                       value={workForm.about}
                       onChange={handleWorkChange}
                       required
-                      className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition" 
+                      className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
                       placeholder="Your experience, skills, and why you want to join..."
                     ></textarea>
                   </div>
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     disabled={loading}
                     className="w-full bg-gradient-to-r from-accent to-accent-purple text-primary font-bold py-4 rounded uppercase tracking-widest hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
