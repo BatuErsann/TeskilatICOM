@@ -227,14 +227,22 @@ const Home = () => {
       {/* Our Services Section */}
       <div className="py-20 bg-secondary">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-4">Our Services</h2>
-            <div className="w-24 h-1 bg-accent mx-auto"></div>
+          <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-6">
+            <div className="text-center md:text-left">
+              <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-4">Our Services</h2>
+              <div className="w-24 h-1 bg-accent mx-auto md:mx-0"></div>
+            </div>
+            <Link
+              to="/services"
+              className="flex items-center gap-2 text-accent hover:text-accent/80 transition font-bold uppercase tracking-wider"
+            >
+              Explore More <FaArrowRight />
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.length > 0 ? (
-              services.map((service, index) => (
+              services.slice(0, 6).map((service, index) => (
                 <FadeIn key={service.id} delay={index * 100} direction="up">
                   <ServiceAccordion service={service} />
                 </FadeIn>
@@ -359,16 +367,7 @@ const Home = () => {
         </div>
       )}
 
-      {/* CTA Section */}
-      <div className="py-24 bg-secondary relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent to-accent-purple"></div>
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-4xl md:text-6xl font-display font-bold mb-8">READY TO PUSH THE LIMITS?</h2>
-          <Link to="/contact" className="inline-block border-2 border-accent text-accent hover:bg-accent hover:text-primary px-10 py-4 text-xl font-bold uppercase tracking-widest transition duration-300">
-            GET IN TOUCH
-          </Link>
-        </div>
-      </div>
+
 
     </div>
   );
