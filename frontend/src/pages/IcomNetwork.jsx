@@ -2,8 +2,15 @@ import { FaGlobe } from 'react-icons/fa';
 import icomLogo from '../../assets/images/icom-network.svg';
 import icomWorld from '../../assets/images/icom-world.svg';
 import madridWorkers from '../../assets/images/madridworkers.jpg';
+import useDocumentMeta from '../hooks/useDocumentMeta';
 
 const IcomNetwork = () => {
+  useDocumentMeta({
+    title: 'ICOM Network | Teskilat ICOM',
+    description: 'Teskilat ICOM is a proud member of ICOM, an exclusive global marketing network of over 70 independent agencies.',
+    canonicalPath: '/icom-network'
+  });
+
   const benefits = [
     {
       text: 'We work with trusted agency partners to deliver local insights and global execution.'

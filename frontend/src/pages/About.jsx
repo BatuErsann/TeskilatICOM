@@ -3,8 +3,15 @@ import { FaLinkedin, FaVideo, FaPaintBrush, FaBullhorn, FaLaptopCode, FaChartLin
 import api from '../api';
 import { getImageUrl } from '../utils/imageUrl';
 import teskilatImage from '../../assets/images/teskilat-icom.jpg';
+import useDocumentMeta from '../hooks/useDocumentMeta';
 
 const About = () => {
+  useDocumentMeta({
+    title: 'About Teskilat ICOM | Our Story & Vision',
+    description: 'Learn about Teskilat ICOM – an independent full-service advertising agency in Istanbul, member of ICOM global network since 2015.',
+    canonicalPath: '/about'
+  });
+
   const [teamMembers, setTeamMembers] = useState([]);
   const [services, setServices] = useState([]);
   const [aboutBackground, setAboutBackground] = useState('');
@@ -36,7 +43,7 @@ const About = () => {
     <div className="py-12">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-7xl font-display font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">ABOUT US</h1>
+          <h1 className="text-5xl md:text-7xl font-display font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">About Teskilat ICOM</h1>
           <div className="w-32 h-1 bg-accent mx-auto"></div>
         </div>
 
@@ -65,12 +72,11 @@ const About = () => {
 
             {/* Content */}
             <div className="relative z-10 p-8">
-              <h2 className="text-3xl font-display font-bold mb-6 text-accent">WHO WE ARE?</h2>
               <p className="text-lg text-gray-300 mb-6 leading-relaxed">
                 In 2007 we started as an independent full-service advertising agency in Istanbul. In 2015 we
                 joined ICOM, an exclusive global marketing network of over 70 like-minded independent
                 agencies with a shared commitment to growth and collaboration. In 2023 we started
-                MKNDRS, an agency specializing in AI-powered visual and video production. This is where AI
+                <a href="https://mkndrs.com/" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline font-bold px-1">MKNDRS</a>, an agency specializing in AI-powered visual and video production. This is where AI
                 meets creativity; faster production, hyper-real visuals, limitless possibilities.
               </p>
               <p className="text-lg text-gray-300 mb-8 leading-relaxed">

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://teskilat.com.tr/sitemap.xml

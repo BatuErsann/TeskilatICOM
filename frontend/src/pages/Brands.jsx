@@ -2,8 +2,15 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import { getImageUrl } from '../utils/imageUrl';
+import useDocumentMeta from '../hooks/useDocumentMeta';
 
 const Brands = () => {
+  useDocumentMeta({
+    title: 'Brands | Teskilat ICOM',
+    description: 'Global brands that trust Teskilat ICOM for creative campaigns, strategic communications, and brand storytelling.',
+    canonicalPath: '/brands'
+  });
+
   const [brands, setBrands] = useState([]);
   const navigate = useNavigate();
 
@@ -26,7 +33,6 @@ const Brands = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h1 className="text-5xl md:text-7xl font-display font-bold mb-4 text-white">Brands</h1>
-          <p className="text-xl text-gray-400">Global brands that trust us.</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">

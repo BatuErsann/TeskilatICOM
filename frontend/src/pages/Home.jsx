@@ -5,8 +5,15 @@ import ServiceAccordion from '../components/ServiceAccordion';
 import api from '../api';
 import { getImageUrl } from '../utils/imageUrl';
 import { FaTrophy, FaTimes, FaExternalLinkAlt, FaPlay, FaImage, FaArrowRight, FaBullhorn, FaPalette, FaFilm, FaMobileAlt, FaChartLine, FaUsers, FaInstagram, FaLinkedin, FaYoutube, FaFacebook, FaTwitter, FaLink, FaPlus, FaMinus } from 'react-icons/fa';
+import useDocumentMeta from '../hooks/useDocumentMeta';
 
 const Home = () => {
+  useDocumentMeta({
+    title: 'Teskilat ICOM | Creative Production & Advertising Agency',
+    description: 'Teskilat ICOM is a creative production and advertising agency in Istanbul, specializing in creative campaigns, photography, video production, digital marketing and brand storytelling. Member of ICOM global network.',
+    canonicalPath: '/'
+  });
+
   const [scrollY, setScrollY] = useState(0);
   const [videos, setVideos] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
@@ -162,6 +169,7 @@ const Home = () => {
 
   return (
     <div>
+      <h1 className="sr-only">Teskilat ICOM – Creative Production & Advertising Agency</h1>
       {/* Manifesto Section */}
       <div className="relative w-full min-h-screen flex items-start justify-center pt-24 bg-primary overflow-hidden">
         {/* Background Image */}

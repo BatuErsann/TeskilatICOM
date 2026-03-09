@@ -2,8 +2,15 @@ import { useState, useEffect } from 'react';
 import api from '../api';
 import FadeIn from '../components/FadeIn';
 import { getImageUrl } from '../utils/imageUrl';
+import useDocumentMeta from '../hooks/useDocumentMeta';
 
 const News = () => {
+    useDocumentMeta({
+        title: 'News | Teskilat ICOM',
+        description: 'Latest updates, announcements, and insights from Teskilat ICOM.',
+        canonicalPath: '/news'
+    });
+
     const [announcements, setAnnouncements] = useState([]);
     const [loading, setLoading] = useState(true);
 

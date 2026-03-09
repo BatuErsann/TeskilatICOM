@@ -4,8 +4,15 @@ import { SiTiktok } from 'react-icons/si';
 import { Link, useLocation } from 'react-router-dom';
 import api from '../api';
 import { getImageUrl } from '../utils/imageUrl';
+import useDocumentMeta from '../hooks/useDocumentMeta';
 
 const Works = () => {
+  useDocumentMeta({
+    title: 'Works | Teskilat ICOM',
+    description: 'Discover creative projects by Teskilat ICOM – campaigns, video productions, brand activations and more.',
+    canonicalPath: '/works'
+  });
+
   const [works, setWorks] = useState([]);
   const [layout, setLayout] = useState([]);
   const [loading, setLoading] = useState(true);

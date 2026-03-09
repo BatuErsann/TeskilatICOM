@@ -1,8 +1,15 @@
 import { useState } from 'react';
 import { FaEnvelope, FaUsers } from 'react-icons/fa';
 import api from '../api';
+import useDocumentMeta from '../hooks/useDocumentMeta';
 
 const Contact = () => {
+  useDocumentMeta({
+    title: 'Contact | Teskilat ICOM',
+    description: 'Get in touch with Teskilat ICOM for your creative projects. Located in Kadıköy, Istanbul.',
+    canonicalPath: '/contact'
+  });
+
   const [activeTab, setActiveTab] = useState('contact');
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState({ type: '', message: '' });
@@ -91,7 +98,7 @@ const Contact = () => {
           <div>
             <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 text-white">CONTACT</h1>
             <p className="text-xl text-gray-400 mb-10">
-              Get in touch with us for your projects. Let's design the future together.
+              Get in touch with us for your projects.
             </p>
 
             <div className="space-y-8">
@@ -268,7 +275,6 @@ const Contact = () => {
             {/* Work With Us Form */}
             {activeTab === 'work' && (
               <div className="p-8">
-                <h2 className="text-2xl font-bold text-white mb-2">Join our creative team</h2>
                 <p className="text-gray-400 mb-6">We're always looking for talented individuals.</p>
 
                 <form onSubmit={handleWorkSubmit} className="space-y-6">

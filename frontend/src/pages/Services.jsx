@@ -3,8 +3,15 @@ import ServiceAccordion from '../components/ServiceAccordion';
 import FadeIn from '../components/FadeIn';
 import api from '../api';
 import { FaBullhorn, FaPalette } from 'react-icons/fa';
+import useDocumentMeta from '../hooks/useDocumentMeta';
 
 const Services = () => {
+    useDocumentMeta({
+        title: 'Services | Teskilat ICOM',
+        description: 'Explore our creative and strategic services: brand strategy, video production, digital marketing, creative design, and more.',
+        canonicalPath: '/services'
+    });
+
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(true);
 

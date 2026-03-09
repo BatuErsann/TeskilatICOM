@@ -2,8 +2,15 @@ import { useState, useEffect } from 'react';
 import { FaLinkedin } from 'react-icons/fa';
 import api from '../api';
 import { getImageUrl } from '../utils/imageUrl';
+import useDocumentMeta from '../hooks/useDocumentMeta';
 
 const Team = () => {
+  useDocumentMeta({
+    title: 'Our Team | Teskilat ICOM',
+    description: 'Meet the creative minds behind Teskilat ICOM. Our team of strategists, designers, and producers driving brand success.',
+    canonicalPath: '/team'
+  });
+
   const [teamMembers, setTeamMembers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,7 +43,6 @@ const Team = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h1 className="text-5xl md:text-7xl font-display font-bold mb-4 text-white">OUR TEAM</h1>
-          <p className="text-xl text-gray-400">The brain team building the future.</p>
         </div>
 
         {teamMembers.length === 0 ? (

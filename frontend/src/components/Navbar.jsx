@@ -151,6 +151,7 @@ const Navbar = () => {
           </Link>
 
           <div className="hidden md:flex items-center space-x-6">
+            <Link to="/" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Home</Link>
             <Link to="/works" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Works</Link>
             <Link to="/services" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Services</Link>
             <Link to="/about" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">About</Link>
@@ -169,7 +170,6 @@ const Navbar = () => {
             <a href="https://www.instagram.com/teskilaticom/" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaInstagram size={20} /></a>
             <a href="https://www.linkedin.com/company/teskilaticom/posts/?feedView=all" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaLinkedin size={20} /></a>
             <a href="https://www.youtube.com/@teskilaticom3784" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaYoutube size={20} /></a>
-            <a href="https://vimeo.com/teskilaticom" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaVimeoV size={20} /></a>
           </div>
 
           {/* Auth Buttons */}
@@ -202,6 +202,7 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden bg-primary border-t border-white/10 absolute w-full left-0 top-full shadow-xl">
           <div className="flex flex-col px-4 py-6 space-y-4">
+            <Link to="/" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Home</Link>
             <Link to="/works" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Works</Link>
             <Link to="/services" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Services</Link>
             <Link to="/about" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">About</Link>
@@ -216,7 +217,6 @@ const Navbar = () => {
               <a href="https://www.instagram.com/teskilaticom/" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaInstagram size={20} /></a>
               <a href="https://www.linkedin.com/company/teskilaticom/posts/?feedView=all" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaLinkedin size={20} /></a>
               <a href="https://www.youtube.com/@teskilaticom3784" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaYoutube size={20} /></a>
-              <a href="https://vimeo.com/teskilaticom" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaVimeoV size={20} /></a>
             </div>
 
             {/* Admin Panel only - no Login/Logout for public users */}
