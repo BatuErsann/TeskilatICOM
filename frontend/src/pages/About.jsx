@@ -42,10 +42,7 @@ const About = () => {
   return (
     <div className="py-12">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-7xl font-display font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">About Teskilat ICOM</h1>
-          <div className="w-32 h-1 bg-accent mx-auto"></div>
-        </div>
+
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center mb-24">
           <div className="relative">
