@@ -82,6 +82,7 @@ function App() {
             <Route path="/islerimiz" element={<Navigate to="/" replace />} />
             <Route path="/iletisim" element={<Navigate to="/" replace />} />
             <Route path="/haberler" element={<Navigate to="/" replace />} />
+            <Route path="/careers" element={<Navigate to="/" replace />} />
 
             {/* 404 catch-all for unmatched routes */}
             <Route path="*" element={<NotFound />} />
