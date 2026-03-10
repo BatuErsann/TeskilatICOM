@@ -1,4 +1,17 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://teskilat.com.tr/sitemap.xml
+# Block old Umbraco CMS system paths
+Disallow: /umbraco/
+Disallow: /App_Plugins/
+Disallow: /App_Data/
+Disallow: /media/
+
+# Block internal/auth pages from indexing
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+
+Sitemap: https://www.teskilat.com.tr/sitemap.xml
