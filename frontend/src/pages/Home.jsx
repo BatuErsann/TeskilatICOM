@@ -25,11 +25,7 @@ const Home = () => {
   const [content, setContent] = useState({});
 
   // --- Animated Logo (above t-header) ---
-  const isSafari = useMemo(() => {
-    const ua = navigator.userAgent.toLowerCase();
-    return ua.includes('safari') && !ua.includes('chrome') && !ua.includes('chromium');
-  }, []);
-  const logoVideoSrc = isSafari ? '/Comp 1.mp4' : '/logo-video.webm';
+
   const heroVideoRef = useRef(null);
   const heroCanvasRef = useRef(null);
   const [useHeroCanvas, setUseHeroCanvas] = useState(false);
@@ -256,27 +252,30 @@ const Home = () => {
             <div style={{ transform: `translateY(${scrollY * 0.1}px)` }} className="will-change-transform flex justify-center">
               <video
                 ref={heroVideoRef}
-                src={logoVideoSrc}
                 poster="/logo.svg"
                 playsInline
                 webkit-playsinline="true"
                 autoPlay
                 muted
                 loop={false}
-                className={`w-64 md:w-72 lg:w-80 h-auto ${useHeroCanvas || heroVideoError ? 'hidden' : ''}`}
+                className={`w-64 h-auto ${useHeroCanvas || heroVideoError ? 'hidden' : ''}`}
                 style={{ background: 'transparent' }}
                 onError={() => setHeroVideoError(true)}
                 preload="auto"
-              />
+              >
+                <source src="/logo-video.webm" type="video/webm" />
+                <source src="/logo-video.mov" type="video/quicktime" />
+                <source src="/logo-video.mp4" type="video/mp4" />
+              </video>
               {useHeroCanvas && !heroVideoError && (
                 <canvas
                   ref={heroCanvasRef}
-                  className="w-64 md:w-72 lg:w-80 h-auto"
+                  className="w-64 h-auto"
                   style={{ background: 'transparent' }}
                 />
               )}
               {heroVideoError && (
-                <img src="/logo.svg" alt="Teskilat ICOM Logo" className="w-64 md:w-72 lg:w-80 h-auto" />
+                <img src="/logo.svg" alt="Teskilat ICOM Logo" className="w-64 h-auto" />
               )}
             </div>
           </FadeIn>
@@ -287,8 +286,7 @@ const Home = () => {
               <img
                 src="/assets/images/t-header_main.svg"
                 alt="We go the extra mile - Teşkilat believes in the power of connected ideas"
-                className="w-full max-w-4xl lg:max-w-5xl mx-auto px-2 md:px-4"
-                style={{ minWidth: '75vw' }}
+                className="w-full min-w-[85vw] md:min-w-[65vw] lg:min-w-[55vw] max-w-7xl mx-auto px-2 md:px-4"
               />
             </div>
           </FadeIn>
