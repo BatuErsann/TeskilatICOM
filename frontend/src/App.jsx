@@ -15,6 +15,7 @@ import IcomNetwork from './pages/IcomNetwork';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import ProtectedRoute from './components/ProtectedRoute';
+import NotFound from './pages/NotFound';
 import icomMemberLogo from '../assets/TeskilatLogo/member-of-icom-network.svg';
 
 const Layout = ({ children }) => {
@@ -58,6 +59,33 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+            {/* Old Umbraco URL redirects → Homepage */}
+            <Route path="/what-we-do" element={<Navigate to="/" replace />} />
+            <Route path="/who-we-are" element={<Navigate to="/" replace />} />
+            <Route path="/about-us" element={<Navigate to="/" replace />} />
+            <Route path="/our-work" element={<Navigate to="/" replace />} />
+            <Route path="/our-team" element={<Navigate to="/" replace />} />
+            <Route path="/our-brands" element={<Navigate to="/" replace />} />
+            <Route path="/contact-us" element={<Navigate to="/" replace />} />
+            <Route path="/portfolio" element={<Navigate to="/" replace />} />
+            <Route path="/icom" element={<Navigate to="/" replace />} />
+            <Route path="/icom-network-member" element={<Navigate to="/" replace />} />
+            <Route path="/kvkk" element={<Navigate to="/" replace />} />
+            <Route path="/home" element={<Navigate to="/" replace />} />
+            <Route path="/default" element={<Navigate to="/" replace />} />
+            <Route path="/homepage" element={<Navigate to="/" replace />} />
+            <Route path="/hakkimizda" element={<Navigate to="/" replace />} />
+            <Route path="/hizmetlerimiz" element={<Navigate to="/" replace />} />
+            <Route path="/ekibimiz" element={<Navigate to="/" replace />} />
+            <Route path="/markalarimiz" element={<Navigate to="/" replace />} />
+            <Route path="/islerimiz" element={<Navigate to="/" replace />} />
+            <Route path="/iletisim" element={<Navigate to="/" replace />} />
+            <Route path="/haberler" element={<Navigate to="/" replace />} />
+            <Route path="/careers" element={<Navigate to="/" replace />} />
+
+            {/* 404 catch-all for unmatched routes */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
 

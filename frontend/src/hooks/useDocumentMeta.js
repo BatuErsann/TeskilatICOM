@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const BASE_URL = 'https://teskilat.com.tr';
+const BASE_URL = 'https://www.teskilat.com.tr';
 
 /**
  * Custom hook to set per-page SEO metadata (title, description, canonical).
