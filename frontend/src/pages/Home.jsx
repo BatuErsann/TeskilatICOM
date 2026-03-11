@@ -25,6 +25,11 @@ const Home = () => {
   const [content, setContent] = useState({});
 
   // --- Animated Logo (above t-header) ---
+  const isSafari = useMemo(() => {
+    const ua = navigator.userAgent?.toLowerCase() || '';
+    return ua.includes('safari') && !ua.includes('chrome') && !ua.includes('chromium');
+  }, []);
+  const logoVideoSrc = isSafari ? '/logo-video.mov' : '/logo-video.webm';
 
   const heroVideoRef = useRef(null);
   const heroCanvasRef = useRef(null);
@@ -252,6 +257,7 @@ const Home = () => {
             <div style={{ transform: `translateY(${scrollY * 0.1}px)` }} className="will-change-transform flex justify-center">
               <video
                 ref={heroVideoRef}
+                src={logoVideoSrc}
                 poster="/logo.svg"
                 playsInline
                 webkit-playsinline="true"
@@ -262,11 +268,7 @@ const Home = () => {
                 style={{ background: 'transparent' }}
                 onError={() => setHeroVideoError(true)}
                 preload="auto"
-              >
-                <source src="/logo-video.webm" type="video/webm" />
-                <source src="/logo-video.mov" type="video/quicktime" />
-                <source src="/logo-video.mp4" type="video/mp4" />
-              </video>
+              />
               {useHeroCanvas && !heroVideoError && (
                 <canvas
                   ref={heroCanvasRef}
