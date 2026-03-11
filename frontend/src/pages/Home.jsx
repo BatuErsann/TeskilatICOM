@@ -272,12 +272,12 @@ const Home = () => {
               {useHeroCanvas && !heroVideoError && (
                 <canvas
                   ref={heroCanvasRef}
-                  className="w-full max-w-[250px] md:max-w-xs lg:max-w-sm h-auto"
+                  className="w-64 h-auto"
                   style={{ background: 'transparent' }}
                 />
               )}
               {heroVideoError && (
-                <img src="/logo.svg" alt="Teskilat ICOM Logo" className="w-full max-w-[250px] md:max-w-xs lg:max-w-sm h-auto" />
+                <img src="/logo.svg" alt="Teskilat ICOM Logo" className="w-64 h-auto" />
               )}
             </div>
           </FadeIn>
