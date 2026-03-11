@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import FadeIn from '../components/FadeIn';
 import ServiceAccordion from '../components/ServiceAccordion';
@@ -23,6 +23,63 @@ const Home = () => {
   const [layout, setLayout] = useState([]);
   const [services, setServices] = useState([]);
   const [content, setContent] = useState({});
+
+  // --- Animated Logo (above t-header) ---
+  const isSafari = useMemo(() => {
+    const ua = navigator.userAgent.toLowerCase();
+    return ua.includes('safari') && !ua.includes('chrome') && !ua.includes('chromium');
+  }, []);
+  const logoVideoSrc = isSafari ? '/Comp 1.mp4' : '/logo-video.webm';
+  const heroVideoRef = useRef(null);
+  const heroCanvasRef = useRef(null);
+  const [useHeroCanvas, setUseHeroCanvas] = useState(false);
+  const [heroVideoError, setHeroVideoError] = useState(false);
+
+  const drawHeroCanvasFrames = useCallback(() => {
+    const video = heroVideoRef.current;
+    const canvas = heroCanvasRef.current;
+    if (!video || !canvas) return;
+    const ctx = canvas.getContext('2d');
+    let startTime = null;
+    let animId = null;
+    const drawFrame = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = (timestamp - startTime) / 1000;
+      if (elapsed >= video.duration) {
+        video.currentTime = video.duration - 0.01;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        return;
+      }
+      video.currentTime = elapsed;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      animId = requestAnimationFrame(drawFrame);
+    };
+    const startDrawing = () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      animId = requestAnimationFrame(drawFrame);
+    };
+    if (video.readyState >= 2) startDrawing();
+    else video.addEventListener('loadeddata', startDrawing, { once: true });
+    return () => { if (animId) cancelAnimationFrame(animId); };
+  }, []);
+
+  useEffect(() => {
+    const video = heroVideoRef.current;
+    if (!video) return;
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => setUseHeroCanvas(true));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (useHeroCanvas) {
+      const cleanup = drawHeroCanvasFrames();
+      return cleanup;
+    }
+  }, [useHeroCanvas, drawHeroCanvasFrames]);
 
   useEffect(() => {
     const handleScroll = () => requestAnimationFrame(() => setScrollY(window.scrollY));
@@ -171,7 +228,7 @@ const Home = () => {
     <div>
       <h1 className="sr-only">Teskilat ICOM – Creative Production & Advertising Agency</h1>
       {/* Manifesto Section */}
-      <div className="relative w-full min-h-screen flex items-start justify-center pt-24 bg-primary overflow-hidden">
+      <div className="relative w-full min-h-[calc(100vh-70px)] flex flex-col items-center justify-center bg-primary overflow-hidden">
         {/* Background Image */}
         {content.manifesto_bg_image && (
           <div
@@ -193,14 +250,45 @@ const Home = () => {
           }}
         ></div>
 
-        <div className="relative z-10 container mx-auto px-4 py-5 flex items-center justify-center">
+        <div className="relative z-10 w-full container mx-auto px-4 flex flex-col items-center justify-center h-full gap-8 md:gap-12">
+          {/* Animated Logo above t-header */}
           <FadeIn direction="up">
+            <div style={{ transform: `translateY(${scrollY * 0.1}px)` }} className="will-change-transform flex justify-center">
+              <video
+                ref={heroVideoRef}
+                src={logoVideoSrc}
+                poster="/logo.svg"
+                playsInline
+                webkit-playsinline="true"
+                autoPlay
+                muted
+                loop={false}
+                className={`w-64 md:w-72 lg:w-80 h-auto ${useHeroCanvas || heroVideoError ? 'hidden' : ''}`}
+                style={{ background: 'transparent' }}
+                onError={() => setHeroVideoError(true)}
+                preload="auto"
+              />
+              {useHeroCanvas && !heroVideoError && (
+                <canvas
+                  ref={heroCanvasRef}
+                  className="w-64 md:w-72 lg:w-80 h-auto"
+                  style={{ background: 'transparent' }}
+                />
+              )}
+              {heroVideoError && (
+                <img src="/logo.svg" alt="Teskilat ICOM Logo" className="w-64 md:w-72 lg:w-80 h-auto" />
+              )}
+            </div>
+          </FadeIn>
+
+          {/* t-header manifesto */}
+          <FadeIn direction="up" delay={200}>
             <div style={{ transform: `translateY(${scrollY * 0.1}px)` }} className="will-change-transform">
               <img
                 src="/assets/images/t-header_main.svg"
                 alt="We go the extra mile - Teşkilat believes in the power of connected ideas"
-                className="w-full max-w-7xl mx-auto px-4"
-                style={{ minWidth: '60vw' }}
+                className="w-full max-w-4xl lg:max-w-5xl mx-auto px-2 md:px-4"
+                style={{ minWidth: '75vw' }}
               />
             </div>
           </FadeIn>

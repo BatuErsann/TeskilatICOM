@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaInstagram, FaLinkedin, FaYoutube, FaVimeoV, FaBars, FaTimes } from 'react-icons/fa';
 
@@ -7,101 +7,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user') || '{}');
-
-  // Safari tarayıcısını algıla
-  const isSafari = useMemo(() => {
-    const ua = navigator.userAgent.toLowerCase();
-    return ua.includes('safari') && !ua.includes('chrome') && !ua.includes('chromium');
-  }, []);
-
-  // Safari için MP4 (H.264), diğerleri için WEBM kullan
-  const logoVideoSrc = isSafari ? '/Comp 1.mp4' : '/logo-video.webm';
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
-  const [useCanvas, setUseCanvas] = useState(false);
-  const [videoError, setVideoError] = useState(false);
-
-  // Canvas üzerinde video frame'lerini çiz (güç tasarrufu modu workaround)
-  const drawCanvasFrames = useCallback(() => {
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    if (!video || !canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    const fps = 30;
-    const frameDuration = 1 / fps;
-    let startTime = null;
-    let animId = null;
-
-    const drawFrame = (timestamp) => {
-      if (!startTime) startTime = timestamp;
-      const elapsed = (timestamp - startTime) / 1000;
-
-      // Video süresini aşma
-      if (elapsed >= video.duration) {
-        // Son frame'i çiz ve dur
-        video.currentTime = video.duration - 0.01;
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        return;
-      }
-
-      video.currentTime = elapsed;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      animId = requestAnimationFrame(drawFrame);
-    };
-
-    // Video metadata yüklendiğinde canvas boyutunu ayarla ve çizmeye başla
-    const startDrawing = () => {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      animId = requestAnimationFrame(drawFrame);
-    };
-
-    if (video.readyState >= 2) {
-      startDrawing();
-    } else {
-      video.addEventListener('loadeddata', startDrawing, { once: true });
-    }
-
-    return () => {
-      if (animId) cancelAnimationFrame(animId);
-    };
-  }, []);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    // Önce normal autoplay dene
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        console.log("Autoplay blocked, switching to canvas fallback");
-        // Autoplay engellendi — canvas moduna geç
-        setUseCanvas(true);
-      });
-    }
-  }, []);
-
-  // Canvas modu aktifse frame çizmeye başla
-  useEffect(() => {
-    if (useCanvas) {
-      const cleanup = drawCanvasFrames();
-      return cleanup;
-    }
-  }, [useCanvas, drawCanvasFrames]);
-
-  // Sayfa görünür olduğunda tekrar dene
-  useEffect(() => {
-    const handleVisibility = () => {
-      if (document.visibilityState === 'visible' && useCanvas) {
-        drawCanvasFrames();
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisibility);
-    return () => document.removeEventListener('visibilitychange', handleVisibility);
-  }, [useCanvas, drawCanvasFrames]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -117,37 +22,11 @@ const Navbar = () => {
         {/* Left Side: Logo + Navigation Links */}
         <div className="flex items-center gap-x-8">
           <Link to="/" className="flex items-center">
-            {/* Gizli video element - canvas modunda frame kaynağı olarak kullanılır */}
-            <video
-              ref={videoRef}
-              src={logoVideoSrc}
-              poster="/logo.svg"
-              playsInline
-              webkit-playsinline="true"
-              autoPlay
-              muted
-              loop={false}
-              className={`w-56 md:w-60 h-auto safari-video-fix ${useCanvas || videoError ? 'hidden' : ''}`}
-              style={{ background: 'transparent' }}
-              onError={() => setVideoError(true)}
-              preload="auto"
+            <img
+              src="/logo.svg"
+              alt="Teskilat ICOM Logo"
+              className="w-56 md:w-60 h-auto"
             />
-            {/* Canvas fallback - güç tasarrufu modunda video frame'leri burada çizilir */}
-            {useCanvas && !videoError && (
-              <canvas
-                ref={canvasRef}
-                className="w-56 md:w-60 h-auto"
-                style={{ background: 'transparent' }}
-              />
-            )}
-            {/* Statik logo - video tamamen yüklenemezse */}
-            {videoError && (
-              <img
-                src="/logo.svg"
-                alt="Logo"
-                className="w-56 md:w-60 h-auto"
-              />
-            )}
           </Link>
 
           <div className="hidden md:flex items-center space-x-6">
