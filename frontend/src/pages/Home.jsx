@@ -35,6 +35,7 @@ const Home = () => {
   const heroCanvasRef = useRef(null);
   const [useHeroCanvas, setUseHeroCanvas] = useState(false);
   const [heroVideoError, setHeroVideoError] = useState(false);
+  const [hideFallback, setHideFallback] = useState(false);
 
   const drawHeroCanvasFrames = useCallback(() => {
     const video = heroVideoRef.current;
@@ -57,6 +58,7 @@ const Home = () => {
       animId = requestAnimationFrame(drawFrame);
     };
     const startDrawing = () => {
+      setHideFallback(true);
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       animId = requestAnimationFrame(drawFrame);
@@ -71,7 +73,9 @@ const Home = () => {
     if (!video) return;
     const playPromise = video.play();
     if (playPromise !== undefined) {
-      playPromise.catch(() => setUseHeroCanvas(true));
+      playPromise
+        .then(() => setHideFallback(true))
+        .catch(() => setUseHeroCanvas(true));
     }
   }, []);
 
@@ -255,30 +259,35 @@ const Home = () => {
           {/* Animated Logo above t-header */}
           <FadeIn direction="up">
             <div style={{ transform: `translateY(${scrollY * 0.1}px)` }} className="will-change-transform flex justify-center">
-              <video
-                ref={heroVideoRef}
-                src={logoVideoSrc}
-                poster="/logo.svg"
-                playsInline
-                webkit-playsinline="true"
-                autoPlay
-                muted
-                loop={false}
-                className={`w-64 h-auto ${useHeroCanvas || heroVideoError ? 'hidden' : ''}`}
-                style={{ background: 'transparent' }}
-                onError={() => setHeroVideoError(true)}
-                preload="auto"
-              />
-              {useHeroCanvas && !heroVideoError && (
-                <canvas
-                  ref={heroCanvasRef}
-                  className="w-64 h-auto"
+              <div className="relative w-64 aspect-video flex items-center justify-center">
+                <video
+                  ref={heroVideoRef}
+                  src={logoVideoSrc}
+                  playsInline
+                  webkit-playsinline="true"
+                  autoPlay
+                  muted
+                  loop={false}
+                  className={`absolute inset-0 w-full h-full object-contain z-20 ${useHeroCanvas || heroVideoError ? 'hidden' : ''}`}
                   style={{ background: 'transparent' }}
+                  onError={() => setHeroVideoError(true)}
+                  preload="auto"
                 />
-              )}
-              {heroVideoError && (
-                <img src="/logo.svg" alt="Teskilat ICOM Logo" className="w-64 h-auto" />
-              )}
+                {useHeroCanvas && !heroVideoError && (
+                  <canvas
+                    ref={heroCanvasRef}
+                    className="absolute inset-0 w-full h-full object-contain z-20"
+                    style={{ background: 'transparent' }}
+                  />
+                )}
+                {!hideFallback && (
+                  <img
+                    src="/logo.svg"
+                    alt="Teskilat ICOM Logo"
+                    className="absolute z-10 w-[45%] h-auto"
+                  />
+                )}
+              </div>
             </div>
           </FadeIn>
 
