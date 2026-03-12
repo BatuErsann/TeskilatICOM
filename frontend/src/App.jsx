@@ -16,6 +16,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import ProtectedRoute from './components/ProtectedRoute';
 import NotFound from './pages/NotFound';
+import { FaInstagram, FaLinkedin, FaYoutube } from 'react-icons/fa';
 import icomMemberLogo from '../assets/TeskilatLogo/member-of-icom-network.svg';
 
 const Layout = ({ children }) => {
@@ -103,7 +104,7 @@ function App() {
                 </p>
               </div>
 
-              {/* Right: ICOM Logo & Contact */}
+              {/* Right: ICOM Logo, Socials & Contact */}
               <div className="flex flex-col items-center md:flex-row md:items-start gap-8 md:gap-12">
                 {/* Member of ICOM */}
                 <div className="flex items-center">
@@ -112,17 +113,24 @@ function App() {
                   </a>
                 </div>
 
-                {/* Contact */}
-                <div className="text-center md:text-right">
+                {/* Socials & Contact */}
+                <div className="text-center md:text-right flex flex-col items-center md:items-end">
                   <Link to="/contact" className="text-accent font-bold uppercase tracking-wider text-sm mb-4 hover:text-white transition-colors">Contact</Link>
                   <p className="text-gray-400 text-sm leading-relaxed mb-4">
                     Kozyatağı Mah. Kaya Sultan Sok.<br />
                     Nanda Plaza No: 83 Kat: 1<br />
                     34742 Kadıköy, Istanbul
                   </p>
-                  <div className="text-gray-400 text-sm">
+                  <div className="text-gray-400 text-sm mb-4 border-b border-gray-700/50 pb-4">
                     <span className="block mb-2">Phone: (0216) 356 59 99</span>
                     <span className="block">Email: info@teskilat.com.tr</span>
+                  </div>
+                  
+                  {/* Social Media Icons */}
+                  <div className="flex items-center space-x-4 text-gray-400">
+                    <a href="https://www.instagram.com/teskilaticom/" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaInstagram size={22} /></a>
+                    <a href="https://www.linkedin.com/company/teskilaticom/posts/?feedView=all" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaLinkedin size={22} /></a>
+                    <a href="https://www.youtube.com/@teskilaticom3784" target="_blank" rel="noreferrer" className="hover:text-accent transition"><FaYoutube size={22} /></a>
                   </div>
                 </div>
               </div>

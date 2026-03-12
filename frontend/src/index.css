@@ -81,3 +81,18 @@ video::-webkit-media-controls-start-playback-button {
   pointer-events: none;
   /* Kullanıcı etkileşimini engelle */
 }
+
+/* Logo Vertical Reveal Animation */
+@keyframes verticalReveal {
+  0% {
+    clip-path: inset(50% 0 50% 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.logo-reveal {
+  clip-path: inset(50% 0 50% 0);
+  animation: verticalReveal 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s forwards;
+}
