@@ -29,13 +29,6 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again after 15 minutes'
 });
 
-// Stricter Limiter for Login
-const authLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10, // Limit each IP to 10 login attempts per hour
-  message: 'Too many login attempts, please try again later'
-});
-
 // Middleware
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" } // Uploads için gerekli
@@ -51,7 +44,7 @@ const uploadsPath = process.env.UPLOAD_DIR || path.join(__dirname, '../uploads')
 app.use('/uploads', express.static(uploadsPath));
 
 // Routes
-app.use('/api/auth', authLimiter, authRoutes); // Apply stricter limit to auth
+app.use('/api/auth', authRoutes); // authLimiter removed as we use specific loginLimiter
 app.use('/api/admin', adminRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/brands', brandRoutes);

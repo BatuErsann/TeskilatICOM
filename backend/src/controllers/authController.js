@@ -60,7 +60,22 @@ exports.login = async (req, res) => {
     const [users] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
     if (users.length === 0) {
       logSecurityEvent('LOGIN_FAIL', req, { email, reason: 'User not found' }).catch(() => { });
-      return res.status(401).json({ message: 'Invalid credentials' });
+      
+      let warningMessage = null;
+      if (req.rateLimit) {
+        const limit = req.rateLimit.limit;
+        const current = req.rateLimit.current;
+        const remaining = limit - current; // current includes this request
+
+        if (remaining <= 2 && remaining >= 0) {
+          warningMessage = `KRİTİK GÜVENLİK UYARISI: Hesabınızda algılanan şüpheli işlem trafiği nedeniyle son ${remaining} giriş hakkınız kalmıştır. Hakkınızın dolması durumunda IP adresiniz 'Süresiz Erişim Engeli' (Perma-Ban) listesine alınacaktır. Erişim sorunu yaşamamak için lütfen geliştirici ile iletişime geçiniz.`;
+        }
+      }
+
+      return res.status(401).json({ 
+        message: 'Invalid credentials',
+        warning: warningMessage
+      });
     }
 
     const user = users[0];
@@ -69,7 +84,22 @@ exports.login = async (req, res) => {
     const isValid = await verifyPassword(password, user.password_hash);
     if (!isValid) {
       logSecurityEvent('LOGIN_FAIL', req, { email, reason: 'Invalid password' }).catch(() => { });
-      return res.status(401).json({ message: 'Invalid credentials' });
+      
+      let warningMessage = null;
+      if (req.rateLimit) {
+        const limit = req.rateLimit.limit;
+        const current = req.rateLimit.current;
+        const remaining = limit - current; // current includes this request
+
+        if (remaining <= 2 && remaining >= 0) {
+          warningMessage = `KRİTİK GÜVENLİK UYARISI: Hesabınızda algılanan şüpheli işlem trafiği nedeniyle son ${remaining} giriş hakkınız kalmıştır. Hakkınızın dolması durumunda IP adresiniz 'Süresiz Erişim Engeli' (Perma-Ban) listesine alınacaktır. Erişim sorunu yaşamamak için lütfen geliştirici ile iletişime geçiniz.`;
+        }
+      }
+
+      return res.status(401).json({ 
+        message: 'Invalid credentials',
+        warning: warningMessage
+      });
     }
 
     // 2FA Check
