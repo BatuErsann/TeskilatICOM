@@ -195,7 +195,7 @@ const Home = () => {
 
         <div className="relative z-10 w-full container mx-auto px-4 flex flex-col items-center justify-center h-full gap-8 md:gap-12">
           {/* Spacer for Navbar floating logo */}
-          <div className="h-64 md:h-80 lg:h-[400px] w-full"></div>
+          <div className="h-32 md:h-40 lg:h-[200px] w-full"></div>
 
           {/* t-header manifesto */}
           <FadeIn direction="up" delay={200}>

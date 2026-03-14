@@ -52,7 +52,7 @@ const Navbar = () => {
           className="absolute left-1/2 -translate-x-1/2 origin-top"
           style={{
             transform: isHome 
-              ? `translateX(-50%) translateY(${Math.max(0, 250 - scrollY)}px) scale(${Math.max(1, 2.5 - (scrollY / 250) * 1.5)})`
+              ? `translateX(-50%) translateY(${Math.max(0, 120 - scrollY)}px) scale(${Math.max(1, 2.5 - (scrollY / 120) * 1.5)})`
               : 'translateX(-50%) translateY(0) scale(1)',
             opacity: 1,
             pointerEvents: isHome && scrollY < 50 ? 'none' : 'auto'
