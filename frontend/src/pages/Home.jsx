@@ -23,6 +23,16 @@ const Home = () => {
   const [layout, setLayout] = useState([]);
   const [services, setServices] = useState([]);
   const [content, setContent] = useState({});
+  const [isMacSafari, setIsMacSafari] = useState(false);
+
+  useEffect(() => {
+    if (typeof navigator !== 'undefined') {
+      const userAgent = navigator.userAgent;
+      const isMac = /Macintosh/i.test(userAgent);
+      const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
+      setIsMacSafari(isMac && isSafari);
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => requestAnimationFrame(() => setScrollY(window.scrollY));
@@ -203,7 +213,11 @@ const Home = () => {
               <img
                 src="/assets/images/t-header_main.svg"
                 alt="We go the extra mile - Teşkilat believes in the power of connected ideas"
-                className="w-[95vw] min-w-[95vw] scale-110 md:scale-100 md:w-full md:min-w-[60vw] lg:min-w-[45vw] xl:min-w-[40vw] max-w-5xl mx-auto px-0 md:px-4"
+                className={`w-[95vw] min-w-[95vw] scale-110 md:scale-100 md:w-full mx-auto px-0 md:px-4 transition-all duration-300 ${
+                  isMacSafari 
+                    ? "md:min-w-[45vw] lg:min-w-[30vw] xl:min-w-[25vw] max-w-3xl" 
+                    : "md:min-w-[65vw] lg:min-w-[55vw] max-w-7xl"
+                }`}
               />
             </div>
           </FadeIn>
