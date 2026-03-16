@@ -203,7 +203,7 @@ const Home = () => {
               <img
                 src="/assets/images/t-header_main.svg"
                 alt="We go the extra mile - Teşkilat believes in the power of connected ideas"
-                className="w-full min-w-[85vw] md:min-w-[65vw] lg:min-w-[55vw] max-w-7xl mx-auto px-2 md:px-4"
+                className="w-[95vw] min-w-[95vw] scale-110 md:scale-100 md:w-full md:min-w-[60vw] lg:min-w-[45vw] xl:min-w-[40vw] max-w-5xl mx-auto px-0 md:px-4"
               />
             </div>
           </FadeIn>
