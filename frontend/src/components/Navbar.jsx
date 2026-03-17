@@ -34,7 +34,7 @@ const Navbar = () => {
   };
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const logoStartY = isMobile ? 200 : 200;
+  const logoStartY = isMobile ? 300 : 300;
   const logoMaxScale = isMobile ? 1.8 : 2.8;
 
   return (
@@ -67,7 +67,7 @@ const Navbar = () => {
               key={isHome ? 'home-logo' : 'nav-logo'}
               src="/logo.svg"
               alt="Teskilat ICOM Logo"
-              className={`w-40 md:w-48 h-auto ${isHome ? 'logo-reveal' : ''}`}
+              className={`w-48 md:w-56 h-auto ${isHome ? 'logo-reveal' : ''}`}
             />
           </Link>
         </div>
