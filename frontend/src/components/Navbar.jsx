@@ -34,7 +34,7 @@ const Navbar = () => {
   };
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const logoStartY = isMobile ? 160 : 200;
+  const logoStartY = isMobile ? 240 : 200;
   const logoMaxScale = isMobile ? 1.8 : 2.2;
 
   return (
