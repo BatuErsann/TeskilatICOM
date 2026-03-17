@@ -34,8 +34,8 @@ const Navbar = () => {
   };
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const logoStartY = isMobile ? 270 : 280;
-  const logoMaxScale = isMobile ? 1.8 : 2.8;
+  const logoStartY = isMobile ? 120 : 200;
+  const logoMaxScale = isMobile ? 1.8 : 2.2;
 
   return (
     <nav className="bg-primary/90 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
