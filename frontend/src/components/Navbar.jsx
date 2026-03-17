@@ -33,6 +33,10 @@ const Navbar = () => {
     setIsOpen(false);
   };
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const logoStartY = isMobile ? 200 : 200;
+  const logoMaxScale = isMobile ? 1.8 : 2.8;
+
   return (
     <nav className="bg-primary/90 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
       <div className="container mx-auto px-4 py-5 relative flex items-center justify-between">
@@ -52,7 +56,7 @@ const Navbar = () => {
           className="absolute left-1/2 -translate-x-1/2 origin-top"
           style={{
             transform: isHome 
-              ? `translateX(-50%) translateY(${Math.max(0, 120 - scrollY)}px) scale(${Math.max(1, 2.5 - (scrollY / 120) * 1.5)})`
+              ? `translateX(-50%) translateY(${Math.max(0, logoStartY - scrollY)}px) scale(${Math.max(1, logoMaxScale - (scrollY / logoStartY) * (logoMaxScale - 1))})`
               : 'translateX(-50%) translateY(0) scale(1)',
             opacity: 1,
             pointerEvents: isHome && scrollY < 50 ? 'none' : 'auto'
