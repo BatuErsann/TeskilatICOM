@@ -243,7 +243,7 @@ const MasonryCard = ({ work, getImageUrl, getYouTubeId }) => {
       href={link || undefined}
       target={link ? '_blank' : undefined}
       rel={link ? 'noopener noreferrer' : undefined}
-      className={`break-inside-avoid mb-4 group block ${link ? 'cursor-pointer' : 'cursor-default'}`}
+      className={`break-inside-avoid mb-4 group inline-block w-full ${link ? 'cursor-pointer' : 'cursor-default'}`}
     >
       <div className={`relative overflow-hidden rounded-xl bg-gray-800 ${getAspectRatio()}`}>
         {/* Thumbnail */}

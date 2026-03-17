@@ -215,7 +215,7 @@ const Home = () => {
                 alt="We go the extra mile - Teşkilat believes in the power of connected ideas"
                 className={`w-[95vw] min-w-[95vw] scale-110 md:scale-100 md:w-full mx-auto px-0 md:px-4 transition-all duration-300 ${
                   isMacSafari 
-                    ? "md:min-w-[45vw] lg:min-w-[30vw] xl:min-w-[25vw] max-w-3xl" 
+                    ? "md:min-w-[55vw] lg:min-w-[45vw] xl:min-w-[40vw] max-w-5xl"
                     : "md:min-w-[65vw] lg:min-w-[55vw] max-w-7xl"
                 }`}
               />
@@ -231,7 +231,7 @@ const Home = () => {
           {/* Works Masonry Grid */}
           <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4">
             {displayWorks.map((work, index) => (
-              <FadeIn key={work.id} delay={index * 50} className="break-inside-avoid mb-4">
+              <FadeIn key={work.id} delay={index * 50} className="break-inside-avoid mb-4 inline-block w-full">
                 <HeroWorkCard
                   work={work}
                   getImageUrl={getImageUrl}
@@ -472,7 +472,7 @@ const HeroWorkCard = ({ work, getImageUrl, getYouTubeId }) => {
       href={link || undefined}
       target={link ? '_blank' : undefined}
       rel={link ? 'noopener noreferrer' : undefined}
-      className={`break-inside-avoid mb-4 group block ${link ? 'cursor-pointer' : 'cursor-default'}`}
+      className={`break-inside-avoid mb-4 group inline-block w-full ${link ? 'cursor-pointer' : 'cursor-default'}`}
     >
       <div className={`relative overflow-hidden rounded-xl bg-gray-800 ${getAspectRatio()}`}>
         <img

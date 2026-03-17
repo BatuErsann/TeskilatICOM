@@ -629,7 +629,7 @@ const LayoutEditor = ({ works, layout, setLayout, setLayoutChanged, layoutChange
                   onDragEnter={() => handleDragEnter(index)}
                   onDragEnd={handleDragEnd}
                   onDragOver={(e) => e.preventDefault()}
-                  className={`relative group cursor-move rounded-lg overflow-hidden mb-4 break-inside-avoid ring-2 ring-transparent hover:ring-accent transition-all ${aspectClass}`}
+                  className={`relative group cursor-move rounded-lg overflow-hidden mb-4 inline-block w-full break-inside-avoid ring-2 ring-transparent hover:ring-accent transition-all ${aspectClass}`}
                   onClick={() => setSelectedItem(item)}
                 >
                   {/* Background */}
