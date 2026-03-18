@@ -297,7 +297,7 @@ exports.toggleFeatured = async (req, res) => {
 // Get Works Layout
 exports.getWorksLayout = async (req, res) => {
   try {
-    const [rows] = await db.execute('SELECT * FROM works_layout ORDER BY id DESC LIMIT 1');
+    const [rows] = await db.execute("SELECT * FROM works_layout WHERE layout_type = 'main' OR layout_type IS NULL ORDER BY id DESC LIMIT 1");
     if (rows.length > 0) {
       res.json(rows[0]);
     } else {
@@ -313,12 +313,12 @@ exports.saveWorksLayout = async (req, res) => {
   const { layout_data } = req.body;
   try {
     // Check if layout exists
-    const [check] = await db.execute('SELECT * FROM works_layout ORDER BY id DESC LIMIT 1');
+    const [check] = await db.execute("SELECT * FROM works_layout WHERE layout_type = 'main' OR layout_type IS NULL ORDER BY id DESC LIMIT 1");
 
     if (check.length > 0) {
       await db.execute('UPDATE works_layout SET layout_data = ? WHERE id = ?', [JSON.stringify(layout_data), check[0].id]);
     } else {
-      await db.execute('INSERT INTO works_layout (layout_data) VALUES (?)', [JSON.stringify(layout_data)]);
+      await db.execute("INSERT INTO works_layout (layout_data, layout_type) VALUES (?, 'main')", [JSON.stringify(layout_data)]);
     }
     res.json({ message: 'Layout saved successfully' });
   } catch (err) {

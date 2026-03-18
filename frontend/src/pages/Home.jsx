@@ -214,10 +214,10 @@ const Home = () => {
       <div className="w-full relative bg-primary pt-8 pb-16">
         <div className="container mx-auto px-4">
 
-          {/* Works Masonry Grid */}
-          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4">
+          {/* Works Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {displayWorks.map((work, index) => (
-              <FadeIn key={work.id} delay={index * 50} className="break-inside-avoid mb-4">
+              <FadeIn key={work.id} delay={index * 50} className="w-full">
                 <HeroWorkCard
                   work={work}
                   getImageUrl={getImageUrl}
@@ -458,7 +458,7 @@ const HeroWorkCard = ({ work, getImageUrl, getYouTubeId }) => {
       href={link || undefined}
       target={link ? '_blank' : undefined}
       rel={link ? 'noopener noreferrer' : undefined}
-      className={`break-inside-avoid mb-4 group block ${link ? 'cursor-pointer' : 'cursor-default'}`}
+      className={`group block w-full h-full ${link ? 'cursor-pointer' : 'cursor-default'}`}
     >
       <div className={`relative overflow-hidden rounded-xl bg-gray-800 ${getAspectRatio()}`}>
         <img

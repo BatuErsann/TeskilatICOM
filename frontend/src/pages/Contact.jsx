@@ -275,8 +275,6 @@ const Contact = () => {
             {/* Work With Us Form */}
             {activeTab === 'work' && (
               <div className="p-8">
-                <p className="text-gray-400 mb-6">We're always looking for talented individuals.</p>
-
                 <form onSubmit={handleWorkSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
