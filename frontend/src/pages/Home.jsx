@@ -4,6 +4,7 @@ import FadeIn from '../components/FadeIn';
 import ServiceAccordion from '../components/ServiceAccordion';
 import api from '../api';
 import { getImageUrl } from '../utils/imageUrl';
+import MasonryGrid from '../components/MasonryGrid';
 import { FaTrophy, FaTimes, FaExternalLinkAlt, FaPlay, FaImage, FaArrowRight, FaBullhorn, FaPalette, FaFilm, FaMobileAlt, FaChartLine, FaUsers, FaInstagram, FaLinkedin, FaYoutube, FaFacebook, FaTwitter, FaLink, FaPlus, FaMinus } from 'react-icons/fa';
 import useDocumentMeta from '../hooks/useDocumentMeta';
 
@@ -228,9 +229,16 @@ const Home = () => {
       <div className="w-full relative bg-primary pt-8 pb-16">
         <div className="container mx-auto px-4">
 
-          {/* Works Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {displayWorks.map((work, index) => (
+          {/* Works Masonry Grid */}
+          <MasonryGrid
+            items={displayWorks}
+            breakpoints={[
+              { minWidth: 1280, columns: 4 },
+              { minWidth: 1024, columns: 3 },
+              { minWidth: 640, columns: 2 },
+              { minWidth: 0, columns: 1 }
+            ]}
+            renderItem={(work, index) => (
               <FadeIn key={work.id} delay={index * 50} className="w-full">
                 <HeroWorkCard
                   work={work}
@@ -238,8 +246,8 @@ const Home = () => {
                   getYouTubeId={getYouTubeId}
                 />
               </FadeIn>
-            ))}
-          </div>
+            )}
+          />
 
           {displayWorks.length === 0 && (
             <div className="text-center py-20">

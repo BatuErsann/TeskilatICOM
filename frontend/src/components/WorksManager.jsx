@@ -3,6 +3,7 @@ import { FaPlus, FaTrash, FaEdit, FaSave, FaGripVertical, FaImage, FaVideo, FaLi
 import api from '../api';
 import { getImageUrl } from '../utils/imageUrl';
 import ImageUploader from './ImageUploader';
+import MasonryGrid from './MasonryGrid';
 
 const WorksManager = () => {
   const [works, setWorks] = useState([]);
@@ -613,8 +614,14 @@ const LayoutEditor = ({ works, layout, setLayout, setLayoutChanged, layoutChange
         </h3>
 
         {layout.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {layout.map((item, index) => {
+          <MasonryGrid
+            items={layout}
+            breakpoints={[
+              { minWidth: 1024, columns: 4 }, // lg
+              { minWidth: 768, columns: 3 },  // md
+              { minWidth: 0, columns: 2 }     // default
+            ]}
+            renderItem={(item, index) => {
               const work = getWork(item.workId);
               if (!work) return null;
 
@@ -690,8 +697,8 @@ const LayoutEditor = ({ works, layout, setLayout, setLayoutChanged, layoutChange
                   </div>
                 </div>
               );
-            })}
-          </div>
+            }}
+          />
         ) : (
           <div className="text-center py-12 text-gray-500">
             <FaGripVertical className="mx-auto text-4xl mb-4 opacity-30" />

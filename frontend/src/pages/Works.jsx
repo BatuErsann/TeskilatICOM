@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import api from '../api';
 import { getImageUrl } from '../utils/imageUrl';
 import useDocumentMeta from '../hooks/useDocumentMeta';
+import MasonryGrid from '../components/MasonryGrid';
 
 const Works = () => {
   useDocumentMeta({
@@ -172,17 +173,24 @@ const Works = () => {
           </p>
         </div>
 
-        {/* Works Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {displayWorks.map((work) => (
+        {/* Masonry Grid - CSS columns ile organik layout */}
+        <MasonryGrid
+          items={displayWorks}
+          breakpoints={[
+            { minWidth: 1280, columns: 4 }, // xl
+            { minWidth: 1024, columns: 3 }, // lg
+            { minWidth: 640, columns: 2 },  // sm
+            { minWidth: 0, columns: 1 }     // default
+          ]}
+          renderItem={(work) => (
             <MasonryCard
               key={work.id}
               work={work}
               getImageUrl={getImageUrl}
               getYouTubeId={getYouTubeId}
             />
-          ))}
-        </div>
+          )}
+        />
 
         {/* Empty State */}
         {displayWorks.length === 0 && (
