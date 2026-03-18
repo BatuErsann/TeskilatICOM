@@ -97,7 +97,7 @@ function App() {
               {/* Left: Teşkilat Logo & Copyright */}
               <div className="flex flex-col items-center md:items-start">
                 <Link to="/">
-                  <img src="/logo.svg" alt="Teşkilat ICOM" className="h-16 w-auto mb-4" />
+                  <img src="/logo.svg" alt="Teşkilat ICOM" className="h-24 w-auto mb-4" />
                 </Link>
                 <p className="text-gray-400 text-sm text-center md:text-left">
                   &copy; 2026 Teskilat<br />All rights reserved.
@@ -109,7 +109,7 @@ function App() {
                 {/* Member of ICOM */}
                 <div className="flex items-center">
                   <a href="https://icomagencies.com/" target="_blank" rel="noopener noreferrer">
-                    <img src={icomMemberLogo} alt="Member of ICOM" className="h-16 w-auto opacity-80 hover:opacity-100 transition-opacity" />
+                    <img src={icomMemberLogo} alt="Member of ICOM" className="h-24 w-auto opacity-80 hover:opacity-100 transition-opacity" />
                   </a>
                 </div>
 

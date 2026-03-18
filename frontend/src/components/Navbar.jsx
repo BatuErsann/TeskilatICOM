@@ -33,12 +33,16 @@ const Navbar = () => {
     setIsOpen(false);
   };
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1280;
+  const logoStartY = isMobile ? 240 : 200;
+  const logoMaxScale = isMobile ? 1.8 : 2.2;
+
   return (
     <nav className="bg-primary/90 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
       <div className="container mx-auto px-4 py-5 relative flex items-center justify-between">
         
         {/* Left Side: Navigation Links */}
-        <div className="hidden md:flex items-center space-x-6">
+        <div className="hidden xl:flex items-center space-x-6">
           <Link to="/works" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Works</Link>
           <Link to="/services" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Services</Link>
           <Link to="/about" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">About</Link>
@@ -52,7 +56,7 @@ const Navbar = () => {
           className="absolute left-1/2 -translate-x-1/2 origin-top"
           style={{
             transform: isHome 
-              ? `translateX(-50%) translateY(${Math.max(0, 120 - scrollY)}px) scale(${Math.max(1, 2.5 - (scrollY / 120) * 1.5)})`
+              ? `translateX(-50%) translateY(${Math.max(0, logoStartY - scrollY)}px) scale(${Math.max(1, logoMaxScale - (scrollY / logoStartY) * (logoMaxScale - 1))})`
               : 'translateX(-50%) translateY(0) scale(1)',
             opacity: 1,
             pointerEvents: isHome && scrollY < 50 ? 'none' : 'auto'
@@ -63,13 +67,13 @@ const Navbar = () => {
               key={isHome ? 'home-logo' : 'nav-logo'}
               src="/logo.svg"
               alt="Teskilat ICOM Logo"
-              className={`w-40 md:w-48 h-auto ${isHome ? 'logo-reveal' : ''}`}
+              className={`w-40 lg:w-48 xl:w-56 h-auto ${isHome ? 'logo-reveal' : ''}`}
             />
           </Link>
         </div>
 
         {/* Right Side: Nav Links + Auth */}
-        <div className="hidden md:flex items-center gap-x-6">
+        <div className="hidden xl:flex items-center gap-x-6">
           <div className="flex items-center">
             <Link to="/contact" className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Contact</Link>
           </div>
@@ -90,7 +94,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Hamburger Button */}
-        <div className="md:hidden flex items-center">
+        <div className="xl:hidden flex items-center">
           <button onClick={() => setIsOpen(!isOpen)} className="text-white focus:outline-none">
             {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
           </button>
@@ -99,7 +103,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-primary border-t border-white/10 absolute w-full left-0 top-full shadow-xl">
+        <div className="xl:hidden bg-primary border-t border-white/10 absolute w-full left-0 top-full shadow-xl">
           <div className="flex flex-col px-4 py-6 space-y-4">
             <Link to="/works" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Works</Link>
             <Link to="/services" onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-accent transition font-medium tracking-wide uppercase text-sm">Services</Link>
