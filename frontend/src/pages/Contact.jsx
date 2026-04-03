@@ -97,9 +97,6 @@ const Contact = () => {
 
           <div>
             <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 text-white">CONTACT</h1>
-            <p className="text-xl text-gray-400 mb-10">
-              Get in touch with us for your projects.
-            </p>
 
             <div className="space-y-8">
               <div className="flex items-start space-x-4">
