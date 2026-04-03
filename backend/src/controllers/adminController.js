@@ -65,6 +65,10 @@ exports.updateUserRole = async (req, res) => {
       return res.status(400).json({ message: 'Invalid role' });
     }
 
+    if (parseInt(id) === req.user.id) {
+      return res.status(403).json({ message: 'You cannot change your own role' });
+    }
+
     await db.query('UPDATE users SET role = ? WHERE id = ?', [role, id]);
     res.json({ message: 'Role updated successfully' });
   } catch (error) {
@@ -76,6 +80,11 @@ exports.updateUserRole = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
+    
+    if (parseInt(id) === req.user.id) {
+      return res.status(403).json({ message: 'You cannot delete your own account' });
+    }
+
     await db.query('DELETE FROM users WHERE id = ?', [id]);
     res.json({ message: 'User deleted successfully' });
   } catch (error) {

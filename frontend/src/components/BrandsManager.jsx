@@ -22,7 +22,7 @@ const BrandsManager = () => {
 
   const fetchBrands = async () => {
     try {
-      const res = await api.get('/brands');
+      const res = await api.get('/brands/admin');
       setBrands(res.data);
     } catch (err) {
       console.error('Failed to fetch brands', err);

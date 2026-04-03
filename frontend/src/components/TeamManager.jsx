@@ -25,7 +25,7 @@ const TeamManager = () => {
 
   const fetchMembers = async () => {
     try {
-      const res = await api.get('/content/team');
+      const res = await api.get('/content/admin/team');
       setMembers(res.data);
     } catch (err) {
       console.error('Failed to fetch team members', err);

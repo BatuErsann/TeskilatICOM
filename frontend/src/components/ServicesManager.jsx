@@ -30,7 +30,7 @@ const ServicesManager = () => {
 
   const fetchServices = async () => {
     try {
-      const res = await api.get('/content/services');
+      const res = await api.get('/content/admin/services');
       setServices(res.data);
     } catch (err) {
       console.error('Failed to fetch services', err);

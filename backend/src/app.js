@@ -12,8 +12,10 @@ const contentRoutes = require('./routes/contentRoutes');
 const brandRoutes = require('./routes/brandRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const { uploadLimiter } = require('./middlewares/rateLimiters');
 const { initDefaultAdmin } = require('./utils/initDefaultAdmin');
 const { initDatabase } = require('./utils/initDatabase');
+const { initBackupScheduler } = require('./services/backupService');
 
 const app = express();
 
@@ -49,7 +51,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/brands', brandRoutes);
 app.use('/api/contact', contactRoutes);
-app.use('/api/upload', uploadRoutes);
+app.use('/api/upload', uploadLimiter, uploadRoutes);
 
 // Health Check
 app.get('/', (req, res) => {
@@ -72,4 +74,7 @@ app.listen(PORT, async () => {
 
   // Initialize default admin user
   await initDefaultAdmin();
+
+  // Otomatik yedekleme zamanlayıcısını başlat
+  initBackupScheduler();
 });

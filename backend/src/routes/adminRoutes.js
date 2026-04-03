@@ -14,3 +14,4 @@ router.delete('/users/:id', adminController.deleteUser);
 router.get('/stats', adminController.getStats);
 
 module.exports = router;
+

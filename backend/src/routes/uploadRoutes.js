@@ -2,13 +2,12 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { verifyToken } = require('../middlewares/authMiddleware');
+const { verifyAdmin } = require('../middlewares/authMiddleware');
+const { validateUploadedFile, validateUploadedFiles, sanitizeFilename } = require('../middlewares/fileValidation');
 
 const router = express.Router();
 
 // Uploads klasörünü oluştur
-// UPLOAD_DIR env variable ile kalıcı bir dizin belirlenebilir (Coolify/Docker deploy'larda önemli)
-// Belirtilmezse varsayılan olarak backend/uploads/ kullanılır
 const uploadDir = process.env.UPLOAD_DIR || path.join(__dirname, '../../uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -22,12 +21,15 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     // Benzersiz dosya adı oluştur
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const ext = path.extname(file.originalname);
-    cb(null, uniqueSuffix + ext);
+    // Sanitize extension — only allow known safe extensions
+    const ext = path.extname(file.originalname).toLowerCase();
+    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+    const safeExt = allowedExtensions.includes(ext) ? ext : '.bin';
+    cb(null, uniqueSuffix + safeExt);
   }
 });
 
-// Dosya filtresi - sadece resim dosyaları
+// Dosya filtresi - sadece resim dosyaları (first layer: MIME check)
 const fileFilter = (req, file, cb) => {
   const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
   if (allowedTypes.includes(file.mimetype)) {
@@ -45,14 +47,14 @@ const upload = multer({
   }
 });
 
-// Tek dosya yükleme
-router.post('/image', verifyToken, upload.single('image'), (req, res) => {
+// Tek dosya yükleme — Admin only + magic byte validation
+router.post('/image', verifyAdmin, upload.single('image'), validateUploadedFile, (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'Dosya yüklenemedi' });
     }
 
-    // Relative path döndür - frontend kendi base URL'ini ekleyecek
+    // Relative path döndür
     const imageUrl = `/uploads/${req.file.filename}`;
 
     res.json({
@@ -67,8 +69,8 @@ router.post('/image', verifyToken, upload.single('image'), (req, res) => {
   }
 });
 
-// Birden fazla dosya yükleme
-router.post('/images', verifyToken, upload.array('images', 10), (req, res) => {
+// Birden fazla dosya yükleme — Admin only + magic byte validation
+router.post('/images', verifyAdmin, upload.array('images', 10), validateUploadedFiles, (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: 'Dosya yüklenemedi' });
@@ -90,10 +92,24 @@ router.post('/images', verifyToken, upload.array('images', 10), (req, res) => {
   }
 });
 
-// Dosya silme
-router.delete('/:filename', verifyToken, (req, res) => {
+// Dosya silme — Admin only + path traversal prevention
+router.delete('/:filename', verifyAdmin, (req, res) => {
   try {
-    const filePath = path.join(uploadDir, req.params.filename);
+    // Sanitize filename to prevent path traversal (e.g. ../../etc/passwd)
+    const safeFilename = sanitizeFilename(req.params.filename);
+
+    if (!safeFilename || safeFilename !== req.params.filename) {
+      return res.status(400).json({ message: 'Geçersiz dosya adı' });
+    }
+
+    const filePath = path.join(uploadDir, safeFilename);
+
+    // Double-check the resolved path is still within uploadDir
+    const resolvedPath = path.resolve(filePath);
+    const resolvedUploadDir = path.resolve(uploadDir);
+    if (!resolvedPath.startsWith(resolvedUploadDir)) {
+      return res.status(400).json({ message: 'Geçersiz dosya yolu' });
+    }
 
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
@@ -122,4 +138,3 @@ router.use((error, req, res, next) => {
 });
 
 module.exports = router;
-

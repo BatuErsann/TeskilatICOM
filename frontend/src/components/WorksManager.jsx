@@ -40,7 +40,7 @@ const WorksManager = () => {
   const fetchData = async () => {
     try {
       const [worksRes, layoutRes, featuredLayoutRes] = await Promise.all([
-        api.get('/content/works'),
+        api.get('/content/admin/works'),
         api.get('/content/works/layout'),
         api.get('/content/works/layout/featured')
       ]);

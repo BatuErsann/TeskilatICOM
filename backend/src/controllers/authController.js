@@ -36,14 +36,7 @@ exports.register = async (req, res) => {
     console.error('Register Error:', error.message, error.stack);
 
     // More specific error messages
-    if (error.message && error.message.includes('PEPPER_SECRET')) {
-      return res.status(500).json({ message: 'Server configuration error: Missing PEPPER_SECRET' });
-    }
-    if (error.code === 'ECONNREFUSED') {
-      return res.status(500).json({ message: 'Database connection failed' });
-    }
-
-    res.status(500).json({ message: 'Server error', error: process.env.NODE_ENV === 'development' ? error.message : undefined });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -143,16 +136,7 @@ exports.login = async (req, res) => {
     });
   } catch (error) {
     console.error('Login Error:', error.message, error.code, error.sqlMessage || '');
-
-    // Database connection errors
-    if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
-      return res.status(500).json({ message: 'Database connection failed' });
-    }
-    if (error.code === 'ER_NO_SUCH_TABLE') {
-      return res.status(500).json({ message: 'Database table not found. Please run migrations.' });
-    }
-
-    res.status(500).json({ message: 'Server error', error: process.env.NODE_ENV === 'development' ? error.message : undefined });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
