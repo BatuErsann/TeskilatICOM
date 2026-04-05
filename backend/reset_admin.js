@@ -1,9 +1,11 @@
-// Test script to reset admin password
-// Run with: node reset_admin.js
+// Admin password reset script
+// Usage: node reset_admin.js <new_password>
+// Example: node reset_admin.js MySecurePassword123!
 
 require('dotenv').config();
 const db = require('./src/config/db');
 const bcryptjs = require('bcryptjs');
+const crypto = require('crypto');
 
 const PEPPER = process.env.PEPPER_SECRET;
 const SALT_ROUNDS = 12;
@@ -11,10 +13,24 @@ const SALT_ROUNDS = 12;
 async function resetAdmin() {
   const email = 'batuhan.ersan81@gmail.com';
   const username = 'batu';
-  const password = 'adminadmin';
   
-  console.log('=== Password Reset Script ===');
-  console.log('PEPPER_SECRET loaded:', PEPPER ? 'YES (' + PEPPER.substring(0, 10) + '...)' : 'NO - UNDEFINED!');
+  // Get password from command line argument, or generate a random one
+  let password = process.argv[2];
+  let wasGenerated = false;
+  
+  if (!password) {
+    password = crypto.randomBytes(16).toString('hex');
+    wasGenerated = true;
+    console.log('⚠️  No password provided. Generating a random one...');
+  }
+
+  if (password.length < 8) {
+    console.error('❌ Password must be at least 8 characters long!');
+    process.exit(1);
+  }
+  
+  console.log('=== Admin Password Reset ===');
+  console.log('PEPPER_SECRET loaded:', PEPPER ? 'YES' : 'NO - UNDEFINED!');
   
   if (!PEPPER) {
     console.error('ERROR: PEPPER_SECRET is not defined in .env file!');
@@ -22,11 +38,6 @@ async function resetAdmin() {
   }
 
   try {
-    // Check all users
-    const [allUsers] = await db.query('SELECT id, username, email, role FROM users');
-    console.log('All users in database:', allUsers);
-    
-    // Check if user exists by email OR username
     const [users] = await db.query('SELECT * FROM users WHERE email = ? OR username = ?', [email, username]);
     
     if (users.length === 0) {
@@ -41,15 +52,10 @@ async function resetAdmin() {
       console.log('✅ Admin created successfully!');
     } else {
       console.log('User found. ID:', users[0].id, 'Role:', users[0].role);
-      console.log('Current hash:', users[0].password_hash.substring(0, 20) + '...');
       
-      // Create new hash
       const pepperedPassword = password + PEPPER;
       const newHash = await bcryptjs.hash(pepperedPassword, SALT_ROUNDS);
       
-      console.log('New hash:', newHash.substring(0, 20) + '...');
-      
-      // Update password and role
       await db.query(
         'UPDATE users SET password_hash = ?, role = ? WHERE email = ?',
         [newHash, 'admin', email]
@@ -57,9 +63,15 @@ async function resetAdmin() {
       
       console.log('✅ Password and role updated!');
       
-      // Verify the password works
       const isValid = await bcryptjs.compare(pepperedPassword, newHash);
-      console.log('Password verification test:', isValid ? '✅ PASSED' : '❌ FAILED');
+      console.log('Password verification:', isValid ? '✅ PASSED' : '❌ FAILED');
+    }
+
+    if (wasGenerated) {
+      console.log(`\n🔑 Generated password: ${password}`);
+      console.log('⚠️  Save this password immediately! It will not be shown again.');
+    } else {
+      console.log('\n✅ Password has been set to the value you provided.');
     }
     
     process.exit(0);
