@@ -65,10 +65,6 @@ exports.updateUserRole = async (req, res) => {
       return res.status(400).json({ message: 'Invalid role' });
     }
 
-    if (parseInt(id) === req.user.id) {
-      return res.status(403).json({ message: 'You cannot change your own role' });
-    }
-
     await db.query('UPDATE users SET role = ? WHERE id = ?', [role, id]);
     res.json({ message: 'Role updated successfully' });
   } catch (error) {
@@ -80,11 +76,6 @@ exports.updateUserRole = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-    
-    if (parseInt(id) === req.user.id) {
-      return res.status(403).json({ message: 'You cannot delete your own account' });
-    }
-
     await db.query('DELETE FROM users WHERE id = ?', [id]);
     res.json({ message: 'User deleted successfully' });
   } catch (error) {
@@ -104,3 +95,19 @@ exports.getStats = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 }
+
+exports.getAdminLogs = async (req, res) => {
+    try {
+        const [logs] = await db.query(`
+            SELECT a.id, a.action_text, a.created_at, u.username
+            FROM admin_action_logs a
+            LEFT JOIN users u ON a.user_id = u.id
+            ORDER BY a.created_at DESC
+            LIMIT 100
+        `);
+        res.json(logs);
+    } catch (error) {
+        console.error('Error fetching admin logs:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};

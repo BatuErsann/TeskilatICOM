@@ -12,6 +12,6 @@ router.put('/users/:id/password', adminController.updateUserPassword);
 router.put('/users/:id/role', adminController.updateUserRole);
 router.delete('/users/:id', adminController.deleteUser);
 router.get('/stats', adminController.getStats);
+router.get('/logs', adminController.getAdminLogs);
 
 module.exports = router;
-

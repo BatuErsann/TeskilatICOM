@@ -14,4 +14,16 @@ const logSecurityEvent = async (eventType, req, details = '') => {
   }
 };
 
-module.exports = { logSecurityEvent };
+const logAdminAction = async (userId, actionText) => {
+  try {
+    if (!userId || !actionText) return;
+    await db.query(
+      'INSERT INTO admin_action_logs (user_id, action_text) VALUES (?, ?)',
+      [userId, actionText]
+    );
+  } catch (err) {
+    console.error('Failed to log admin action:', err);
+  }
+};
+
+module.exports = { logSecurityEvent, logAdminAction };

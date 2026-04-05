@@ -5,6 +5,7 @@ import WorksManager from '../components/WorksManager';
 import TeamManager from '../components/TeamManager';
 import BrandsManager from '../components/BrandsManager';
 import ServicesManager from '../components/ServicesManager';
+import AdminLogsManager from '../components/AdminLogsManager';
 import { FaTrophy, FaEdit, FaTrash, FaToggleOn, FaToggleOff, FaPlus, FaSave, FaTimes, FaShieldAlt, FaQrcode, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Dashboard = () => {
@@ -418,6 +419,12 @@ const Dashboard = () => {
           className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === 'users' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
         >
           Users
+        </button>
+        <button
+          onClick={() => setActiveTab('logs')}
+          className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === 'logs' ? 'bg-accent text-primary font-bold' : 'text-gray-400 hover:text-white'}`}
+        >
+          Logs
         </button>
         <button
           onClick={() => setActiveTab('security')}
@@ -1103,6 +1110,12 @@ const Dashboard = () => {
       {activeTab === 'services' && (
         <div className="bg-white rounded-lg shadow-lg p-6">
           <ServicesManager />
+        </div>
+      )}
+
+      {activeTab === 'logs' && (
+        <div className="bg-white rounded-lg shadow-lg p-6 text-gray-900">
+          <AdminLogsManager />
         </div>
       )}
     </div>

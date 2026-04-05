@@ -455,6 +455,12 @@ exports.saveWorksLayout = async (req, res) => {
     } else {
       await db.execute("INSERT INTO works_layout (layout_data, layout_type) VALUES (?, 'main')", [JSON.stringify(layout_data)]);
     }
+    
+    // Log the action
+    const logger = require('../utils/logger');
+    const username = req.user.username || 'Bir admin';
+    await logger.logAdminAction(req.user.id || req.user.userId, `${username} works layout'u güncelledi`);
+
     res.json({ message: 'Layout saved successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -631,6 +637,11 @@ exports.addTeamMember = async (req, res) => {
       'INSERT INTO team_members (name, surname, title, image_url, linkedin_url, display_order) VALUES (?, ?, ?, ?, ?, ?)',
       [name, surname, title || null, image_url || null, linkedin_url || null, display_order || 0]
     );
+
+    const logger = require('../utils/logger');
+    const username = req.user.username || 'Bir admin';
+    await logger.logAdminAction(req.user.id || req.user.userId, `${username} team sayfasını güncelledi`);
+
     res.status(201).json({ message: 'Team member added successfully', id: result.insertId });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -645,6 +656,11 @@ exports.updateTeamMember = async (req, res) => {
       'UPDATE team_members SET name = ?, surname = ?, title = ?, image_url = ?, linkedin_url = ?, display_order = ? WHERE id = ?',
       [name, surname, title || null, image_url || null, linkedin_url || null, display_order || 0, id]
     );
+
+    const logger = require('../utils/logger');
+    const username = req.user.username || 'Bir admin';
+    await logger.logAdminAction(req.user.id || req.user.userId, `${username} team sayfasını güncelledi`);
+
     res.json({ message: 'Team member updated successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -655,6 +671,11 @@ exports.deleteTeamMember = async (req, res) => {
   const { id } = req.params;
   try {
     await db.execute('DELETE FROM team_members WHERE id = ?', [id]);
+
+    const logger = require('../utils/logger');
+    const username = req.user.username || 'Bir admin';
+    await logger.logAdminAction(req.user.id || req.user.userId, `${username} team sayfasını güncelledi`);
+
     res.json({ message: 'Team member deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
