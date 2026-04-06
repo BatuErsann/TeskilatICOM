@@ -16,6 +16,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import ProtectedRoute from './components/ProtectedRoute';
 import NotFound from './pages/NotFound';
+import Kvkk from './pages/Kvkk';
 import { FaInstagram, FaLinkedin, FaYoutube } from 'react-icons/fa';
 import icomMemberLogo from '../assets/TeskilatLogo/member-of-icom-network.svg';
 
@@ -61,6 +62,8 @@ function App() {
               }
             />
 
+            <Route path="/kvkk" element={<Kvkk />} />
+
             {/* Old Umbraco URL redirects → Homepage */}
             <Route path="/what-we-do" element={<Navigate to="/" replace />} />
             <Route path="/who-we-are" element={<Navigate to="/" replace />} />
@@ -72,7 +75,6 @@ function App() {
             <Route path="/portfolio" element={<Navigate to="/" replace />} />
             <Route path="/icom" element={<Navigate to="/" replace />} />
             <Route path="/icom-network-member" element={<Navigate to="/" replace />} />
-            <Route path="/kvkk" element={<Navigate to="/" replace />} />
             <Route path="/home" element={<Navigate to="/" replace />} />
             <Route path="/default" element={<Navigate to="/" replace />} />
             <Route path="/homepage" element={<Navigate to="/" replace />} />
@@ -99,9 +101,14 @@ function App() {
                 <Link to="/">
                   <img src="/logo.svg" alt="Teşkilat ICOM" className="h-24 w-auto mb-4" />
                 </Link>
-                <p className="text-gray-400 text-sm text-center md:text-left">
-                  &copy; 2026 Teskilat<br />All rights reserved.
-                </p>
+                <div className="flex flex-col items-center md:items-start">
+                  <p className="text-gray-400 text-sm text-center md:text-left mb-2">
+                    &copy; 2026 Teskilat<br />All rights reserved.
+                  </p>
+                  <Link to="/kvkk" className="text-accent hover:text-white transition-colors text-sm font-bold tracking-wider hover:underline">
+                    KVKK
+                  </Link>
+                </div>
               </div>
 
               {/* Right: ICOM Logo, Socials & Contact */}

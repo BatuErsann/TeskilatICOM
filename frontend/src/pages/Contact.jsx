@@ -31,7 +31,8 @@ const Contact = () => {
     email: '',
     phone: '',
     portfolio: '',
-    about: ''
+    about: '',
+    kvkk: false
   });
 
   const handleContactChange = (e) => {
@@ -39,7 +40,8 @@ const Contact = () => {
   };
 
   const handleWorkChange = (e) => {
-    setWorkForm({ ...workForm, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setWorkForm({ ...workForm, [name]: type === 'checkbox' ? checked : value });
   };
 
   const handleContactSubmit = async (e) => {
@@ -82,7 +84,7 @@ const Contact = () => {
 
       await api.post('/contact', payload);
       setStatus({ type: 'success', message: 'Application sent successfully! We will get back to you soon.' });
-      setWorkForm({ firstName: '', lastName: '', email: '', phone: '', portfolio: '', about: '' });
+      setWorkForm({ firstName: '', lastName: '', email: '', phone: '', portfolio: '', about: '', kvkk: false });
     } catch (error) {
       setStatus({ type: 'error', message: error.response?.data?.message || 'Failed to send application. Please try again.' });
     } finally {
@@ -345,6 +347,22 @@ const Contact = () => {
                       className="w-full bg-secondary/50 border border-white/10 rounded p-4 text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition"
                       placeholder="Your experience, skills, and why you want to join..."
                     ></textarea>
+                  </div>
+                  <div className="flex items-start gap-3 mt-4">
+                    <div className="flex items-center h-5">
+                      <input
+                        id="kvkk"
+                        type="checkbox"
+                        name="kvkk"
+                        checked={workForm.kvkk}
+                        onChange={handleWorkChange}
+                        required
+                        className="w-5 h-5 bg-secondary/50 border border-white/10 rounded accent-accent"
+                      />
+                    </div>
+                    <label htmlFor="kvkk" className="text-gray-400 text-sm leading-tight">
+                      <a href="/kvkk" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">Çalışan Adayı KVKK Aydınlatma Metni</a>'ni okudum ve kabul ediyorum.
+                    </label>
                   </div>
                   <button
                     type="submit"
