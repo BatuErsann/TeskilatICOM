@@ -16,7 +16,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import ProtectedRoute from './components/ProtectedRoute';
 import NotFound from './pages/NotFound';
-import Kvkk from './pages/Kvkk';
+import Privacy from './pages/Privacy';
 import { FaInstagram, FaLinkedin, FaYoutube } from 'react-icons/fa';
 import icomMemberLogo from '../assets/TeskilatLogo/member-of-icom-network.svg';
 
@@ -62,7 +62,7 @@ function App() {
               }
             />
 
-            <Route path="/kvkk" element={<Kvkk />} />
+            <Route path="/privacy" element={<Privacy />} />
 
             {/* Old Umbraco URL redirects → Homepage */}
             <Route path="/what-we-do" element={<Navigate to="/" replace />} />
@@ -105,8 +105,8 @@ function App() {
                   <p className="text-gray-400 text-sm text-center md:text-left mb-2">
                     &copy; 2026 Teskilat<br />All rights reserved.
                   </p>
-                  <Link to="/kvkk" className="text-accent hover:text-white transition-colors text-sm font-bold tracking-wider hover:underline">
-                    KVKK
+                  <Link to="/privacy" className="text-accent hover:text-white transition-colors text-sm font-bold tracking-wider hover:underline">
+                    Privacy Policy
                   </Link>
                 </div>
               </div>

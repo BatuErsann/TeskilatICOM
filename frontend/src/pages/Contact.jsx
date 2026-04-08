@@ -361,7 +361,7 @@ const Contact = () => {
                       />
                     </div>
                     <label htmlFor="kvkk" className="text-gray-400 text-sm leading-tight">
-                      <a href="/kvkk" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">Çalışan Adayı KVKK Aydınlatma Metni</a>'ni okudum ve kabul ediyorum.
+                      I have read and accept the <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">Privacy Policy for Employee Candidates</a>.
                     </label>
                   </div>
                   <button
