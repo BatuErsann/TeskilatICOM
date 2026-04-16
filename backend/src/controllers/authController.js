@@ -19,6 +19,7 @@ exports.register = async (req, res) => {
     // Check if user exists
     const [existing] = await db.query('SELECT * FROM users WHERE email = ? OR username = ?', [email, username]);
     if (existing.length > 0) {
+      logSecurityEvent('REGISTER_FAIL', req, { email, reason: 'User already exists' }).catch(() => { });
       return res.status(400).json({ message: 'User already exists' });
     }
 
@@ -31,9 +32,12 @@ exports.register = async (req, res) => {
       [username, email, hashedPassword, 'user']
     );
 
+    logSecurityEvent('REGISTER_SUCCESS', req, { username, email, userId: result.insertId }).catch(() => { });
+
     res.status(201).json({ message: 'User registered successfully', userId: result.insertId });
   } catch (error) {
     console.error('Register Error:', error.message, error.stack);
+    logSecurityEvent('REGISTER_ERROR', req, { error: error.message }).catch(() => { });
 
     // More specific error messages
     res.status(500).json({ message: 'Server error' });
@@ -123,6 +127,10 @@ exports.login = async (req, res) => {
       { expiresIn: '24h' }
     );
 
+    logSecurityEvent('LOGIN_SUCCESS', req, { email }).catch(() => { });
+    const { logAdminAction } = require('../utils/logger');
+    logAdminAction(user.id, `Kullanıcı giriş yaptı: ${user.username}`).catch(() => {});
+
     res.json({
       message: 'Login successful',
       token,
@@ -140,6 +148,18 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.logout = async (req, res) => {
+  try {
+    const { logAdminAction } = require('../utils/logger');
+    logAdminAction(req.user.id, `Kullanıcı çıkış yaptı: ${req.user.username}`).catch(() => {});
+    logSecurityEvent('LOGOUT_SUCCESS', req, { email: req.user.email }).catch(() => {});
+    res.json({ message: 'Logout successful' });
+  } catch (error) {
+    console.error('Logout Error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 exports.setup2FA = async (req, res) => {
   try {
     const secret = speakeasy.generateSecret({ name: `Teskilat (${req.user.username})` });
@@ -147,13 +167,19 @@ exports.setup2FA = async (req, res) => {
     // Save secret temporarily (or permanently but disabled)
     await db.query('UPDATE users SET two_factor_secret = ? WHERE id = ?', [secret.base32, req.user.id]);
 
+    logSecurityEvent('2FA_SETUP_INITIATED', req, { userId: req.user.id, username: req.user.username }).catch(() => { });
+
     // Generate QR Code
     qrcode.toDataURL(secret.otpauth_url, (err, data_url) => {
-      if (err) return res.status(500).json({ message: 'Error generating QR code' });
+      if (err) {
+        logSecurityEvent('2FA_SETUP_QR_ERROR', req, { userId: req.user.id, error: err.message }).catch(() => { });
+        return res.status(500).json({ message: 'Error generating QR code' });
+      }
       res.json({ secret: secret.base32, qrCode: data_url });
     });
   } catch (error) {
     console.error(error);
+    logSecurityEvent('2FA_SETUP_ERROR', req, { error: error.message }).catch(() => { });
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -172,12 +198,15 @@ exports.verify2FA = async (req, res) => {
 
     if (verified) {
       await db.query('UPDATE users SET two_factor_enabled = TRUE WHERE id = ?', [req.user.id]);
+      logSecurityEvent('2FA_ENABLED_SUCCESS', req, { userId: req.user.id, username: req.user.username }).catch(() => { });
       res.json({ message: '2FA enabled successfully' });
     } else {
+      logSecurityEvent('2FA_VERIFICATION_FAILED', req, { userId: req.user.id, reason: 'Invalid token' }).catch(() => { });
       res.status(400).json({ message: 'Invalid token' });
     }
   } catch (error) {
     console.error(error);
+    logSecurityEvent('2FA_VERIFY_ERROR', req, { error: error.message }).catch(() => { });
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -211,6 +240,7 @@ exports.changePassword = async (req, res) => {
     // Verify current password
     const isValid = await verifyPassword(currentPassword, users[0].password_hash);
     if (!isValid) {
+      logSecurityEvent('CHANGE_PASSWORD_FAIL', req, { userId, reason: 'Invalid current password' }).catch(() => { });
       return res.status(400).json({ message: 'Invalid current password' });
     }
 
@@ -219,9 +249,12 @@ exports.changePassword = async (req, res) => {
 
     await db.query('UPDATE users SET password_hash = ? WHERE id = ?', [hashedPassword, userId]);
 
+    logSecurityEvent('CHANGE_PASSWORD_SUCCESS', req, { userId }).catch(() => { });
+
     res.json({ message: 'Password updated successfully' });
   } catch (error) {
     console.error('Password Change Error:', error);
+    logSecurityEvent('CHANGE_PASSWORD_ERROR', req, { error: error.message }).catch(() => { });
     res.status(500).json({ message: 'Server error during password change' });
   }
 };
@@ -309,6 +342,7 @@ exports.resetPassword = async (req, res) => {
     // Find user
     const [users] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
     if (users.length === 0) {
+      logSecurityEvent('RESET_PASSWORD_FAIL', req, { email, reason: 'User not found' }).catch(() => { });
       return res.status(400).json({ message: 'Geçersiz veya süresi dolmuş kod' });
     }
 
@@ -324,6 +358,7 @@ exports.resetPassword = async (req, res) => {
     );
 
     if (tokens.length === 0) {
+      logSecurityEvent('RESET_PASSWORD_FAIL', req, { userId: user.id, reason: 'Invalid or expired code' }).catch(() => { });
       return res.status(400).json({ message: 'Geçersiz veya süresi dolmuş kod' });
     }
 
@@ -343,6 +378,7 @@ exports.resetPassword = async (req, res) => {
     res.json({ message: 'Şifreniz başarıyla güncellendi' });
   } catch (error) {
     console.error('Reset Password Error:', error);
+    logSecurityEvent('RESET_PASSWORD_ERROR', req, { error: error.message }).catch(() => { });
     res.status(500).json({ message: 'Server error' });
   }
 };

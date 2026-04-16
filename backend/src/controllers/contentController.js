@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const { logAdminAction } = require('../utils/logger');
 
 // ==================== URL VALIDATION ====================
 
@@ -188,6 +189,10 @@ exports.updateHeroImage = async (req, res) => {
     } else {
       await db.execute('INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?)', ['hero_image', url]);
     }
+
+    const username = req.user.username || 'Bir admin';
+    await logAdminAction(req.user.id || req.user.userId, `${username} hero resmini güncelledi`);
+
     res.json({ message: 'Hero image updated successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -216,6 +221,10 @@ exports.updateAboutBackground = async (req, res) => {
     } else {
       await db.execute('INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?)', ['about_bg_image', url]);
     }
+
+    const username = req.user.username || 'Bir admin';
+    await logAdminAction(req.user.id || req.user.userId, `${username} about arkaplanını güncelledi`);
+
     res.json({ message: 'About background updated successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -244,6 +253,10 @@ exports.updateAboutOverlayOpacity = async (req, res) => {
     } else {
       await db.execute('INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?)', ['about_overlay_opacity', opacity]);
     }
+
+    const username = req.user.username || 'Bir admin';
+    await logAdminAction(req.user.id || req.user.userId, `${username} about overlay opaklığını güncelledi: ${opacity}`);
+
     res.json({ message: 'About overlay opacity updated successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -274,6 +287,10 @@ exports.addVideo = async (req, res) => {
 
   try {
     await db.execute('INSERT INTO videos (video_url, platform, title) VALUES (?, ?, ?)', [video_url, platform || 'youtube', title]);
+
+    const username = req.user.username || 'Bir admin';
+    await logAdminAction(req.user.id || req.user.userId, `${username} yeni video ekledi: ${title}`);
+
     res.status(201).json({ message: 'Video added successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -284,6 +301,10 @@ exports.deleteVideo = async (req, res) => {
   const { id } = req.params;
   try {
     await db.execute('DELETE FROM videos WHERE id = ?', [id]);
+
+    const username = req.user.username || 'Bir admin';
+    await logAdminAction(req.user.id || req.user.userId, `${username} video sildi: ID ${id}`);
+
     res.json({ message: 'Video deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -358,6 +379,10 @@ exports.addWork = async (req, res) => {
       'INSERT INTO works (title, description, media_type, media_url, video_platform, thumbnail_url, link_url, instagram_url, linkedin_url, youtube_url, tiktok_url, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [title, description, media_type, media_url, video_platform || 'youtube', finalThumbnail || null, link_url || null, instagram_url || null, linkedin_url || null, youtube_url || null, tiktok_url || null, category || null]
     );
+
+    const username = req.user.username || 'Bir admin';
+    await logAdminAction(req.user.id || req.user.userId, `${username} yeni çalışma ekledi: ${title} (ID: ${result.insertId})`);
+
     res.status(201).json({ message: 'Work added successfully', id: result.insertId });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -396,6 +421,10 @@ exports.updateWork = async (req, res) => {
       'UPDATE works SET title = ?, description = ?, media_type = ?, media_url = ?, video_platform = ?, thumbnail_url = ?, link_url = ?, instagram_url = ?, linkedin_url = ?, youtube_url = ?, tiktok_url = ?, category = ? WHERE id = ?',
       [title, description, media_type, media_url, video_platform || 'youtube', finalThumbnail || null, link_url || null, instagram_url || null, linkedin_url || null, youtube_url || null, tiktok_url || null, category || null, id]
     );
+
+    const username = req.user.username || 'Bir admin';
+    await logAdminAction(req.user.id || req.user.userId, `${username} çalışmayı güncelledi: ${title} (ID: ${id})`);
+
     res.json({ message: 'Work updated successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -406,6 +435,10 @@ exports.deleteWork = async (req, res) => {
   const { id } = req.params;
   try {
     await db.execute('DELETE FROM works WHERE id = ?', [id]);
+
+    const username = req.user.username || 'Bir admin';
+    await logAdminAction(req.user.id || req.user.userId, `${username} çalışmayı sildi: ID ${id}`);
+
     res.json({ message: 'Work deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -427,6 +460,11 @@ exports.toggleFeatured = async (req, res) => {
   try {
     await db.execute('UPDATE works SET is_featured = NOT is_featured WHERE id = ?', [id]);
     const [rows] = await db.execute('SELECT is_featured FROM works WHERE id = ?', [id]);
+
+    const username = req.user.username || 'Bir admin';
+    const status = rows[0]?.is_featured ? 'öne çıkarılı' : 'normal';
+    await logAdminAction(req.user.id || req.user.userId, `${username} çalışmayı ${status} yaptı: ID ${id}`);
+
     res.json({ message: 'Featured status toggled', is_featured: rows[0]?.is_featured });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -489,6 +527,10 @@ exports.saveFeaturedWorksLayout = async (req, res) => {
     } else {
       await db.execute("INSERT INTO works_layout (layout_data, layout_type) VALUES (?, 'featured')", [JSON.stringify(layout_data)]);
     }
+
+    const username = req.user.username || 'Bir admin';
+    await logAdminAction(req.user.id || req.user.userId, `${username} öne çıkarılı works layout'unu güncelledi`);
+
     res.json({ message: 'Featured layout saved successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -554,6 +596,10 @@ exports.addAnnouncement = async (req, res) => {
       'INSERT INTO announcements (title, short_description, full_content, image_url, link_url, link_text, is_active, display_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [title, short_description || null, full_content || null, image_url, link_url || null, link_text || 'Read More', is_active !== false, display_order || 0]
     );
+
+    const username = req.user.username || 'Bir admin';
+    await logAdminAction(req.user.id || req.user.userId, `${username} yeni duyuru ekledi: ${title} (ID: ${result.insertId})`);
+
     res.status(201).json({ message: 'Announcement added successfully', id: result.insertId });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -568,6 +614,10 @@ exports.updateAnnouncement = async (req, res) => {
       'UPDATE announcements SET title = ?, short_description = ?, full_content = ?, image_url = ?, link_url = ?, link_text = ?, is_active = ?, display_order = ? WHERE id = ?',
       [title, short_description || null, full_content || null, image_url, link_url || null, link_text || 'Read More', is_active !== false, display_order || 0, id]
     );
+
+    const username = req.user.username || 'Bir admin';
+    await logAdminAction(req.user.id || req.user.userId, `${username} duyuruyu güncelledi: ${title} (ID: ${id})`);
+
     res.json({ message: 'Announcement updated successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -578,6 +628,10 @@ exports.deleteAnnouncement = async (req, res) => {
   const { id } = req.params;
   try {
     await db.execute('DELETE FROM announcements WHERE id = ?', [id]);
+
+    const username = req.user.username || 'Bir admin';
+    await logAdminAction(req.user.id || req.user.userId, `${username} duyuruyu sildi: ID ${id}`);
+
     res.json({ message: 'Announcement deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -588,6 +642,12 @@ exports.toggleAnnouncementStatus = async (req, res) => {
   const { id } = req.params;
   try {
     await db.execute('UPDATE announcements SET is_active = NOT is_active WHERE id = ?', [id]);
+
+    const username = req.user.username || 'Bir admin';
+    const [rows] = await db.execute('SELECT is_active FROM announcements WHERE id = ?', [id]);
+    const status = rows[0]?.is_active ? 'aktif' : 'pasif';
+    await logAdminAction(req.user.id || req.user.userId, `${username} duyuruyu ${status} yaptı: ID ${id}`);
+
     res.json({ message: 'Status toggled successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -707,10 +767,14 @@ exports.getServicesAdmin = async (req, res) => {
 exports.addService = async (req, res) => {
   const { title, description, icon, display_order } = req.body;
   try {
-    await db.execute(
+    const [result] = await db.execute(
       'INSERT INTO services (title, description, icon, display_order) VALUES (?, ?, ?, ?)',
       [title, description, icon, display_order || 0]
     );
+
+    const username = req.user.username || 'Bir admin';
+    await logAdminAction(req.user.id || req.user.userId, `${username} yeni hizmet ekledi: ${title} (ID: ${result.insertId})`);
+
     res.status(201).json({ message: 'Service added successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -725,6 +789,10 @@ exports.updateService = async (req, res) => {
       'UPDATE services SET title = ?, description = ?, icon = ?, display_order = ? WHERE id = ?',
       [title, description, icon, display_order, id]
     );
+
+    const username = req.user.username || 'Bir admin';
+    await logAdminAction(req.user.id || req.user.userId, `${username} hizmeti güncelledi: ${title} (ID: ${id})`);
+
     res.json({ message: 'Service updated successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -735,6 +803,10 @@ exports.deleteService = async (req, res) => {
   const { id } = req.params;
   try {
     await db.execute('DELETE FROM services WHERE id = ?', [id]);
+
+    const username = req.user.username || 'Bir admin';
+    await logAdminAction(req.user.id || req.user.userId, `${username} hizmeti sildi: ID ${id}`);
+
     res.json({ message: 'Service deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });
@@ -768,6 +840,11 @@ exports.updateContent = async (req, res) => {
         );
       }
     }
+
+    const username = req.user.username || 'Bir admin';
+    const itemCount = items.length;
+    await logAdminAction(req.user.id || req.user.userId, `${username} site içeriğini güncelledi: ${itemCount} öğe`);
+
     res.json({ message: 'Content updated successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Database error' });

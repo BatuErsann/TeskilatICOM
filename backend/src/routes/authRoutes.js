@@ -6,6 +6,7 @@ const { loginLimiter, registerLimiter, forgotPasswordLimiter, resetPasswordLimit
 
 router.post('/register', registerLimiter, authController.register);
 router.post('/login', loginLimiter, authController.login);
+router.post('/logout', verifyToken, authController.logout);
 router.get('/profile', verifyToken, authController.getProfile);
 router.post('/change-password', verifyToken, authController.changePassword);
 router.post('/forgot-password', forgotPasswordLimiter, authController.forgotPassword);
