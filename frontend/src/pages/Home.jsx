@@ -356,7 +356,7 @@ const Home = () => {
             <div className="bg-secondary rounded-xl overflow-hidden shadow-2xl border border-accent/20 w-full">
               <div className="md:flex md:items-start">
                 {announcements[0].image_url && (
-                  <div className="md:w-2/5 md:flex-shrink-0 relative group cursor-pointer overflow-hidden aspect-video">
+                  <div className="md:w-[320px] lg:w-[360px] xl:w-[400px] md:flex-shrink-0 relative group cursor-pointer overflow-hidden aspect-video">
                     <img
                       src={getImageUrl(announcements[0].image_url)}
                       alt={announcements[0].title}
