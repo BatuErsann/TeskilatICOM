@@ -353,7 +353,7 @@ const Home = () => {
               </Link>
             </div>
 
-            <div className="bg-secondary rounded-xl overflow-hidden shadow-2xl border border-accent/20 max-w-5xl mx-auto">
+            <div className="bg-secondary rounded-xl overflow-hidden shadow-2xl border border-accent/20 w-full">
               <div className="md:flex md:items-start">
                 {announcements[0].image_url && (
                   <div className="md:w-2/5 md:flex-shrink-0 relative group cursor-pointer overflow-hidden aspect-video">
