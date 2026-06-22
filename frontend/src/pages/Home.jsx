@@ -353,20 +353,21 @@ const Home = () => {
               </Link>
             </div>
 
-            <div className="bg-primary rounded-xl overflow-hidden shadow-2xl border border-accent/20">
-              <div className="md:flex">
+            <div className="bg-secondary rounded-xl overflow-hidden shadow-2xl border border-accent/20 max-w-5xl mx-auto">
+              <div className="md:flex md:items-start">
                 {announcements[0].image_url && (
-                  <div className="md:w-1/6">
+                  <div className="md:w-2/5 md:flex-shrink-0 relative group cursor-pointer overflow-hidden aspect-video">
                     <img
                       src={getImageUrl(announcements[0].image_url)}
                       alt={announcements[0].title}
-                      className="w-full h-32 md:h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       referrerPolicy="no-referrer"
                     />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
                 )}
-                <div className={`p-8 ${announcements[0].image_url ? 'md:w-5/6' : 'w-full'} relative`}>
-                  <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-4">
+                <div className={`p-5 ${announcements[0].image_url ? 'md:flex-1' : 'w-full'} relative`}>
+                  <h3 className="text-xl md:text-2xl font-display font-bold text-white mb-3">
                     {announcements[0].link_url ? (
                       <a
                         href={announcements[0].link_url}
@@ -380,17 +381,15 @@ const Home = () => {
                       announcements[0].title
                     )}
                   </h3>
+                  <div className="w-12 h-1 bg-accent/30 mb-3"></div>
                   {announcements[0].short_description && (
-                    <p className="text-gray-400 text-lg mb-4">
+                    <p className="text-gray-300 text-base mb-2 leading-relaxed">
                       {announcements[0].short_description}
                     </p>
                   )}
                   {announcements[0].full_content && (
-                    <p className="text-gray-300 mb-6">
-                      {getTruncatedContent(announcements[0].full_content)}
-                      {announcements[0].full_content.length > getTruncatedContent(announcements[0].full_content).length && (
-                        <Link to="/works#announcements" className="text-accent ml-2 hover:underline font-bold">Read More</Link>
-                      )}
+                    <p className="text-gray-400 mb-3 leading-relaxed">
+                      {announcements[0].full_content}
                     </p>
                   )}
                 </div>
