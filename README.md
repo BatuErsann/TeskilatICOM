@@ -115,8 +115,7 @@ teskilat_last_version/
 |   |-- vite.config.js
 |   |-- tailwind.config.js
 |
-|-- database.sql                # Main database schema
-|-- database_update_*.sql       # Database update scripts
+|-- database.sql                # Reference database schema
 ```
 
 ---
@@ -125,7 +124,7 @@ teskilat_last_version/
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
+- Node.js (v20.19+ or v22.12+)
 - MySQL (v8.0 or higher)
 - npm or yarn
 
@@ -173,14 +172,10 @@ The frontend will run on `http://localhost:5173`.
 
 1. Create a MySQL database.
 
-2. Import the main schema:
+2. The backend creates and updates the required tables automatically at startup.
+   For a manual bootstrap, import the reference schema:
    ```bash
    mysql -u your_username -p your_database < database.sql
-   ```
-
-3. Apply any update scripts as needed:
-   ```bash
-   mysql -u your_username -p your_database < database_update_content.sql
    ```
 
 ---
@@ -283,4 +278,3 @@ All rights reserved. Copyright 2025 Teskilat Platform.
 - Email: info@teskilat.com.tr
 - Phone: (0216) 356 59 99
 - Address: Kozyatagi Mah. Kaya Sultan Sok. Nanda Plaza No: 83 Kat: 1, 34742 Kadikoy, Istanbul
- 

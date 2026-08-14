@@ -26,13 +26,13 @@ Bu klasörün içinde iki şey olacak:
 ## 2. Veritabanını Geri Yükleme (MySQL)
 
 Docker üzerinde çalışan MySQL veritabanını kurtarmak için şu komutu çalıştırın:
-*(Not: `yo48c80oskgw4wwg84ssggs0` sizin MySQL container adınızdır. Eğer Coolify panelinde bu isim değiştiyse docker ps ile yeni isme bakmanız gerekebilir).*
+Önce `docker ps` ile güncel MySQL container adını bulun.
 
 ```bash
-docker exec -i yo48c80oskgw4wwg84ssggs0 mysql -u root -p"1234" teskilat_db < database_backup.sql
+docker exec -i <mysql-container> sh -c 'exec mysql -u root -p"$MYSQL_ROOT_PASSWORD" teskilat_db' < database_backup.sql
 ```
 
-Bu komut herhangi bir onay beklemeden `teskilat_db` içindeki tüm tabloları silip yedekteki tertemiz versiyona çekecektir. Eğer hata vermeden terminal yeni satıra geçerse **başarılı olmuş** demektir.
+Bu komut container ortamındaki `MYSQL_ROOT_PASSWORD` değişkenini kullanır; parolayı komut satırına veya Git'e yazmayın.
 
 ---
 

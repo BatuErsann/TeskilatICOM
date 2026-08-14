@@ -1,6 +1,44 @@
-backend/.env
-.env*
-backend/node_modules
-backend/dist
-frontend/node_modules
-frontend/dist
+# Dependencies
+node_modules/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Generated build and test output
+dist/
+build/
+coverage/
+*.log
+logs/
+
+# Runtime data (persisted by Coolify volumes)
+backend/uploads/
+backend/backups/
+backups/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.swp
+*~
+tmpclaude-*
+
+# Editor and operating-system metadata
+.DS_Store
+._*
+__MACOSX/
+.idea/
+.vscode/
+
+# Local task and summary notes
+*_GOREV*
+*_GÖREV*
+*_TASK*
+*_SUMMARY*
+*_OZET*
+*_ÖZET*
+
+RESTORE_GUIDE.md
